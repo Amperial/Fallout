@@ -1,0 +1,30 @@
+Messages:
+  prefix: "&c[&eFallout&c] &e"
+
+  reload: "Reloaded Fallout."
+
+  permissions:
+    nopermission: "&4You do not have permission to use this command."
+
+  character:
+    create: "Created a character named %s."
+    delete: "Deleted your character."
+    setspecial: "Set %s's SPECIAL"
+    listspecial: "%s's SPECIAL is S:%s P:%s E:%s C:%s I:%s A:%s L:%s"
+
+  roll:
+    broadcast: "%s rolled %s."
+
+  error:
+    command:
+      notaplayer: "&4You must be a player to use this command."
+      invalidsubcommand: "&4%s is not a sub command of %s."
+      usage: "&4Usage: %s"
+    character:
+      alreadyexists: "&4You already have a character!"
+      doesntexist: "&4You do not have a character!"
+      points: "&4Your SPECIAL should make a total of 40 points."
+    roll:
+      notatrait: "&4%s is not a SPECIAL trait."
+    numberformat: "&4Value must be a positive integer."
+    numbertoolow: "&4Value must be no lower than %s."

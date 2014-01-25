@@ -1,0 +1,8 @@
+name: Fallout
+version: 1
+description: The Fallout plugin for Bukkit.
+author: ampayne2
+main: me.ampayne2.fallout.Fallout
+commands:
+  fallout:
+    aliases: fo

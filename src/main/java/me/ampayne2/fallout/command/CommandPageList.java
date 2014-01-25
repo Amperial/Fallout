@@ -1,0 +1,41 @@
+/*
+ * This file is part of Fallout.
+ *
+ * Copyright (c) 2013-2013 <http://github.com/ampayne2/Fallout//>
+ *
+ * Fallout is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Fallout is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package me.ampayne2.fallout.command;
+
+import me.ampayne2.fallout.Fallout;
+import me.ampayne2.fallout.message.PageList;
+import org.bukkit.ChatColor;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * A PageList that lists all of the fallout commands and their description.
+ */
+public class CommandPageList extends PageList {
+    public CommandPageList(Fallout dropParty, Command command) {
+        super(dropParty, "Commands", 8);
+        List<String> strings = new ArrayList<>();
+        for (Command child : command.getChildren(true)) {
+            strings.add(ChatColor.RED + ((FOCommand) child).getCommandUsage());
+            strings.add(ChatColor.YELLOW + "-" + ((FOCommand) child).getDescription());
+        }
+        setStrings(strings);
+    }
+}
