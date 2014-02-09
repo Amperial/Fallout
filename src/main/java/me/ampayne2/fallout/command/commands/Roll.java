@@ -62,7 +62,7 @@ public class Roll extends FOCommand {
                 for (int i = 0; i < rolls; i++) {
                     total += RANDOM.nextInt(sides + 1) + 1;
                 }
-                fallout.getMessenger().sendMessage(fallout.getServer(), "roll.broadcast", character.getCharacterName(), "" + total);
+                fallout.getMessenger().sendMessage(fallout.getServer(), "roll.broadcast", character.getCharacterName(), "" + total, trait.getName());
             } else {
                 fallout.getMessenger().sendMessage(player, "error.character.own.doesntexist");
             }

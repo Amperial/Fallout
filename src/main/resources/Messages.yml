@@ -13,7 +13,7 @@ Messages:
     listspecial: "%s's SPECIAL is S:%s P:%s E:%s C:%s I:%s A:%s L:%s"
 
   roll:
-    broadcast: "%s rolled %s."
+    broadcast: "%s rolled a %s in %s."
 
   error:
     command:

@@ -66,7 +66,7 @@ public class SetSpecial extends FOCommand {
                 fallout.getMessenger().sendMessage(player, "error.numberformat");
                 return;
             }
-            if ((s + p + e + c + i + a + l) != 40) {
+            if ((s + p + e + c + i + a + l) > 40) {
                 fallout.getMessenger().sendMessage(player, "error.character.totalpoints");
             } else if (s < 0 || p < 0 || e < 0 || c < 0 || i < 0 || a < 0 || l < 0) {
                 fallout.getMessenger().sendMessage(player, "error.numbertoolow", "0");
