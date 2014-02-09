@@ -35,17 +35,25 @@ public class ListSpecial extends FOCommand {
     private final Fallout fallout;
 
     public ListSpecial(Fallout fallout) {
-        super(fallout, "listspecial", "Lists your fallout character's traits.", "/fo character listspecial", new Permission("fallout.character.listspecial", PermissionDefault.TRUE), 0, true);
+        super(fallout, "listspecial", "Lists your or another fallout character's traits.", "/fo character listspecial [player]", new Permission("fallout.character.listspecial", PermissionDefault.TRUE), 0, 1, true);
         this.fallout = fallout;
     }
 
     @Override
     public void execute(String command, CommandSender sender, String[] args) {
         Player player = (Player) sender;
-        String playerName = player.getName();
+        Character character = null;
         CharacterManager characterManager = fallout.getCharacterManager();
-        if (characterManager.hasCharacter(playerName)) {
-            Character character = characterManager.getCharacter(playerName);
+        if (args.length == 1) {
+            if (characterManager.isCharacter(args[0])) {
+                character = characterManager.getCharacterByName(args[0]);
+            }
+        } else {
+            if (characterManager.isOwner(player.getName())) {
+                character = characterManager.getCharacterByOwner(player.getName());
+            }
+        }
+        if (character != null) {
             int s = character.getTrait(Trait.STRENGTH);
             int p = character.getTrait(Trait.PERCEPTION);
             int e = character.getTrait(Trait.ENDURANCE);
@@ -55,7 +63,11 @@ public class ListSpecial extends FOCommand {
             int l = character.getTrait(Trait.LUCK);
             fallout.getMessenger().sendMessage(player, "character.listspecial", character.getCharacterName(), Integer.toString(s), Integer.toString(p), Integer.toString(e), Integer.toString(c), Integer.toString(i), Integer.toString(a), Integer.toString(l));
         } else {
-            fallout.getMessenger().sendMessage(player, "error.character.doesntexist");
+            if (args.length == 1) {
+                fallout.getMessenger().sendMessage(player, "error.character.other.doesntexist");
+            } else {
+                fallout.getMessenger().sendMessage(player, "error.character.own.doesntexist");
+            }
         }
     }
 }

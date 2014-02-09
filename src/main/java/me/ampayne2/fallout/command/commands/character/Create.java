@@ -40,14 +40,18 @@ public class Create extends FOCommand {
     @Override
     public void execute(String command, CommandSender sender, String[] args) {
         Player player = (Player) sender;
-        String playerName = player.getName();
+        String ownerName = player.getName();
         CharacterManager characterManager = fallout.getCharacterManager();
-        if (characterManager.hasCharacter(playerName)) {
-            fallout.getMessenger().sendMessage(player, "error.character.alreadyexists");
+        if (characterManager.isOwner(ownerName)) {
+            fallout.getMessenger().sendMessage(player, "error.character.own.alreadyexists");
         } else {
             String characterName = args[0];
-            characterManager.createCharacter(playerName, characterName);
-            fallout.getMessenger().sendMessage(player, "character.create", characterName);
+            if (characterManager.isCharacter(characterName)) {
+                fallout.getMessenger().sendMessage(player, "error.character.other.alreadyexists");
+            } else {
+                characterManager.createCharacter(ownerName, characterName);
+                fallout.getMessenger().sendMessage(player, "character.create", characterName);
+            }
         }
     }
 }

@@ -29,7 +29,7 @@ import java.util.Map;
  */
 public class Character {
     private final Fallout fallout;
-    private final String playerName;
+    private final String ownerName;
     private final String characterName;
     private final Map<Trait, Integer> traits = new HashMap<>();
 
@@ -37,12 +37,12 @@ public class Character {
      * Creates a Character from default settings.
      *
      * @param fallout       The {@link me.ampayne2.fallout.Fallout} instance.
-     * @param playerName    The name of the owning player.
+     * @param ownerName     The name of the owning player.
      * @param characterName The name of the character.
      */
-    public Character(Fallout fallout, String playerName, String characterName) {
+    public Character(Fallout fallout, String ownerName, String characterName) {
         this.fallout = fallout;
-        this.playerName = playerName;
+        this.ownerName = ownerName;
         this.characterName = characterName;
         for (Trait trait : Trait.class.getEnumConstants()) {
             traits.put(trait, 1);
@@ -57,20 +57,27 @@ public class Character {
      */
     public Character(Fallout fallout, ConfigurationSection section) {
         this.fallout = fallout;
-        this.playerName = section.getString("playerName");
-        this.characterName = section.getString("characterName");
+        // Updates the old playerName config key to ownerName
+        if (section.contains("playerName")) {
+            ownerName = section.getString("playerName");
+            section.set("playerName", null);
+            section.set("ownerName", ownerName);
+        } else {
+            ownerName = section.getString("ownerName");
+        }
+        characterName = section.getString("characterName");
         for (Trait trait : Trait.class.getEnumConstants()) {
             traits.put(trait, section.getInt(trait.getName()));
         }
     }
 
     /**
-     * Gets the player's name.
+     * Gets the owner's name.
      *
-     * @return The player's name.
+     * @return The owner's name.
      */
-    public String getPlayerName() {
-        return playerName;
+    public String getOwnerName() {
+        return ownerName;
     }
 
     /**
@@ -108,7 +115,7 @@ public class Character {
      * @param section The ConfigurationSection to save the Character to.
      */
     public void save(ConfigurationSection section) {
-        section.set("playerName", playerName);
+        section.set("ownerName", ownerName);
         section.set("characterName", characterName);
         for (Trait trait : Trait.class.getEnumConstants()) {
             section.set(trait.getName(), traits.get(trait));

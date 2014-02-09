@@ -20,19 +20,18 @@ package me.ampayne2.fallout.characters;
 
 import me.ampayne2.fallout.Fallout;
 import me.ampayne2.fallout.config.ConfigType;
+import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Manages all of the fallout Characters.
  */
 public class CharacterManager {
     private final Fallout fallout;
-    private final Map<String, Character> characters = new HashMap<>();
+    private Map<String, Character> charactersByOwner = new HashMap<>();
+    private Map<String, Character> charactersByName = new HashMap<>();
 
     /**
      * Creates a new CharacterManager.
@@ -44,37 +43,30 @@ public class CharacterManager {
 
         FileConfiguration characterConfig = fallout.getConfigManager().getConfig(ConfigType.CHARACTER);
         if (characterConfig.getConfigurationSection("Characters") != null) {
-            for (String playerName : characterConfig.getConfigurationSection("Characters").getKeys(false)) {
-                if (!hasCharacter(playerName)) {
-                    characters.put(playerName, new Character(fallout, characterConfig.getConfigurationSection("Characters." + playerName)));
+            for (String ownerName : characterConfig.getConfigurationSection("Characters").getKeys(false)) {
+                if (!isOwner(ownerName)) {
+                    addCharacter(new Character(fallout, characterConfig.getConfigurationSection("Characters." + ownerName)));
                 }
             }
         }
     }
 
     /**
-     * Checks if the manager has a character.
+     * Creates a character and adds it to the manager.
      *
-     * @param playerName The name of the character's owner.
-     * @return True if the manager has the character, else false.
-     */
-    public boolean hasCharacter(String playerName) {
-        return characters.containsKey(playerName);
-    }
-
-    /**
-     * Creates a character.
-     *
-     * @param playerName    The name of the character's owner.
+     * @param ownerName     The name of the character's owner.
      * @param characterName The character's name.
      * @return The Character.
      */
-    public Character createCharacter(String playerName, String characterName) {
-        if (!characters.containsKey(playerName)) {
-            Character character = new Character(fallout, playerName, characterName);
-            characters.put(playerName, character);
+    public Character createCharacter(String ownerName, String characterName) {
+        Validate.notNull(ownerName, "Cannot create a character with no owner");
+        Validate.notNull(characterName, "Cannot create a character with no name");
+
+        if (!charactersByOwner.containsKey(ownerName)) {
+            Character character = new Character(fallout, ownerName, characterName);
+            addCharacter(character);
             FileConfiguration characterConfig = fallout.getConfigManager().getConfig(ConfigType.CHARACTER);
-            String path = "Characters." + playerName;
+            String path = "Characters." + ownerName;
             characterConfig.createSection(path);
             character.save(characterConfig.getConfigurationSection(path));
             fallout.getConfigManager().getConfigAccessor(ConfigType.CHARACTER).saveConfig();
@@ -84,36 +76,102 @@ public class CharacterManager {
     }
 
     /**
+     * Adds a character to the manager.
+     *
+     * @param character The character.
+     */
+    public void addCharacter(Character character) {
+        charactersByOwner.put(character.getOwnerName(), character);
+        charactersByName.put(character.getCharacterName(), character);
+    }
+
+    /**
      * Removes a character.
      *
-     * @param playerName The name of the character's owner.
+     * @param character The character.
      */
-    public void removeCharacter(String playerName) {
-        Character character = characters.get(playerName);
-        if (character != null) {
-            fallout.getConfigManager().getConfig(ConfigType.CHARACTER).set("Characters." + playerName, null);
-            fallout.getConfigManager().getConfigAccessor(ConfigType.CHARACTER).saveConfig();
-            characters.remove(playerName);
-        }
+    public void removeCharacter(Character character) {
+        Validate.notNull(character, "Cannot remove a null character");
+
+        fallout.getConfigManager().getConfig(ConfigType.CHARACTER).set("Characters." + character.getOwnerName(), null);
+        fallout.getConfigManager().getConfigAccessor(ConfigType.CHARACTER).saveConfig();
+        charactersByOwner.remove(character.getOwnerName());
+        charactersByName.remove(character.getCharacterName());
     }
 
     /**
-     * Gets a character.
+     * Checks if a player owns a character.
      *
-     * @param playerName The name of the character's owner.
-     * @return The Character.
+     * @param ownerName The name of the player.
+     * @return True if the player is an owner, else false.
      */
-    public Character getCharacter(String playerName) {
-        return characters.get(playerName);
+    public boolean isOwner(String ownerName) {
+        Validate.notNull(ownerName, "Owner name cannot be null");
+
+        return charactersByOwner.containsKey(ownerName);
     }
 
     /**
-     * Gets the Characters in the manager.
+     * Checks if the character of a certain name exists.
      *
-     * @return All of the manager's Characters.
+     * @param characterName The character's name.
+     * @return True if the character exists, else false.
      */
-    public Map<String, Character> getCharacters() {
-        return characters;
+    public boolean isCharacter(String characterName) {
+        Validate.notNull(characterName, "Character name cannot be null");
+
+        return charactersByName.containsKey(characterName);
+    }
+
+    /**
+     * Gets the character owned by a player.
+     *
+     * @param ownerName The name of the player.
+     * @return The character owned by the player.
+     */
+    public Character getCharacterByOwner(String ownerName) {
+        Validate.notNull(ownerName, "Owner name cannot be null");
+
+        return charactersByOwner.containsKey(ownerName) ? charactersByOwner.get(ownerName) : null;
+    }
+
+    /**
+     * Gets the character of a given name.
+     *
+     * @param characterName The character's name.
+     * @return The character with the given name.
+     */
+    public Character getCharacterByName(String characterName) {
+        Validate.notNull(characterName, "Character name cannot be null");
+
+        return charactersByName.containsKey(characterName) ? charactersByName.get(characterName) : null;
+    }
+
+    /**
+     * Gets the characters in the manager.
+     *
+     * @return The characters in the manager.
+     */
+    public Collection<Character> getCharacters() {
+        return charactersByOwner.values();
+    }
+
+    /**
+     * Gets the map of owners and characters.
+     *
+     * @return The map of owners and characters.
+     */
+    public Map<String, Character> getCharactersByOwner() {
+        return charactersByOwner;
+    }
+
+    /**
+     * Gets the map of character names and characters.
+     *
+     * @return The map of character names and characters.
+     */
+    public Map<String, Character> getCharactersByName() {
+        return charactersByName;
     }
 
     /**
@@ -122,6 +180,6 @@ public class CharacterManager {
      * @return A string list of all of the manager's Characters.
      */
     public List<String> getCharacterList() {
-        return new ArrayList<>(characters.keySet());
+        return new ArrayList<>(charactersByName.keySet());
     }
 }

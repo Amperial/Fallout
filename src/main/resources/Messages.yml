@@ -21,9 +21,14 @@ Messages:
       invalidsubcommand: "&4%s is not a sub command of %s."
       usage: "&4Usage: %s"
     character:
-      alreadyexists: "&4You already have a character!"
-      doesntexist: "&4You do not have a character!"
-      points: "&4Your SPECIAL should make a total of 40 points."
+      own:
+        alreadyexists: "&4You already have a character!"
+        doesntexist: "&4You do not have a character!"
+      other:
+        alreadyexists: "&4A character of that name already exists!"
+        doesntexist: "&4A character of that name doesn't exist!"
+      points: "&4A single trait cannot have more than 10 points."
+      totalpoints: "&4Your SPECIAL cannot have a total of more than 40 points."
     roll:
       notatrait: "&4%s is not a SPECIAL trait."
     numberformat: "&4Value must be a positive integer."

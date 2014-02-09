@@ -40,13 +40,13 @@ public class Delete extends FOCommand {
     @Override
     public void execute(String command, CommandSender sender, String[] args) {
         Player player = (Player) sender;
-        String playerName = player.getName();
+        String ownerName = player.getName();
         CharacterManager characterManager = fallout.getCharacterManager();
-        if (characterManager.hasCharacter(playerName)) {
-            characterManager.removeCharacter(playerName);
+        if (characterManager.isOwner(ownerName)) {
+            characterManager.removeCharacter(characterManager.getCharacterByOwner(ownerName));
             fallout.getMessenger().sendMessage(player, "character.delete");
         } else {
-            fallout.getMessenger().sendMessage(player, "error.character.doesntexist");
+            fallout.getMessenger().sendMessage(player, "error.character.own.doesntexist");
         }
     }
 }

@@ -48,14 +48,14 @@ public class Roll extends FOCommand {
     @Override
     public void execute(String command, CommandSender sender, String[] args) {
         Player player = (Player) sender;
-        String playerName = player.getName();
+        String ownerName = player.getName();
         Trait trait = Trait.fromName(args[0]);
         if (trait == null) {
             fallout.getMessenger().sendMessage(player, "error.roll.notatrait", args[0]);
         } else {
             CharacterManager characterManager = fallout.getCharacterManager();
-            if (characterManager.hasCharacter(playerName)) {
-                Character character = characterManager.getCharacter(playerName);
+            if (characterManager.isOwner(ownerName)) {
+                Character character = characterManager.getCharacterByOwner(ownerName);
                 int rolls = character.getTrait(trait);
                 int sides = fallout.getConfigManager().getConfig(ConfigType.PLUGIN).getInt("dicerolls", 20);
                 int total = 0;
@@ -64,7 +64,7 @@ public class Roll extends FOCommand {
                 }
                 fallout.getMessenger().sendMessage(fallout.getServer(), "roll.broadcast", character.getCharacterName(), "" + total);
             } else {
-                fallout.getMessenger().sendMessage(player, "error.character.doesntexist");
+                fallout.getMessenger().sendMessage(player, "error.character.own.doesntexist");
             }
         }
     }

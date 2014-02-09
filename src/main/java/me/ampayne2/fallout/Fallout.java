@@ -52,6 +52,7 @@ public class Fallout extends JavaPlugin {
         });
         commandController = new CommandController(this);
         characterManager = new CharacterManager(this);
+        new FOListener(this);
     }
 
     @Override

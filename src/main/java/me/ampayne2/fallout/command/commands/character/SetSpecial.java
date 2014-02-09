@@ -43,10 +43,10 @@ public class SetSpecial extends FOCommand {
     @Override
     public void execute(String command, CommandSender sender, String[] args) {
         Player player = (Player) sender;
-        String playerName = player.getName();
+        String ownerName = player.getName();
         CharacterManager characterManager = fallout.getCharacterManager();
-        if (characterManager.hasCharacter(playerName)) {
-            Character character = characterManager.getCharacter(playerName);
+        if (characterManager.isOwner(ownerName)) {
+            Character character = characterManager.getCharacterByOwner(ownerName);
             int s;
             int p;
             int e;
@@ -67,9 +67,11 @@ public class SetSpecial extends FOCommand {
                 return;
             }
             if ((s + p + e + c + i + a + l) != 40) {
-                fallout.getMessenger().sendMessage(player, "error.character.points");
+                fallout.getMessenger().sendMessage(player, "error.character.totalpoints");
             } else if (s < 0 || p < 0 || e < 0 || c < 0 || i < 0 || a < 0 || l < 0) {
                 fallout.getMessenger().sendMessage(player, "error.numbertoolow", "0");
+            } else if (s > 10 || p > 10 || e > 10 || c > 10 || i > 10 || a > 10 || l > 10) {
+                fallout.getMessenger().sendMessage(player, "error.character.points");
             } else {
                 character.setTrait(Trait.STRENGTH, s);
                 character.setTrait(Trait.PERCEPTION, p);
@@ -79,11 +81,11 @@ public class SetSpecial extends FOCommand {
                 character.setTrait(Trait.AGILITY, a);
                 character.setTrait(Trait.LUCK, l);
                 fallout.getMessenger().sendMessage(player, "character.setspecial", character.getCharacterName());
-                character.save(fallout.getConfigManager().getConfig(ConfigType.CHARACTER).getConfigurationSection("Characters." + playerName));
+                character.save(fallout.getConfigManager().getConfig(ConfigType.CHARACTER).getConfigurationSection("Characters." + ownerName));
                 fallout.getConfigManager().getConfigAccessor(ConfigType.CHARACTER).saveConfig();
             }
         } else {
-            fallout.getMessenger().sendMessage(player, "error.character.doesntexist");
+            fallout.getMessenger().sendMessage(player, "error.character.own.doesntexist");
         }
     }
 }
