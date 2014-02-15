@@ -19,10 +19,7 @@
 package me.ampayne2.fallout.command;
 
 import me.ampayne2.fallout.Fallout;
-import me.ampayne2.fallout.command.commands.About;
-import me.ampayne2.fallout.command.commands.Help;
-import me.ampayne2.fallout.command.commands.Reload;
-import me.ampayne2.fallout.command.commands.Roll;
+import me.ampayne2.fallout.command.commands.*;
 import me.ampayne2.fallout.command.commands.character.*;
 import me.ampayne2.fallout.message.PageList;
 import org.bukkit.command.CommandSender;
@@ -53,6 +50,7 @@ public class CommandController implements TabExecutor {
                 .addChildCommand(new About(fallout))
                 .addChildCommand(new Help(fallout))
                 .addChildCommand(new Reload(fallout))
+                .addChildCommand(new Whois(fallout))
                 .addChildCommand(new Command(fallout, "character", new Permission("fallout.character.all", PermissionDefault.OP), false)
                         .addChildCommand(new Create(fallout))
                         .addChildCommand(new Delete(fallout))

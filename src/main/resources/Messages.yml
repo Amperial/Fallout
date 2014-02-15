@@ -9,6 +9,7 @@ Messages:
   character:
     create: "Created a character named %s."
     delete: "Deleted your character."
+    name: "%s's owner's name is %s."
     setspecial: "Set %s's SPECIAL."
     listspecial: "%s's SPECIAL is S:%s P:%s E:%s C:%s I:%s A:%s L:%s."
     learnskill: "Learned skill %s."
