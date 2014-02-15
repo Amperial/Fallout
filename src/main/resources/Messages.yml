@@ -9,8 +9,13 @@ Messages:
   character:
     create: "Created a character named %s."
     delete: "Deleted your character."
-    setspecial: "Set %s's SPECIAL"
-    listspecial: "%s's SPECIAL is S:%s P:%s E:%s C:%s I:%s A:%s L:%s"
+    setspecial: "Set %s's SPECIAL."
+    listspecial: "%s's SPECIAL is S:%s P:%s E:%s C:%s I:%s A:%s L:%s."
+    learnskill: "Learned skill %s."
+    forgetskill: "Forgot skill %s."
+    teachskill: "Taught skill %s to %s."
+    unteachskill: "Untaught skill %s from %s."
+    listskills: "%s's skills are: %s."
 
   roll:
     broadcast: "%s rolled a %s in %s."
@@ -19,7 +24,7 @@ Messages:
     command:
       notaplayer: "&4You must be a player to use this command."
       invalidsubcommand: "&4%s is not a sub command of %s."
-      usage: "&4Usage: %s"
+      usage: "&4Usage: %s."
     character:
       own:
         alreadyexists: "&4You already have a character!"
@@ -29,6 +34,12 @@ Messages:
         doesntexist: "&4A character of that name doesn't exist!"
       points: "&4A single trait cannot have more than 10 points."
       totalpoints: "&4Your SPECIAL cannot have a total of more than 40 points."
+      skills:
+        doesntexist: "&4The skill %s doesn't exist!"
+        alreadytaught: "&4%s already knows that skill."
+        nottaught: "&4%s doesn't know that skill."
+        noskills: "&4%s has no skills."
+        missingrequired: "&4You are missing the required skill %s."
     roll:
       notatrait: "&4%s is not a SPECIAL trait."
     numberformat: "&4Value must be a positive integer."

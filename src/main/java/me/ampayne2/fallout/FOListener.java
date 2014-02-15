@@ -19,11 +19,22 @@
 package me.ampayne2.fallout;
 
 import me.ampayne2.fallout.characters.CharacterManager;
+import me.ampayne2.fallout.characters.Skill;
+import me.ampayne2.fallout.utils.ArmorMaterial;
+import me.ampayne2.fallout.utils.ArmorType;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Handles various fallout events.
@@ -42,14 +53,95 @@ public class FOListener implements Listener {
         Bukkit.getPluginManager().registerEvents(this, fallout);
     }
 
+    /**
+     * Lists the SPECIAL traits of the character of a player right clicked while crouching.
+     */
     @EventHandler
-    public void onPlayerClick(PlayerInteractEntityEvent event) {
+    public void onPlayerClickPlayer(PlayerInteractEntityEvent event) {
         if (event.getPlayer().isSneaking() && event.getRightClicked() instanceof Player) {
             String clickedName = ((Player) event.getRightClicked()).getName();
 
             CharacterManager characterManager = fallout.getCharacterManager();
             if (characterManager.isOwner(clickedName)) {
                 event.getPlayer().performCommand("fo character listspecial " + characterManager.getCharacterByOwner(clickedName).getCharacterName());
+            }
+        }
+    }
+
+    /**
+     * Stops players with characters who don't have the armor skill from right clicking to equip diamond armor.
+     */
+    @SuppressWarnings("deprecation")
+    @EventHandler
+    public void onPlayerClickArmor(PlayerInteractEvent event) {
+        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            Player player = event.getPlayer();
+            ItemStack itemStack = player.getItemInHand();
+            if (itemStack != null) {
+                Material material = itemStack.getType();
+                if (ArmorType.isArmor(material) && ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.DIAMOND) && ArmorType.getArmorType(material).canEquip(player)) {
+                    String ownerName = player.getName();
+                    CharacterManager characterManager = fallout.getCharacterManager();
+                    if (characterManager.isOwner(ownerName) && !characterManager.getCharacterByOwner(ownerName).hasSkill(Skill.ARMOR)) {
+                        event.setCancelled(true);
+                        player.updateInventory();
+                        fallout.getMessenger().sendMessage(player, "error.character.skills.missingrequired", Skill.ARMOR.getName());
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Stops players with characters who don't have the armor skill from manually equipping diamond armor.
+     */
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        if (event.getWhoClicked() instanceof Player) {
+            Player player = (Player) event.getWhoClicked();
+            boolean moving = false;
+            ClickType clickType = event.getClick();
+            if (event.isLeftClick() || event.isRightClick()) {
+                if (event.isShiftClick()) {
+                    ItemStack item = event.getCurrentItem();
+                    if (item != null) {
+                        Material material = item.getType();
+                        moving = ArmorType.isArmor(material) && ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.DIAMOND) && ArmorType.getArmorType(material).canEquip(player);
+                    }
+                } else if (event.getSlotType() == InventoryType.SlotType.ARMOR) {
+                    ItemStack item = event.getCursor();
+                    if (item != null) {
+                        Material material = item.getType();
+                        moving = ArmorType.isArmor(material) && ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.DIAMOND);
+                    }
+                }
+            }
+            if (moving) {
+                String ownerName = player.getName();
+                CharacterManager characterManager = fallout.getCharacterManager();
+                if (characterManager.isOwner(ownerName) && !characterManager.getCharacterByOwner(ownerName).hasSkill(Skill.ARMOR)) {
+                    event.setCancelled(true);
+                    fallout.getMessenger().sendMessage(player, "error.character.skills.missingrequired", Skill.ARMOR.getName());
+                }
+            }
+        }
+    }
+
+    /**
+     * Stops players with characters who don't have the armor skill from manually equipping diamond armor.
+     */
+    @EventHandler
+    public void onInventoryDrag(InventoryDragEvent event) {
+        if (event.getWhoClicked() instanceof Player && event.getOldCursor() != null) {
+            Material material = event.getOldCursor().getType();
+            if (ArmorType.isArmor(material) && ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.DIAMOND)) {
+                Player player = (Player) event.getWhoClicked();
+                String ownerName = player.getName();
+                CharacterManager characterManager = fallout.getCharacterManager();
+                if (characterManager.isOwner(ownerName) && !characterManager.getCharacterByOwner(ownerName).hasSkill(Skill.ARMOR)) {
+                    event.setCancelled(true);
+                    fallout.getMessenger().sendMessage(player, "error.character.skills.missingrequired", Skill.ARMOR.getName());
+                }
             }
         }
     }

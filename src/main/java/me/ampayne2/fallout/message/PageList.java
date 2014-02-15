@@ -18,8 +18,8 @@
  */
 package me.ampayne2.fallout.message;
 
-import me.ampayne2.fallout.FOUtils;
 import me.ampayne2.fallout.Fallout;
+import me.ampayne2.fallout.utils.FOUtils;
 import org.bukkit.ChatColor;
 
 import java.util.ArrayList;

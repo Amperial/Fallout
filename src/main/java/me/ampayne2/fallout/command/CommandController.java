@@ -23,10 +23,7 @@ import me.ampayne2.fallout.command.commands.About;
 import me.ampayne2.fallout.command.commands.Help;
 import me.ampayne2.fallout.command.commands.Reload;
 import me.ampayne2.fallout.command.commands.Roll;
-import me.ampayne2.fallout.command.commands.character.Create;
-import me.ampayne2.fallout.command.commands.character.Delete;
-import me.ampayne2.fallout.command.commands.character.ListSpecial;
-import me.ampayne2.fallout.command.commands.character.SetSpecial;
+import me.ampayne2.fallout.command.commands.character.*;
 import me.ampayne2.fallout.message.PageList;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -60,7 +57,10 @@ public class CommandController implements TabExecutor {
                         .addChildCommand(new Create(fallout))
                         .addChildCommand(new Delete(fallout))
                         .addChildCommand(new ListSpecial(fallout))
-                        .addChildCommand(new SetSpecial(fallout)))
+                        .addChildCommand(new SetSpecial(fallout))
+                        .addChildCommand(new Teach(fallout))
+                        .addChildCommand(new Unteach(fallout))
+                        .addChildCommand(new ListSkills(fallout)))
                 .addChildCommand(new Roll(fallout));
 
         fallout.getCommand(mainCommand.getName()).setExecutor(this);

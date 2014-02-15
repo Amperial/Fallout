@@ -21,7 +21,6 @@ package me.ampayne2.fallout.command.commands.character;
 import me.ampayne2.fallout.Fallout;
 import me.ampayne2.fallout.characters.Character;
 import me.ampayne2.fallout.characters.CharacterManager;
-import me.ampayne2.fallout.characters.Trait;
 import me.ampayne2.fallout.command.FOCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -29,13 +28,13 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
 /**
- * A command that lists the sender's character's SPECIAL traits.
+ * A command that lists the sender's character's skills.
  */
-public class ListSpecial extends FOCommand {
+public class ListSkills extends FOCommand {
     private final Fallout fallout;
 
-    public ListSpecial(Fallout fallout) {
-        super(fallout, "listspecial", "Lists your or another fallout character's traits.", "/fo character listspecial [character]", new Permission("fallout.character.listspecial", PermissionDefault.TRUE), 0, 1, true);
+    public ListSkills(Fallout fallout) {
+        super(fallout, "listskills", "Lists your or another fallout character's skills.", "/fo character listskills [character]", new Permission("fallout.character.listskills", PermissionDefault.TRUE), 0, 1, true);
         this.fallout = fallout;
     }
 
@@ -59,13 +58,10 @@ public class ListSpecial extends FOCommand {
                 return;
             }
         }
-        int s = character.getTrait(Trait.STRENGTH);
-        int p = character.getTrait(Trait.PERCEPTION);
-        int e = character.getTrait(Trait.ENDURANCE);
-        int c = character.getTrait(Trait.CHARISMA);
-        int i = character.getTrait(Trait.INTELLIGENCE);
-        int a = character.getTrait(Trait.AGILITY);
-        int l = character.getTrait(Trait.LUCK);
-        fallout.getMessenger().sendMessage(player, "character.listspecial", character.getCharacterName(), Integer.toString(s), Integer.toString(p), Integer.toString(e), Integer.toString(c), Integer.toString(i), Integer.toString(a), Integer.toString(l));
+        if (character.getSkills().isEmpty()) {
+            fallout.getMessenger().sendMessage(player, "error.character.skills.noskills", character.getCharacterName());
+        } else {
+            fallout.getMessenger().sendMessage(player, "character.listskills", character.getCharacterName(), character.getSkillList());
+        }
     }
 }
