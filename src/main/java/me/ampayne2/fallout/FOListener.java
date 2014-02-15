@@ -24,14 +24,13 @@ import me.ampayne2.fallout.utils.ArmorMaterial;
 import me.ampayne2.fallout.utils.ArmorType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -142,6 +141,29 @@ public class FOListener implements Listener {
                     event.setCancelled(true);
                     fallout.getMessenger().sendMessage(player, "error.character.skills.missingrequired", Skill.ARMOR.getName());
                 }
+            }
+        }
+    }
+
+    /**
+     * Stops mobs from dropping exp to prevent exp farming.
+     */
+    @EventHandler
+    public void onEntityDeath(EntityDeathEvent event) {
+        if (event.getEntity() instanceof Creature && fallout.getConfig().getBoolean("preventmobsdroppingexp", true)) {
+            event.setDroppedExp(0);
+        }
+    }
+
+    /**
+     * Stops diamond armor from being crafted.
+     */
+    @EventHandler
+    public void onDiamondArmorCraft(CraftItemEvent event) {
+        if (fallout.getConfig().getBoolean("preventcraftingdiamondarmor", true)) {
+            Material material = event.getRecipe().getResult().getType();
+            if (ArmorType.isArmor(material) && ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.DIAMOND)) {
+                event.setCancelled(true);
             }
         }
     }

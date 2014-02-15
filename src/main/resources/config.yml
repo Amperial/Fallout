@@ -1,2 +1,4 @@
 debug: false
 dicesides: 20
+preventmobsdroppingexp: true
+preventcraftingdiamondarmor: true
