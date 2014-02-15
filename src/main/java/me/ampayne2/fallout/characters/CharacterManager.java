@@ -81,8 +81,8 @@ public class CharacterManager {
      * @param character The character.
      */
     public void addCharacter(Character character) {
-        charactersByOwner.put(character.getOwnerName(), character);
-        charactersByName.put(character.getCharacterName(), character);
+        charactersByOwner.put(character.getOwnerName().toLowerCase(), character);
+        charactersByName.put(character.getCharacterName().toLowerCase(), character);
     }
 
     /**
@@ -108,7 +108,7 @@ public class CharacterManager {
     public boolean isOwner(String ownerName) {
         Validate.notNull(ownerName, "Owner name cannot be null");
 
-        return charactersByOwner.containsKey(ownerName);
+        return charactersByOwner.containsKey(ownerName.toLowerCase());
     }
 
     /**
@@ -120,7 +120,7 @@ public class CharacterManager {
     public boolean isCharacter(String characterName) {
         Validate.notNull(characterName, "Character name cannot be null");
 
-        return charactersByName.containsKey(characterName);
+        return charactersByName.containsKey(characterName.toLowerCase());
     }
 
     /**
@@ -132,7 +132,7 @@ public class CharacterManager {
     public Character getCharacterByOwner(String ownerName) {
         Validate.notNull(ownerName, "Owner name cannot be null");
 
-        return charactersByOwner.containsKey(ownerName) ? charactersByOwner.get(ownerName) : null;
+        return charactersByOwner.containsKey(ownerName.toLowerCase()) ? charactersByOwner.get(ownerName.toLowerCase()) : null;
     }
 
     /**
@@ -144,7 +144,7 @@ public class CharacterManager {
     public Character getCharacterByName(String characterName) {
         Validate.notNull(characterName, "Character name cannot be null");
 
-        return charactersByName.containsKey(characterName) ? charactersByName.get(characterName) : null;
+        return charactersByName.containsKey(characterName.toLowerCase()) ? charactersByName.get(characterName.toLowerCase()) : null;
     }
 
     /**
