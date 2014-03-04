@@ -29,6 +29,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
+import java.util.UUID;
+
 /**
  * A command that sets the sender's character's SPECIAL traits.
  */
@@ -43,10 +45,10 @@ public class SetSpecial extends FOCommand {
     @Override
     public void execute(String command, CommandSender sender, String[] args) {
         Player player = (Player) sender;
-        String ownerName = player.getName();
+        UUID playerId = player.getUniqueId();
         CharacterManager characterManager = fallout.getCharacterManager();
-        if (characterManager.isOwner(ownerName)) {
-            Character character = characterManager.getCharacterByOwner(ownerName);
+        if (characterManager.isOwner(playerId)) {
+            Character character = characterManager.getCharacterByOwner(playerId);
             int s;
             int p;
             int e;
@@ -81,7 +83,7 @@ public class SetSpecial extends FOCommand {
                 character.setTrait(Trait.AGILITY, a);
                 character.setTrait(Trait.LUCK, l);
                 fallout.getMessenger().sendMessage(player, "character.setspecial", character.getCharacterName());
-                character.save(fallout.getConfigManager().getConfig(ConfigType.CHARACTER).getConfigurationSection("Characters." + ownerName));
+                character.save(fallout.getConfigManager().getConfig(ConfigType.CHARACTER).getConfigurationSection("Characters." + playerId));
                 fallout.getConfigManager().getConfigAccessor(ConfigType.CHARACTER).saveConfig();
             }
         } else {

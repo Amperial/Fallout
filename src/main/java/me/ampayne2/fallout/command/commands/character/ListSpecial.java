@@ -52,8 +52,8 @@ public class ListSpecial extends FOCommand {
                 return;
             }
         } else {
-            if (characterManager.isOwner(player.getName())) {
-                character = characterManager.getCharacterByOwner(player.getName());
+            if (characterManager.isOwner(player.getUniqueId())) {
+                character = characterManager.getCharacterByOwner(player.getUniqueId());
             } else {
                 fallout.getMessenger().sendMessage(player, "error.character.own.doesntexist");
                 return;

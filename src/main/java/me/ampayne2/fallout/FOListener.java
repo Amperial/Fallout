@@ -18,6 +18,7 @@
  */
 package me.ampayne2.fallout;
 
+import me.ampayne2.fallout.characters.Character;
 import me.ampayne2.fallout.characters.CharacterManager;
 import me.ampayne2.fallout.characters.Skill;
 import me.ampayne2.fallout.utils.ArmorMaterial;
@@ -33,7 +34,11 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.UUID;
 
 /**
  * Handles various fallout events.
@@ -53,16 +58,36 @@ public class FOListener implements Listener {
     }
 
     /**
+     * Attempts to load the player's character.
+     */
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        fallout.getCharacterManager().loadCharacter(event.getPlayer());
+    }
+
+    /**
+     * Unloads the player's character from the character manager if the player has a character.
+     */
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        CharacterManager characterManager = fallout.getCharacterManager();
+        Character character = characterManager.getCharacterByOwner(event.getPlayer().getUniqueId());
+        if (character != null) {
+            characterManager.unloadCharacter(character);
+        }
+    }
+
+    /**
      * Lists the SPECIAL traits of the character of a player right clicked while crouching.
      */
     @EventHandler
     public void onPlayerClickPlayer(PlayerInteractEntityEvent event) {
         if (event.getPlayer().isSneaking() && event.getRightClicked() instanceof Player) {
-            String clickedName = ((Player) event.getRightClicked()).getName();
+            UUID clickedId = event.getRightClicked().getUniqueId();
 
             CharacterManager characterManager = fallout.getCharacterManager();
-            if (characterManager.isOwner(clickedName)) {
-                event.getPlayer().performCommand("fo character listspecial " + characterManager.getCharacterByOwner(clickedName).getCharacterName());
+            if (characterManager.isOwner(clickedId)) {
+                event.getPlayer().performCommand("fo character listspecial " + characterManager.getCharacterByOwner(clickedId).getCharacterName());
             }
         }
     }
@@ -79,9 +104,9 @@ public class FOListener implements Listener {
             if (itemStack != null) {
                 Material material = itemStack.getType();
                 if (ArmorType.isArmor(material) && ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.DIAMOND) && ArmorType.getArmorType(material).canEquip(player)) {
-                    String ownerName = player.getName();
+                    UUID playerId = player.getUniqueId();
                     CharacterManager characterManager = fallout.getCharacterManager();
-                    if (characterManager.isOwner(ownerName) && !characterManager.getCharacterByOwner(ownerName).hasSkill(Skill.ARMOR)) {
+                    if (characterManager.isOwner(playerId) && !characterManager.getCharacterByOwner(playerId).hasSkill(Skill.ARMOR)) {
                         event.setCancelled(true);
                         player.updateInventory();
                         fallout.getMessenger().sendMessage(player, "error.character.skills.missingrequired", Skill.ARMOR.getName());
@@ -116,9 +141,9 @@ public class FOListener implements Listener {
                 }
             }
             if (moving) {
-                String ownerName = player.getName();
+                UUID playerId = player.getUniqueId();
                 CharacterManager characterManager = fallout.getCharacterManager();
-                if (characterManager.isOwner(ownerName) && !characterManager.getCharacterByOwner(ownerName).hasSkill(Skill.ARMOR)) {
+                if (characterManager.isOwner(playerId) && !characterManager.getCharacterByOwner(playerId).hasSkill(Skill.ARMOR)) {
                     event.setCancelled(true);
                     fallout.getMessenger().sendMessage(player, "error.character.skills.missingrequired", Skill.ARMOR.getName());
                 }
@@ -135,9 +160,9 @@ public class FOListener implements Listener {
             Material material = event.getOldCursor().getType();
             if (ArmorType.isArmor(material) && ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.DIAMOND)) {
                 Player player = (Player) event.getWhoClicked();
-                String ownerName = player.getName();
+                UUID playerId = player.getUniqueId();
                 CharacterManager characterManager = fallout.getCharacterManager();
-                if (characterManager.isOwner(ownerName) && !characterManager.getCharacterByOwner(ownerName).hasSkill(Skill.ARMOR)) {
+                if (characterManager.isOwner(playerId) && !characterManager.getCharacterByOwner(playerId).hasSkill(Skill.ARMOR)) {
                     event.setCancelled(true);
                     fallout.getMessenger().sendMessage(player, "error.character.skills.missingrequired", Skill.ARMOR.getName());
                 }
@@ -150,7 +175,7 @@ public class FOListener implements Listener {
      */
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
-        if (event.getEntity() instanceof Creature && fallout.getConfig().getBoolean("preventmobsdroppingexp", true)) {
+        if (event.getEntity() instanceof Creature && fallout.getConfig().getBoolean("PreventMobsDroppingExp", true)) {
             event.setDroppedExp(0);
         }
     }
@@ -160,7 +185,7 @@ public class FOListener implements Listener {
      */
     @EventHandler
     public void onDiamondArmorCraft(CraftItemEvent event) {
-        if (fallout.getConfig().getBoolean("preventcraftingdiamondarmor", true)) {
+        if (fallout.getConfig().getBoolean("PreventCraftingDiamondArmor", true)) {
             Material material = event.getRecipe().getResult().getType();
             if (ArmorType.isArmor(material) && ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.DIAMOND)) {
                 event.setCancelled(true);

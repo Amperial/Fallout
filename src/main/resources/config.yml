@@ -1,4 +1,4 @@
-debug: false
-dicesides: 20
-preventmobsdroppingexp: true
-preventcraftingdiamondarmor: true
+Debug: false
+DiceSides: 20
+PreventMobsDroppingExp: true
+PreventCraftingDiamondArmor: true

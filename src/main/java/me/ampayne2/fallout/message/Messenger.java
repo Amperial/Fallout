@@ -47,7 +47,7 @@ public class Messenger {
      * @param fallout The {@link me.ampayne2.fallout.Fallout} instance.
      */
     public Messenger(Fallout fallout) {
-        debug = fallout.getConfig().getBoolean("debug", false);
+        debug = fallout.getConfig().getBoolean("Debug", false);
         log = fallout.getLogger();
         FileConfiguration messageConfig = fallout.getConfigManager().getConfig(ConfigType.MESSAGE);
         for (String key : messageConfig.getConfigurationSection("Messages").getKeys(true)) {

@@ -20,7 +20,9 @@ package me.ampayne2.fallout.characters;
 
 import me.ampayne2.fallout.Fallout;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -30,6 +32,7 @@ import java.util.*;
 public class Character {
     private final Fallout fallout;
     private final String ownerName;
+    private final UUID ownerId;
     private final String characterName;
     private final Map<Trait, Integer> traits = new HashMap<>();
     private final List<Skill> skills = new ArrayList<>();
@@ -38,12 +41,13 @@ public class Character {
      * Creates a Character from default settings.
      *
      * @param fallout       The {@link me.ampayne2.fallout.Fallout} instance.
-     * @param ownerName     The name of the owning player.
+     * @param owner     The owning player.
      * @param characterName The name of the character.
      */
-    public Character(Fallout fallout, String ownerName, String characterName) {
+    public Character(Fallout fallout, Player owner, String characterName) {
         this.fallout = fallout;
-        this.ownerName = ownerName;
+        this.ownerName = owner.getName();
+        this.ownerId = owner.getUniqueId();
         this.characterName = characterName;
         for (Trait trait : Trait.class.getEnumConstants()) {
             traits.put(trait, 1);
@@ -58,14 +62,30 @@ public class Character {
      */
     public Character(Fallout fallout, ConfigurationSection section) {
         this.fallout = fallout;
+
+        String lastOwnerName;
         // Updates the old playerName config key to ownerName
         if (section.contains("playerName")) {
-            ownerName = section.getString("playerName");
+            lastOwnerName = section.getString("playerName");
             section.set("playerName", null);
-            section.set("ownerName", ownerName);
+            section.set("ownerName", lastOwnerName);
         } else {
-            ownerName = section.getString("ownerName");
+            lastOwnerName = section.getString("ownerName");
         }
+        // Updates the config to add the owner's UUID, updates the owner's name.
+        if (section.contains("ownerId")) {
+            ownerId = UUID.fromString(section.getString("ownerId"));
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (ownerId.equals(player.getUniqueId())) {
+                    lastOwnerName = player.getName();
+                    break;
+                }
+            }
+        } else {
+            ownerId = Bukkit.getPlayerExact(lastOwnerName).getUniqueId();
+            section.set("ownerId", ownerId.toString());
+        }
+        this.ownerName = lastOwnerName;
         characterName = section.getString("characterName");
         for (Trait trait : Trait.class.getEnumConstants()) {
             traits.put(trait, section.getInt(trait.getName()));
@@ -88,6 +108,15 @@ public class Character {
      */
     public String getOwnerName() {
         return ownerName;
+    }
+
+    /**
+     * Gets the owner's id.
+     *
+     * @return The owner's id.
+     */
+    public UUID getOwnerId() {
+        return ownerId;
     }
 
     /**
@@ -176,6 +205,7 @@ public class Character {
      */
     public void save(ConfigurationSection section) {
         section.set("ownerName", ownerName);
+        section.set("ownerId", ownerId.toString());
         section.set("characterName", characterName);
         for (Trait trait : Trait.class.getEnumConstants()) {
             section.set(trait.getName(), traits.get(trait));

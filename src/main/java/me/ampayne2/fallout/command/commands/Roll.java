@@ -32,6 +32,7 @@ import org.bukkit.permissions.PermissionDefault;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * A command that lets you roll for a random number based on a trait's level.
@@ -48,16 +49,16 @@ public class Roll extends FOCommand {
     @Override
     public void execute(String command, CommandSender sender, String[] args) {
         Player player = (Player) sender;
-        String ownerName = player.getName();
+        UUID playerId = player.getUniqueId();
         Trait trait = Trait.fromName(args[0]);
         if (trait == null) {
             fallout.getMessenger().sendMessage(player, "error.roll.notatrait", args[0]);
         } else {
             CharacterManager characterManager = fallout.getCharacterManager();
-            if (characterManager.isOwner(ownerName)) {
-                Character character = characterManager.getCharacterByOwner(ownerName);
+            if (characterManager.isOwner(playerId)) {
+                Character character = characterManager.getCharacterByOwner(playerId);
                 int rolls = character.getTrait(trait);
-                int sides = fallout.getConfigManager().getConfig(ConfigType.PLUGIN).getInt("dicerolls", 20);
+                int sides = fallout.getConfigManager().getConfig(ConfigType.PLUGIN).getInt("DiceSides", 20);
                 int total = 0;
                 for (int i = 0; i < rolls; i++) {
                     total += RANDOM.nextInt(sides + 1) + 1;
