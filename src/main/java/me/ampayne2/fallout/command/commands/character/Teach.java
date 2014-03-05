@@ -21,7 +21,7 @@ package me.ampayne2.fallout.command.commands.character;
 import me.ampayne2.fallout.Fallout;
 import me.ampayne2.fallout.characters.Character;
 import me.ampayne2.fallout.characters.CharacterManager;
-import me.ampayne2.fallout.characters.Skill;
+import me.ampayne2.fallout.characters.Perk;
 import me.ampayne2.fallout.command.FOCommand;
 import me.ampayne2.fallout.config.ConfigType;
 import org.bukkit.Bukkit;
@@ -37,7 +37,7 @@ public class Teach extends FOCommand {
     private final Fallout fallout;
 
     public Teach(Fallout fallout) {
-        super(fallout, "teach", "Teaches a character a skill.", "/fo teach <character> <skill>", new Permission("fallout.character.teach", PermissionDefault.OP), 2, true);
+        super(fallout, "teach", "Teaches a character a perk.", "/fo character teach <character> <perk>", new Permission("fallout.character.teach", PermissionDefault.OP), 2, true);
         this.fallout = fallout;
     }
 
@@ -52,20 +52,20 @@ public class Teach extends FOCommand {
             fallout.getMessenger().sendMessage(player, "error.character.other.doesntexist");
             return;
         }
-        Skill skill = Skill.fromName(args[1]);
-        if (skill == null) {
-            fallout.getMessenger().sendMessage(player, "error.character.skills.doesntexist", args[1]);
-        } else if (character.hasSkill(skill)) {
-            fallout.getMessenger().sendMessage(player, "error.character.skills.alreadytaught", character.getCharacterName());
+        Perk perk = Perk.fromName(args[1]);
+        if (perk == null) {
+            fallout.getMessenger().sendMessage(player, "error.character.perks.doesntexist", args[1]);
+        } else if (character.hasPerk(perk)) {
+            fallout.getMessenger().sendMessage(player, "error.character.perks.alreadytaught", character.getCharacterName());
         } else {
-            character.teachSkill(skill);
+            character.teachPerk(perk);
             Player taughtPlayer = Bukkit.getPlayerExact(character.getOwnerName());
             if (taughtPlayer != null) {
-                fallout.getMessenger().sendMessage(taughtPlayer, "character.learnskill", skill.getName());
+                fallout.getMessenger().sendMessage(taughtPlayer, "character.learnperk", perk.getName());
             }
-            fallout.getMessenger().sendMessage(player, "character.teachskill", skill.getName(), character.getCharacterName());
+            fallout.getMessenger().sendMessage(player, "character.teachperk", perk.getName(), character.getCharacterName());
         }
-        character.save(fallout.getConfigManager().getConfig(ConfigType.CHARACTER).getConfigurationSection("Characters." + character.getOwnerName()));
+        character.save(fallout.getConfigManager().getConfig(ConfigType.CHARACTER).getConfigurationSection("Characters." + character.getOwnerId()));
         fallout.getConfigManager().getConfigAccessor(ConfigType.CHARACTER).saveConfig();
     }
 }

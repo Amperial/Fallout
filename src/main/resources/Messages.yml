@@ -12,11 +12,11 @@ Messages:
     name: "%s's owner's name is %s."
     setspecial: "Set %s's SPECIAL."
     listspecial: "%s's SPECIAL is S:%s P:%s E:%s C:%s I:%s A:%s L:%s."
-    learnskill: "Learned skill %s."
-    forgetskill: "Forgot skill %s."
-    teachskill: "Taught skill %s to %s."
-    unteachskill: "Untaught skill %s from %s."
-    listskills: "%s's skills are: %s."
+    learnperk: "Learned skill %s."
+    forgetperk: "Forgot skill %s."
+    teachperk: "Taught skill %s to %s."
+    unteachperk: "Untaught skill %s from %s."
+    listperks: "%s's skills are: %s."
 
   roll:
     broadcast: "%s rolled a %s in %s."
@@ -35,12 +35,12 @@ Messages:
         doesntexist: "&4A character of that name doesn't exist!"
       points: "&4A single trait cannot have more than 10 points."
       totalpoints: "&4Your SPECIAL cannot have a total of more than 40 points."
-      skills:
-        doesntexist: "&4The skill %s doesn't exist!"
-        alreadytaught: "&4%s already knows that skill."
-        nottaught: "&4%s doesn't know that skill."
-        noskills: "&4%s has no skills."
-        missingrequired: "&4You are missing the required skill %s."
+      perks:
+        doesntexist: "&4The perk %s doesn't exist!"
+        alreadytaught: "&4%s already knows that perk."
+        nottaught: "&4%s doesn't know that perk."
+        noperks: "&4%s has no perks."
+        missingrequired: "&4You are missing the required perk %s."
     roll:
       notatrait: "&4%s is not a SPECIAL trait."
     numberformat: "&4Value must be a positive integer."

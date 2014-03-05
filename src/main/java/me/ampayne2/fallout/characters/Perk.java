@@ -22,55 +22,55 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An enum of character skills used in fallout.
+ * An enum of character perks used in fallout.
  */
-public enum Skill {
+public enum Perk {
     ARMOR("Armor");
 
     private final String name;
-    private static final List<String> skillNames;
+    private static final List<String> perkNames;
 
-    private Skill(String name) {
+    private Perk(String name) {
         this.name = name;
     }
 
     /**
-     * Gets the display name of the skill.
+     * Gets the display name of the perk.
      *
-     * @return The skill's display name.
+     * @return The perk's display name.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Gets a skill from its name.
+     * Gets a perk from its name.
      *
      * @param name The name.
-     * @return The skill.
+     * @return The perk.
      */
-    public static Skill fromName(String name) {
-        for (Skill skill : Skill.class.getEnumConstants()) {
-            if (skill.getName().equalsIgnoreCase(name)) {
-                return skill;
+    public static Perk fromName(String name) {
+        for (Perk perk : Perk.class.getEnumConstants()) {
+            if (perk.getName().equalsIgnoreCase(name)) {
+                return perk;
             }
         }
         return null;
     }
 
     /**
-     * Gets the list of skill names.
+     * Gets the list of perk names.
      *
-     * @return The list of skill names.
+     * @return The list of perk names.
      */
     public static List<String> getSkillNames() {
-        return skillNames;
+        return perkNames;
     }
 
     static {
-        skillNames = new ArrayList<>();
+        perkNames = new ArrayList<>();
         for (Trait special : Trait.class.getEnumConstants()) {
-            skillNames.add(special.getName());
+            perkNames.add(special.getName());
         }
     }
 }

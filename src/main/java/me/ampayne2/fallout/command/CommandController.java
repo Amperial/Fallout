@@ -58,7 +58,7 @@ public class CommandController implements TabExecutor {
                         .addChildCommand(new SetSpecial(fallout))
                         .addChildCommand(new Teach(fallout))
                         .addChildCommand(new Unteach(fallout))
-                        .addChildCommand(new ListSkills(fallout)))
+                        .addChildCommand(new ListPerks(fallout)))
                 .addChildCommand(new Roll(fallout));
 
         fallout.getCommand(mainCommand.getName()).setExecutor(this);

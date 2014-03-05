@@ -28,13 +28,13 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
 /**
- * A command that lists the sender's character's skills.
+ * A command that lists the sender's character's perks.
  */
-public class ListSkills extends FOCommand {
+public class ListPerks extends FOCommand {
     private final Fallout fallout;
 
-    public ListSkills(Fallout fallout) {
-        super(fallout, "listskills", "Lists your or another fallout character's skills.", "/fo character listskills [character]", new Permission("fallout.character.listskills", PermissionDefault.TRUE), 0, 1, true);
+    public ListPerks(Fallout fallout) {
+        super(fallout, "listperks", "Lists your or another fallout character's perks.", "/fo character listperks [character]", new Permission("fallout.character.listperks", PermissionDefault.TRUE), 0, 1, true);
         this.fallout = fallout;
     }
 
@@ -58,10 +58,10 @@ public class ListSkills extends FOCommand {
                 return;
             }
         }
-        if (character.getSkills().isEmpty()) {
-            fallout.getMessenger().sendMessage(player, "error.character.skills.noskills", character.getCharacterName());
+        if (character.getPerks().isEmpty()) {
+            fallout.getMessenger().sendMessage(player, "error.character.perks.noperks", character.getCharacterName());
         } else {
-            fallout.getMessenger().sendMessage(player, "character.listskills", character.getCharacterName(), character.getSkillList());
+            fallout.getMessenger().sendMessage(player, "character.listperks", character.getCharacterName(), character.getPerkList());
         }
     }
 }

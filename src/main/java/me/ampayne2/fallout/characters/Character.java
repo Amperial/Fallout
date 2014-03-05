@@ -35,7 +35,7 @@ public class Character {
     private final UUID ownerId;
     private final String characterName;
     private final Map<Trait, Integer> traits = new HashMap<>();
-    private final List<Skill> skills = new ArrayList<>();
+    private final List<Perk> perks = new ArrayList<>();
 
     /**
      * Creates a Character from default settings.
@@ -63,15 +63,7 @@ public class Character {
     public Character(Fallout fallout, ConfigurationSection section) {
         this.fallout = fallout;
 
-        String lastOwnerName;
-        // Updates the old playerName config key to ownerName
-        if (section.contains("playerName")) {
-            lastOwnerName = section.getString("playerName");
-            section.set("playerName", null);
-            section.set("ownerName", lastOwnerName);
-        } else {
-            lastOwnerName = section.getString("ownerName");
-        }
+        String lastOwnerName = section.getString("ownerName");
         // Updates the config to add the owner's UUID, updates the owner's name.
         if (section.contains("ownerId")) {
             ownerId = UUID.fromString(section.getString("ownerId"));
@@ -90,14 +82,20 @@ public class Character {
         for (Trait trait : Trait.class.getEnumConstants()) {
             traits.put(trait, section.getInt(trait.getName()));
         }
-        // A check for old configs without skills
+        // A check for old configs where perks are called skills
         if (section.contains("skills")) {
-            List<String> skillNames = section.getStringList("skills");
-            for (String skillName : skillNames) {
-                skills.add(Skill.fromName(skillName));
+            List<String> perks = section.getStringList("skills");
+            section.set("skills", null);
+            section.set("perks", perks);
+        }
+        // A check for old configs without perks
+        if (section.contains("perks")) {
+            List<String> perkNames = section.getStringList("perks");
+            for (String perkName : perkNames) {
+                perks.add(Perk.fromName(perkName));
             }
         } else {
-            section.set("skills", skills);
+            section.set("perks", perks);
         }
     }
 
@@ -151,38 +149,38 @@ public class Character {
     /**
      * Checks if the character has a certain skill.
      *
-     * @param skill The skill.
+     * @param perk The perk.
      * @return True if the character has the skill, else false.
      */
-    public boolean hasSkill(Skill skill) {
-        return skills.contains(skill);
+    public boolean hasPerk(Perk perk) {
+        return perks.contains(perk);
     }
 
     /**
-     * Teaches the character a skill.
+     * Teaches the character a perk.
      *
-     * @param skill The skill to add.
+     * @param perk The perk to add.
      */
-    public void teachSkill(Skill skill) {
-        skills.add(skill);
+    public void teachPerk(Perk perk) {
+        perks.add(perk);
     }
 
     /**
-     * Unteaches the character a skill.
+     * Unteaches the character a perk.
      *
-     * @param skill The skill to remove.
+     * @param perk The perk to remove.
      */
-    public void unteachSkill(Skill skill) {
-        skills.remove(skill);
+    public void unteachPerk(Perk perk) {
+        perks.remove(perk);
     }
 
     /**
-     * Gets the character's skills.
+     * Gets the character's perks.
      *
-     * @return The skills.
+     * @return The perks.
      */
-    public List<Skill> getSkills() {
-        return Collections.unmodifiableList(skills);
+    public List<Perk> getPerks() {
+        return Collections.unmodifiableList(perks);
     }
 
     /**
@@ -190,12 +188,12 @@ public class Character {
      *
      * @return The skills.
      */
-    public String getSkillList() {
-        List<String> skillNames = new ArrayList<>();
-        for (Skill skill : skills) {
-            skillNames.add(skill.getName());
+    public String getPerkList() {
+        List<String> perkNames = new ArrayList<>();
+        for (Perk perk : perks) {
+            perkNames.add(perk.getName());
         }
-        return StringUtils.join(skillNames, ", ");
+        return StringUtils.join(perkNames, ", ");
     }
 
     /**
@@ -210,10 +208,10 @@ public class Character {
         for (Trait trait : Trait.class.getEnumConstants()) {
             section.set(trait.getName(), traits.get(trait));
         }
-        List<String> skillNames = new ArrayList<>();
-        for (Skill skill : skills) {
-            skillNames.add(skill.getName());
+        List<String> perkNames = new ArrayList<>();
+        for (Perk perk : perks) {
+            perkNames.add(perk.getName());
         }
-        section.set("skills", skillNames);
+        section.set("perks", perkNames);
     }
 }

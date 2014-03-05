@@ -20,7 +20,7 @@ package me.ampayne2.fallout;
 
 import me.ampayne2.fallout.characters.Character;
 import me.ampayne2.fallout.characters.CharacterManager;
-import me.ampayne2.fallout.characters.Skill;
+import me.ampayne2.fallout.characters.Perk;
 import me.ampayne2.fallout.utils.ArmorMaterial;
 import me.ampayne2.fallout.utils.ArmorType;
 import org.bukkit.Bukkit;
@@ -93,7 +93,7 @@ public class FOListener implements Listener {
     }
 
     /**
-     * Stops players with characters who don't have the armor skill from right clicking to equip diamond armor.
+     * Stops players with characters who don't have the armor perk from right clicking to equip diamond armor.
      */
     @SuppressWarnings("deprecation")
     @EventHandler
@@ -106,10 +106,10 @@ public class FOListener implements Listener {
                 if (ArmorType.isArmor(material) && ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.DIAMOND) && ArmorType.getArmorType(material).canEquip(player)) {
                     UUID playerId = player.getUniqueId();
                     CharacterManager characterManager = fallout.getCharacterManager();
-                    if (characterManager.isOwner(playerId) && !characterManager.getCharacterByOwner(playerId).hasSkill(Skill.ARMOR)) {
+                    if (characterManager.isOwner(playerId) && !characterManager.getCharacterByOwner(playerId).hasPerk(Perk.ARMOR)) {
                         event.setCancelled(true);
                         player.updateInventory();
-                        fallout.getMessenger().sendMessage(player, "error.character.skills.missingrequired", Skill.ARMOR.getName());
+                        fallout.getMessenger().sendMessage(player, "error.character.perks.missingrequired", Perk.ARMOR.getName());
                     }
                 }
             }
@@ -117,7 +117,7 @@ public class FOListener implements Listener {
     }
 
     /**
-     * Stops players with characters who don't have the armor skill from manually equipping diamond armor.
+     * Stops players with characters who don't have the armor perk from manually equipping diamond armor.
      */
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
@@ -143,16 +143,16 @@ public class FOListener implements Listener {
             if (moving) {
                 UUID playerId = player.getUniqueId();
                 CharacterManager characterManager = fallout.getCharacterManager();
-                if (characterManager.isOwner(playerId) && !characterManager.getCharacterByOwner(playerId).hasSkill(Skill.ARMOR)) {
+                if (characterManager.isOwner(playerId) && !characterManager.getCharacterByOwner(playerId).hasPerk(Perk.ARMOR)) {
                     event.setCancelled(true);
-                    fallout.getMessenger().sendMessage(player, "error.character.skills.missingrequired", Skill.ARMOR.getName());
+                    fallout.getMessenger().sendMessage(player, "error.character.perks.missingrequired", Perk.ARMOR.getName());
                 }
             }
         }
     }
 
     /**
-     * Stops players with characters who don't have the armor skill from manually equipping diamond armor.
+     * Stops players with characters who don't have the armor perk from manually equipping diamond armor.
      */
     @EventHandler
     public void onInventoryDrag(InventoryDragEvent event) {
@@ -162,9 +162,9 @@ public class FOListener implements Listener {
                 Player player = (Player) event.getWhoClicked();
                 UUID playerId = player.getUniqueId();
                 CharacterManager characterManager = fallout.getCharacterManager();
-                if (characterManager.isOwner(playerId) && !characterManager.getCharacterByOwner(playerId).hasSkill(Skill.ARMOR)) {
+                if (characterManager.isOwner(playerId) && !characterManager.getCharacterByOwner(playerId).hasPerk(Perk.ARMOR)) {
                     event.setCancelled(true);
-                    fallout.getMessenger().sendMessage(player, "error.character.skills.missingrequired", Skill.ARMOR.getName());
+                    fallout.getMessenger().sendMessage(player, "error.character.perks.missingrequired", Perk.ARMOR.getName());
                 }
             }
         }

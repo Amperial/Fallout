@@ -21,7 +21,7 @@ package me.ampayne2.fallout.command.commands.character;
 import me.ampayne2.fallout.Fallout;
 import me.ampayne2.fallout.characters.Character;
 import me.ampayne2.fallout.characters.CharacterManager;
-import me.ampayne2.fallout.characters.Skill;
+import me.ampayne2.fallout.characters.Perk;
 import me.ampayne2.fallout.command.FOCommand;
 import me.ampayne2.fallout.config.ConfigType;
 import org.bukkit.Bukkit;
@@ -37,7 +37,7 @@ public class Unteach extends FOCommand {
     private final Fallout fallout;
 
     public Unteach(Fallout fallout) {
-        super(fallout, "unteach", "Unteaches a character a skill.", "/fo unteach <character> <skill>", new Permission("fallout.character.unteach", PermissionDefault.OP), 2, true);
+        super(fallout, "unteach", "Unteaches a character a perk.", "/fo character unteach <character> <perk>", new Permission("fallout.character.unteach", PermissionDefault.OP), 2, true);
         this.fallout = fallout;
     }
 
@@ -52,20 +52,20 @@ public class Unteach extends FOCommand {
             fallout.getMessenger().sendMessage(player, "error.character.other.doesntexist");
             return;
         }
-        Skill skill = Skill.fromName(args[1]);
-        if (skill == null) {
-            fallout.getMessenger().sendMessage(player, "error.character.skills.doesntexist", args[1]);
-        } else if (!character.hasSkill(skill)) {
-            fallout.getMessenger().sendMessage(player, "error.character.skills.nottaught", character.getCharacterName());
+        Perk perk = Perk.fromName(args[1]);
+        if (perk == null) {
+            fallout.getMessenger().sendMessage(player, "error.character.perks.doesntexist", args[1]);
+        } else if (!character.hasPerk(perk)) {
+            fallout.getMessenger().sendMessage(player, "error.character.perks.nottaught", character.getCharacterName());
         } else {
-            character.unteachSkill(skill);
+            character.unteachPerk(perk);
             Player taughtPlayer = Bukkit.getPlayerExact(character.getOwnerName());
             if (taughtPlayer != null) {
-                fallout.getMessenger().sendMessage(taughtPlayer, "character.forgetskill", skill.getName());
+                fallout.getMessenger().sendMessage(taughtPlayer, "character.forgetperk", perk.getName());
             }
-            fallout.getMessenger().sendMessage(player, "character.unteachskill", skill.getName(), character.getCharacterName());
+            fallout.getMessenger().sendMessage(player, "character.unteachperk", perk.getName(), character.getCharacterName());
         }
-        character.save(fallout.getConfigManager().getConfig(ConfigType.CHARACTER).getConfigurationSection("Characters." + character.getOwnerName()));
+        character.save(fallout.getConfigManager().getConfig(ConfigType.CHARACTER).getConfigurationSection("Characters." + character.getOwnerId()));
         fallout.getConfigManager().getConfigAccessor(ConfigType.CHARACTER).saveConfig();
     }
 }
