@@ -86,12 +86,12 @@ public class CharacterManager {
      * @param characterName The character's name.
      * @return The Character.
      */
-    public Character createCharacter(Player owner, String characterName) {
+    public Character createCharacter(Player owner, String characterName, Race race) {
         Validate.notNull(owner, "Cannot create a character with no owner");
         Validate.notNull(characterName, "Cannot create a character with no name");
 
         if (!charactersByOwner.containsKey(owner.getUniqueId())) {
-            Character character = new Character(fallout, owner, characterName);
+            Character character = new Character(fallout, owner, characterName, race);
             addCharacter(character);
             FileConfiguration characterConfig = fallout.getConfigManager().getConfig(ConfigType.CHARACTER);
             String path = "Characters." + owner.getUniqueId();

@@ -36,6 +36,7 @@ public class Character {
     private final String characterName;
     private final Map<Trait, Integer> traits = new HashMap<>();
     private final List<Perk> perks = new ArrayList<>();
+    private Race race;
 
     /**
      * Creates a Character from default settings.
@@ -44,11 +45,12 @@ public class Character {
      * @param owner     The owning player.
      * @param characterName The name of the character.
      */
-    public Character(Fallout fallout, Player owner, String characterName) {
+    public Character(Fallout fallout, Player owner, String characterName, Race race) {
         this.fallout = fallout;
         this.ownerName = owner.getName();
         this.ownerId = owner.getUniqueId();
         this.characterName = characterName;
+        this.race = race;
         for (Trait trait : Trait.class.getEnumConstants()) {
             traits.put(trait, 1);
         }
@@ -64,38 +66,22 @@ public class Character {
         this.fallout = fallout;
 
         String lastOwnerName = section.getString("ownerName");
-        // Updates the config to add the owner's UUID, updates the owner's name.
-        if (section.contains("ownerId")) {
-            ownerId = UUID.fromString(section.getString("ownerId"));
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (ownerId.equals(player.getUniqueId())) {
-                    lastOwnerName = player.getName();
-                    break;
-                }
+        ownerId = UUID.fromString(section.getString("ownerId"));
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (ownerId.equals(player.getUniqueId())) {
+                lastOwnerName = player.getName();
+                break;
             }
-        } else {
-            ownerId = Bukkit.getPlayerExact(lastOwnerName).getUniqueId();
-            section.set("ownerId", ownerId.toString());
         }
         this.ownerName = lastOwnerName;
-        characterName = section.getString("characterName");
+        this.characterName = section.getString("characterName");
+        this.race = Race.fromName(section.getString("race"));
         for (Trait trait : Trait.class.getEnumConstants()) {
             traits.put(trait, section.getInt(trait.getName()));
         }
-        // A check for old configs where perks are called skills
-        if (section.contains("skills")) {
-            List<String> perks = section.getStringList("skills");
-            section.set("skills", null);
-            section.set("perks", perks);
-        }
-        // A check for old configs without perks
-        if (section.contains("perks")) {
-            List<String> perkNames = section.getStringList("perks");
-            for (String perkName : perkNames) {
-                perks.add(Perk.fromName(perkName));
-            }
-        } else {
-            section.set("perks", perks);
+        List<String> perkNames = section.getStringList("perks");
+        for (String perkName : perkNames) {
+            perks.add(Perk.fromName(perkName));
         }
     }
 
@@ -124,6 +110,15 @@ public class Character {
      */
     public String getCharacterName() {
         return characterName;
+    }
+
+    /**
+     * Gets the character's race.
+     *
+     * @return The character's race.
+     */
+    public Race getRace() {
+        return race;
     }
 
     /**
@@ -205,6 +200,7 @@ public class Character {
         section.set("ownerName", ownerName);
         section.set("ownerId", ownerId.toString());
         section.set("characterName", characterName);
+        section.set("race", race.getName());
         for (Trait trait : Trait.class.getEnumConstants()) {
             section.set(trait.getName(), traits.get(trait));
         }
