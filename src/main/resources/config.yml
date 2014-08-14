@@ -2,3 +2,7 @@ Debug: false
 DiceSides: 20
 PreventMobsDroppingExp: true
 PreventCraftingDiamondArmor: true
+colors:
+  primary: YELLOW
+  secondary: GRAY
+  highlights: RED

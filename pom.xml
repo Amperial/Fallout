@@ -4,7 +4,7 @@
 
     <groupId>me.ampayne2</groupId>
     <artifactId>Fallout</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
     <inceptionYear>2013</inceptionYear>
     <name>Fallout</name>
     <description>Fallout Plugin for Bukkit.</description>
@@ -23,6 +23,10 @@
             <id>Plugin Metrics</id>
             <url>http://repo.mcstats.org/content/repositories/public</url>
         </repository>
+        <repository>
+            <id>greatman-repo</id>
+            <url>http://repo.greatmancode.com/content/groups/public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -32,6 +36,11 @@
             <version>1.7.2-R0.3-SNAPSHOT</version>
             <type>jar</type>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>ninja.amp</groupId>
+            <artifactId>amplib</artifactId>
+            <version>1.1</version>
         </dependency>
     </dependencies>
 
@@ -95,7 +104,7 @@
                     <properties>
                         <name>${project.name}</name>
                         <url>http://github.com/ampayne2/Fallout/</url>
-                        <copyright>Copyright (c) ${project.inceptionYear}-2013</copyright>
+                        <copyright>Copyright (c) ${project.inceptionYear}-2014</copyright>
                     </properties>
                     <includes>
                         <include>src/main/java/**</include>
@@ -129,9 +138,9 @@
                         </goals>
                         <configuration>
                             <artifactSet>
-                                <excludes>
-                                    <exclude>org.bukkit:bukkit</exclude>
-                                </excludes>
+                                <includes>
+                                    <include>ninja.amp:amplib</include>
+                                </includes>
                             </artifactSet>
                         </configuration>
                     </execution>
