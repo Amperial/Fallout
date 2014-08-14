@@ -107,6 +107,10 @@ public class CharacterManager {
             characterConfig.createSection(path);
             character.save(characterConfig.getConfigurationSection(path));
             fallout.getConfigManager().getConfigAccessor(ConfigType.CHARACTER).saveConfig();
+
+            if (fallout.getConfig().getBoolean("NicknamePlayers", true)) {
+                fallout.getServer().dispatchCommand(fallout.getServer().getConsoleSender(), "nick " + owner.getName() + " " + characterName);
+            }
             return character;
         }
         return null;
@@ -135,6 +139,10 @@ public class CharacterManager {
         fallout.getConfigManager().getConfigAccessor(ConfigType.CHARACTER).saveConfig();
         charactersByOwner.remove(character.getOwnerId());
         charactersByName.remove(character.getCharacterName());
+
+        if (fallout.getConfig().getBoolean("NicknamePlayers", true)) {
+            fallout.getServer().dispatchCommand(fallout.getServer().getConsoleSender(), "nick " + character.getOwnerName() + " " + character.getCharacterName());
+        }
         character.destroy();
     }
 
