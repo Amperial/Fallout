@@ -27,6 +27,7 @@ import ninja.amp.amplib.command.commands.ReloadCommand;
 import ninja.amp.amplib.messenger.DefaultMessage;
 import ninja.amp.amplib.messenger.Messenger;
 import ninja.amp.fallout.characters.CharacterManager;
+import ninja.amp.fallout.commands.PrivateRoll;
 import ninja.amp.fallout.commands.Roll;
 import ninja.amp.fallout.commands.Whois;
 import ninja.amp.fallout.commands.character.Create;
@@ -89,6 +90,7 @@ public class Fallout extends AmpJavaPlugin {
                 .addChildCommand(reload)
                 .addChildCommand(new Whois(this))
                 .addChildCommand(new Roll(this))
+                .addChildCommand(new PrivateRoll(this))
                 .addChildCommand(character);
         fallout.setPermission(new Permission("fallout.all", PermissionDefault.OP));
         getCommandController().addCommand(fallout);
