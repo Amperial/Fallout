@@ -69,6 +69,9 @@ public class Roll extends Command {
                     Special armorModifier = ArmorMaterial.getArmorMaterial(player.getInventory().getHelmet().getType()).getRollModifier();
                     roll += armorModifier.get(trait);
                 }
+                if (roll < 0) {
+                    roll = 0;
+                }
                 fallout.getMessenger().sendMessage(fallout.getServer(), FOMessage.ROLL_BROADCAST, character.getCharacterName(), roll, trait.getName());
             } else {
                 fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_NOTOWNER);
