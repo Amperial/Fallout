@@ -32,7 +32,9 @@ public enum FOMessage implements Message {
     CHARACTER_NAMETAKEN("Character.NameTaken", "&4A character of that name already exists!"),
     CHARACTER_NOTOWNER("Character.NotOwner", "&4You do not have a character!"),
     CHARACTER_DOESNTEXIST("Character.DoesntExist", "&4A character of that name doesn't exist!"),
+
     RACE_DOESNTEXIST("Race.DoesntExist", "&4The race %s doesn't exist!"),
+    RACE_ONLYLEATHER("Race.OnlyLeather", "&4Your race can only wear leather armor!"),
 
     SPECIAL_SET("Special.Set", "Set %s's SPECIAL."),
     SPECIAL_LIST("Special.List", "%s's SPECIAL is %s."),
