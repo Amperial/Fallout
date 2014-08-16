@@ -18,17 +18,34 @@
  */
 package ninja.amp.fallout.utils;
 
+import ninja.amp.fallout.characters.Special;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
 /**
  * Materials of armor.
  */
 public enum ArmorMaterial {
-    LEATHER,
-    CHAINMAIL,
-    IRON,
-    GOLD,
-    DIAMOND;
+    LEATHER(new Special(0, 0, 0, 0, 0, 0, 0)),
+    CHAINMAIL(new Special(0, 0, 5, 0, 0, -5, 0)),
+    IRON(new Special(0, 0, 10, 0, 0, -5, 0)),
+    GOLD(new Special(0, 0, 0, 0, 0, 0, 0)),
+    DIAMOND(new Special(10, 0, 15, 0, 0, -15, 0));
+
+    private final Special rollModifier;
+
+    private ArmorMaterial(Special rollModifier) {
+        this.rollModifier = rollModifier;
+    }
+
+    /**
+     * Gets the roll modifier of the ArmorMaterial.
+     *
+     * @return The ArmorMaterial's roll modifier.
+     */
+    public Special getRollModifier() {
+        return rollModifier;
+    }
 
     /**
      * Gets the ArmorMaterial of a piece of armor.
@@ -43,5 +60,26 @@ public enum ArmorMaterial {
             }
         }
         return null;
+    }
+
+    /**
+     * Checks if a player is wearing a full set of armor of the same type.
+     *
+     * @param player The player.
+     * @return True if the player is wearing a full set of armor of the same type, else false.
+     */
+    public static boolean isWearingFullSet(Player player) {
+        if (ArmorType.HELMET.canEquip(player) || ArmorType.CHESTPLATE.canEquip(player) || ArmorType.LEGGINGS.canEquip(player) || ArmorType.BOOTS.canEquip(player)) {
+            return false;
+        }
+        ArmorMaterial material = getArmorMaterial(player.getInventory().getHelmet().getType());
+        if (!getArmorMaterial(player.getInventory().getChestplate().getType()).equals(material)) {
+            return false;
+        } else if (!getArmorMaterial(player.getInventory().getLeggings().getType()).equals(material)) {
+            return false;
+        } else if (!getArmorMaterial(player.getInventory().getBoots().getType()).equals(material)) {
+            return false;
+        }
+        return true;
     }
 }

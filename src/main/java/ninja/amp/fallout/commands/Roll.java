@@ -22,8 +22,10 @@ import ninja.amp.amplib.command.Command;
 import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.characters.Character;
 import ninja.amp.fallout.characters.CharacterManager;
+import ninja.amp.fallout.characters.Special;
 import ninja.amp.fallout.characters.Trait;
 import ninja.amp.fallout.message.FOMessage;
+import ninja.amp.fallout.utils.ArmorMaterial;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
@@ -61,13 +63,13 @@ public class Roll extends Command {
             CharacterManager characterManager = fallout.getCharacterManager();
             if (characterManager.isOwner(playerId)) {
                 Character character = characterManager.getCharacterByOwner(playerId);
-                int rolls = character.getSpecial().get(trait);
-                int sides = fallout.getConfig().getInt("DiceSides", 20);
-                int total = 0;
-                for (int i = 0; i < rolls; i++) {
-                    total += RANDOM.nextInt(sides + 1) + 1;
+                int roll = RANDOM.nextInt(fallout.getConfig().getInt("DiceSides", 20) + 1) + 1;
+                roll += Trait.getRollModifier(character.getSpecial().get(trait));
+                if (ArmorMaterial.isWearingFullSet(player)) {
+                    Special armorModifier = ArmorMaterial.getArmorMaterial(player.getInventory().getHelmet().getType()).getRollModifier();
+                    roll += armorModifier.get(trait);
                 }
-                fallout.getMessenger().sendMessage(fallout.getServer(), FOMessage.ROLL_BROADCAST, character.getCharacterName(), "" + total, trait.getName());
+                fallout.getMessenger().sendMessage(fallout.getServer(), FOMessage.ROLL_BROADCAST, character.getCharacterName(), roll, trait.getName());
             } else {
                 fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_NOTOWNER);
             }
