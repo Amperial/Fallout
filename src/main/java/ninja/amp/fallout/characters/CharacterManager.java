@@ -141,7 +141,7 @@ public class CharacterManager {
         charactersByName.remove(character.getCharacterName());
 
         if (fallout.getConfig().getBoolean("NicknamePlayers", true)) {
-            fallout.getServer().dispatchCommand(fallout.getServer().getConsoleSender(), "nick " + character.getOwnerName() + " " + character.getCharacterName());
+            fallout.getServer().dispatchCommand(fallout.getServer().getConsoleSender(), "nick " + character.getOwnerName() + " off");
         }
         character.destroy();
     }
