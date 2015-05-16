@@ -1,7 +1,7 @@
 /*
  * This file is part of Fallout.
  *
- * Copyright (c) 2013-2014 <http://github.com/ampayne2/Fallout//>
+ * Copyright (c) 2013-2015 <http://github.com/ampayne2/Fallout//>
  *
  * Fallout is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -50,17 +50,17 @@ import java.util.UUID;
  * Handles various fallout events.
  */
 public class FOListener implements Listener {
-    private Fallout fallout;
+    private Fallout plugin;
 
     /**
      * Creates a new FOListener.
      *
-     * @param fallout The {@link Fallout} instance.
+     * @param plugin The {@link Fallout} instance.
      */
-    public FOListener(Fallout fallout) {
-        this.fallout = fallout;
+    public FOListener(Fallout plugin) {
+        this.plugin = plugin;
 
-        fallout.getServer().getPluginManager().registerEvents(this, fallout);
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     /**
@@ -68,7 +68,7 @@ public class FOListener implements Listener {
      */
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        fallout.getCharacterManager().loadCharacter(event.getPlayer());
+        plugin.getCharacterManager().loadCharacter(event.getPlayer());
     }
 
     /**
@@ -76,7 +76,7 @@ public class FOListener implements Listener {
      */
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        CharacterManager characterManager = fallout.getCharacterManager();
+        CharacterManager characterManager = plugin.getCharacterManager();
         Character character = characterManager.getCharacterByOwner(event.getPlayer().getUniqueId());
         if (character != null) {
             characterManager.unloadCharacter(character);
@@ -91,7 +91,7 @@ public class FOListener implements Listener {
         if (event.getPlayer().isSneaking() && event.getRightClicked() instanceof Player) {
             UUID clickedId = event.getRightClicked().getUniqueId();
 
-            CharacterManager characterManager = fallout.getCharacterManager();
+            CharacterManager characterManager = plugin.getCharacterManager();
             if (characterManager.isOwner(clickedId)) {
                 event.getPlayer().performCommand("fo character listspecial " + characterManager.getCharacterByOwner(clickedId).getCharacterName());
             }
@@ -104,29 +104,29 @@ public class FOListener implements Listener {
     @SuppressWarnings("deprecation")
     @EventHandler
     public void onPlayerClickArmor(PlayerInteractEvent event) {
-        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            Player player = event.getPlayer();
-            ItemStack itemStack = player.getItemInHand();
-            if (itemStack != null) {
-                Material material = itemStack.getType();
-                if (ArmorType.isArmor(material) && ArmorType.getArmorType(material).canEquip(player)) {
-                    UUID playerId = player.getUniqueId();
-                    CharacterManager characterManager = fallout.getCharacterManager();
-                    if (characterManager.isOwner(playerId)) {
-                        Character character = characterManager.getCharacterByOwner(playerId);
-                        if (!ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.LEATHER) && character.getRace().equals(Race.SUPER_MUTANT)) { // Super Mutants can only wear leather armor
-                            event.setCancelled(true);
-                            player.updateInventory();
-                            fallout.getMessenger().sendMessage(player, FOMessage.RACE_ONLYLEATHER);
-                        } else if (ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.DIAMOND) && !character.hasPerk(Perk.ARMOR)) { // Wearing diamond armor requires the ARMOR perk
-                            event.setCancelled(true);
-                            player.updateInventory();
-                            fallout.getMessenger().sendMessage(player, FOMessage.PERK_MISSINGREQUIRED, Perk.ARMOR.getName());
-                        }
-                    }
-                }
-            }
-        }
+//        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+//            Player player = event.getPlayer();
+//            ItemStack itemStack = player.getItemInHand();
+//            if (itemStack != null) {
+//                Material material = itemStack.getType();
+//                if (ArmorType.isArmor(material) && ArmorType.getArmorType(material).canEquip(player)) {
+//                    UUID playerId = player.getUniqueId();
+//                    CharacterManager characterManager = plugin.getCharacterManager();
+//                    if (characterManager.isOwner(playerId)) {
+//                        Character character = characterManager.getCharacterByOwner(playerId);
+//                        if (!ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.LEATHER) && character.getRace().equals(Race.SUPER_MUTANT)) { // Super Mutants can only wear leather armor
+//                            event.setCancelled(true);
+//                            player.updateInventory();
+//                            plugin.getMessenger().sendMessage(player, FOMessage.RACE_ONLYLEATHER);
+//                        } else if (ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.DIAMOND) && !character.hasPerk(Perk.ARMOR)) { // Wearing diamond armor requires the ARMOR perk
+//                            event.setCancelled(true);
+//                            player.updateInventory();
+//                            plugin.getMessenger().sendMessage(player, FOMessage.PERK_MISSINGREQUIRED, Perk.ARMOR.getName());
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
 
     /**
@@ -134,38 +134,38 @@ public class FOListener implements Listener {
      */
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (event.getWhoClicked() instanceof Player) {
-            Player player = (Player) event.getWhoClicked();
-            ClickType clickType = event.getClick();
-            if (event.isLeftClick() || event.isRightClick()) {
-                ItemStack itemStack = null;
-                if (event.isShiftClick()) {
-                    itemStack = event.getCurrentItem(); // Shift clicking will move the item in the slot
-                } else if (event.getSlotType() == InventoryType.SlotType.ARMOR) {
-                    itemStack = event.getCursor(); // Normal clicking will move the item in the cursor
-                }
-                if (itemStack != null) {
-                    Material material = itemStack.getType();
-                    if (ArmorType.isArmor(material)) {
-                        if (event.isShiftClick() && !ArmorType.getArmorType(material).canEquip(player)) { // The armor won't actually go into the armor slot, don't cancel
-                            return;
-                        }
-                        UUID playerId = player.getUniqueId();
-                        CharacterManager characterManager = fallout.getCharacterManager();
-                        if (characterManager.isOwner(playerId)) {
-                            Character character = characterManager.getCharacterByOwner(playerId);
-                            if (!ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.LEATHER) && character.getRace().equals(Race.SUPER_MUTANT)) { // Super Mutants can only wear leather armor
-                                event.setCancelled(true);
-                                fallout.getMessenger().sendMessage(player, FOMessage.RACE_ONLYLEATHER);
-                            } else if (ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.DIAMOND) && !character.hasPerk(Perk.ARMOR)) { // Wearing diamond armor requires the ARMOR perk
-                                event.setCancelled(true);
-                                fallout.getMessenger().sendMessage(player, FOMessage.PERK_MISSINGREQUIRED, Perk.ARMOR.getName());
-                            }
-                        }
-                    }
-                }
-            }
-        }
+//        if (event.getWhoClicked() instanceof Player) {
+//            Player player = (Player) event.getWhoClicked();
+//            ClickType clickType = event.getClick();
+//            if (event.isLeftClick() || event.isRightClick()) {
+//                ItemStack itemStack = null;
+//                if (event.isShiftClick()) {
+//                    itemStack = event.getCurrentItem(); // Shift clicking will move the item in the slot
+//                } else if (event.getSlotType() == InventoryType.SlotType.ARMOR) {
+//                    itemStack = event.getCursor(); // Normal clicking will move the item in the cursor
+//                }
+//                if (itemStack != null) {
+//                    Material material = itemStack.getType();
+//                    if (ArmorType.isArmor(material)) {
+//                        if (event.isShiftClick() && !ArmorType.getArmorType(material).canEquip(player)) { // The armor won't actually go into the armor slot, don't cancel
+//                            return;
+//                        }
+//                        UUID playerId = player.getUniqueId();
+//                        CharacterManager characterManager = plugin.getCharacterManager();
+//                        if (characterManager.isOwner(playerId)) {
+//                            Character character = characterManager.getCharacterByOwner(playerId);
+//                            if (!ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.LEATHER) && character.getRace().equals(Race.SUPER_MUTANT)) { // Super Mutants can only wear leather armor
+//                                event.setCancelled(true);
+//                                plugin.getMessenger().sendMessage(player, FOMessage.RACE_ONLYLEATHER);
+//                            } else if (ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.DIAMOND) && !character.hasPerk(Perk.ARMOR)) { // Wearing diamond armor requires the ARMOR perk
+//                                event.setCancelled(true);
+//                                plugin.getMessenger().sendMessage(player, FOMessage.PERK_MISSINGREQUIRED, Perk.ARMOR.getName());
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
 
     /**
@@ -173,24 +173,24 @@ public class FOListener implements Listener {
      */
     @EventHandler
     public void onInventoryDrag(InventoryDragEvent event) {
-        if (event.getWhoClicked() instanceof Player && event.getOldCursor() != null) {
-            Material material = event.getOldCursor().getType();
-            if (ArmorType.isArmor(material)) {
-                Player player = (Player) event.getWhoClicked();
-                UUID playerId = player.getUniqueId();
-                CharacterManager characterManager = fallout.getCharacterManager();
-                if (characterManager.isOwner(playerId)) {
-                    Character character = characterManager.getCharacterByOwner(playerId);
-                    if (!ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.LEATHER) && character.getRace().equals(Race.SUPER_MUTANT)) { // Super Mutants can only wear leather armor
-                        event.setCancelled(true);
-                        fallout.getMessenger().sendMessage(player, FOMessage.RACE_ONLYLEATHER);
-                    } else if (ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.DIAMOND) && !character.hasPerk(Perk.ARMOR)) { // Wearing diamond armor requires the ARMOR perk
-                        event.setCancelled(true);
-                        fallout.getMessenger().sendMessage(player, FOMessage.PERK_MISSINGREQUIRED, Perk.ARMOR.getName());
-                    }
-                }
-            }
-        }
+//        if (event.getWhoClicked() instanceof Player && event.getOldCursor() != null) {
+//            Material material = event.getOldCursor().getType();
+//            if (ArmorType.isArmor(material)) {
+//                Player player = (Player) event.getWhoClicked();
+//                UUID playerId = player.getUniqueId();
+//                CharacterManager characterManager = plugin.getCharacterManager();
+//                if (characterManager.isOwner(playerId)) {
+//                    Character character = characterManager.getCharacterByOwner(playerId);
+//                    if (!ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.LEATHER) && character.getRace().equals(Race.SUPER_MUTANT)) { // Super Mutants can only wear leather armor
+//                        event.setCancelled(true);
+//                        plugin.getMessenger().sendMessage(player, FOMessage.RACE_ONLYLEATHER);
+//                    } else if (ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.DIAMOND) && !character.hasPerk(Perk.ARMOR)) { // Wearing diamond armor requires the ARMOR perk
+//                        event.setCancelled(true);
+//                        plugin.getMessenger().sendMessage(player, FOMessage.PERK_MISSINGREQUIRED, Perk.ARMOR.getName());
+//                    }
+//                }
+//            }
+//        }
     }
 
     /**
@@ -198,7 +198,7 @@ public class FOListener implements Listener {
      */
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
-        if (event.getEntity() instanceof Creature && fallout.getConfig().getBoolean("PreventMobsDroppingExp", true)) {
+        if (event.getEntity() instanceof Creature && plugin.getConfig().getBoolean("PreventMobsDroppingExp", true)) {
             event.setDroppedExp(0);
         }
     }
@@ -208,7 +208,7 @@ public class FOListener implements Listener {
      */
     @EventHandler
     public void onDiamondArmorCraft(CraftItemEvent event) {
-        if (fallout.getConfig().getBoolean("PreventCraftingDiamondArmor", true)) {
+        if (plugin.getConfig().getBoolean("PreventCraftingDiamondArmor", true)) {
             Material material = event.getRecipe().getResult().getType();
             if (ArmorType.isArmor(material) && ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.DIAMOND)) {
                 event.setCancelled(true);
@@ -221,6 +221,5 @@ public class FOListener implements Listener {
      */
     public void destroy() {
         HandlerList.unregisterAll(this);
-        fallout = null;
     }
 }

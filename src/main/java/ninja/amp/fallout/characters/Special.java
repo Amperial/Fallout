@@ -1,7 +1,7 @@
 /*
  * This file is part of Fallout.
  *
- * Copyright (c) 2013-2014 <http://github.com/ampayne2/Fallout//>
+ * Copyright (c) 2013-2015 <http://github.com/ampayne2/Fallout//>
  *
  * Fallout is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -84,6 +84,17 @@ public class Special {
      */
     public void set(Trait trait, int value) {
         traits.put(trait, value);
+    }
+
+    /**
+     * Copies the values of another special.
+     *
+     * @param special The special.
+     */
+    public void set(Special special) {
+        for (Trait trait : special.getTraits().keySet()) {
+            traits.put(trait, special.get(trait));
+        }
     }
 
     /**

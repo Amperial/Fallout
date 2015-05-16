@@ -16,22 +16,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.config;
+package ninja.amp.fallout.menus.events;
 
 /**
- * An enumeration of the fallout custom config types.
+ * Handles {@link ninja.amp.fallout.menus.events.ItemClickEvent}s.
  */
-public enum ConfigType {
-    MESSAGE("Messages.yml"),
-    CHARACTER("Characters.yml");
+public interface ItemClickEventHandler {
 
-    private final String fileName;
-
-    private ConfigType(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
+    /**
+     * Called when an Item in the {@link ninja.amp.fallout.menus.ItemMenu} is clicked.
+     *
+     * @param event The ItemClickEvent.
+     */
+    void onItemClick(ItemClickEvent event);
 }

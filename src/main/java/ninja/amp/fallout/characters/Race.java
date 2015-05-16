@@ -1,7 +1,7 @@
 /*
  * This file is part of Fallout.
  *
- * Copyright (c) 2013-2014 <http://github.com/ampayne2/Fallout//>
+ * Copyright (c) 2013-2015 <http://github.com/ampayne2/Fallout//>
  *
  * Fallout is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,9 +26,10 @@ import java.util.Map;
  * Character races used in fallout.
  */
 public enum Race {
-    HUMAN("Human", new Special(3, 3, 3, 3, 3, 3, 3), new Special(10, 10, 10, 10, 10, 10, 10)),
+    WASTELANDER("Human", new Special(3, 3, 3, 3, 3, 3, 3), new Special(10, 10, 10, 10, 10, 10, 10)),
     GHOUL("Ghoul", new Special(1, 4, 1, 1, 4, 1, 5), new Special(6, 13, 9, 7, 10, 8, 10)),
-    SUPER_MUTANT("SuperMutant", new Special(5, 1, 4, 1, 1, 1, 1), new Special(13, 10, 12, 4, 5, 10, 10));
+    SUPER_MUTANT("SuperMutant", new Special(5, 1, 4, 1, 1, 1, 1), new Special(13, 10, 12, 4, 5, 10, 10)),
+    VAULT_DWELLER("VaultDweller", new Special(3, 3, 3, 3, 3, 3, 3), new Special(10, 10, 10, 10, 10, 10, 10));
 
     private final String name;
     private final Special min;

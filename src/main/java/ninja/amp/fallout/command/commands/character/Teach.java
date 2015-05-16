@@ -1,7 +1,7 @@
 /*
  * This file is part of Fallout.
  *
- * Copyright (c) 2013-2014 <http://github.com/ampayne2/Fallout//>
+ * Copyright (c) 2013-2015 <http://github.com/ampayne2/Fallout//>
  *
  * Fallout is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,13 +16,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.commands.character;
+package ninja.amp.fallout.command.commands.character;
 
-import ninja.amp.amplib.command.Command;
 import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.characters.Character;
 import ninja.amp.fallout.characters.CharacterManager;
 import ninja.amp.fallout.characters.Perk;
+import ninja.amp.fallout.command.Command;
 import ninja.amp.fallout.config.ConfigType;
 import ninja.amp.fallout.message.FOMessage;
 import org.bukkit.Bukkit;
@@ -35,52 +35,50 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A command that unteaches a player a skill.
+ * A command that teaches a character a skill.
  */
-public class Unteach extends Command {
-    private final Fallout fallout;
+public class Teach extends Command {
 
-    public Unteach(Fallout fallout) {
-        super(fallout, "unteach");
-        setDescription("Unteaches a character a perk.");
-        setCommandUsage("/fo character unteach <character> <perk>");
-        setPermission(new Permission("fallout.character.unteach", PermissionDefault.OP));
+    public Teach(Fallout plugin) {
+        super(plugin, "teach");
+        setDescription("Teaches a character a perk.");
+        setCommandUsage("/fo character teach <character> <perk>");
+        setPermission(new Permission("fallout.character.teach", PermissionDefault.OP));
         setArgumentRange(2, 2);
         setPlayerOnly(false);
-        this.fallout = fallout;
     }
 
     @Override
     public void execute(String command, CommandSender sender, String[] args) {
         Character character;
-        CharacterManager characterManager = fallout.getCharacterManager();
+        CharacterManager characterManager = plugin.getCharacterManager();
         if (characterManager.isCharacter(args[0])) {
             character = characterManager.getCharacterByName(args[0]);
         } else {
-            fallout.getMessenger().sendMessage(sender, FOMessage.CHARACTER_DOESNTEXIST);
+            plugin.getMessenger().sendMessage(sender, FOMessage.CHARACTER_DOESNTEXIST);
             return;
         }
         Perk perk = Perk.fromName(args[1]);
         if (perk == null) {
-            fallout.getMessenger().sendMessage(sender, FOMessage.PERK_DOESNTEXIST, args[1]);
-        } else if (!character.hasPerk(perk)) {
-            fallout.getMessenger().sendMessage(sender, FOMessage.PERK_NOTTAUGHT, character.getCharacterName());
+            plugin.getMessenger().sendMessage(sender, FOMessage.PERK_DOESNTEXIST, args[1]);
+        } else if (character.hasPerk(perk)) {
+            plugin.getMessenger().sendMessage(sender, FOMessage.PERK_ALREADYTAUGHT, character.getCharacterName());
         } else {
-            character.unteachPerk(perk);
+            character.teachPerk(perk);
             Player taughtPlayer = Bukkit.getPlayerExact(character.getOwnerName());
             if (taughtPlayer != null) {
-                fallout.getMessenger().sendMessage(taughtPlayer, FOMessage.PERK_FORGET, perk.getName());
+                plugin.getMessenger().sendMessage(taughtPlayer, FOMessage.PERK_LEARN, perk.getName());
             }
-            fallout.getMessenger().sendMessage(sender, FOMessage.PERK_UNTEACH, perk.getName(), character.getCharacterName());
+            plugin.getMessenger().sendMessage(sender, FOMessage.PERK_TEACH, perk.getName(), character.getCharacterName());
         }
-        character.save(fallout.getConfigManager().getConfig(ConfigType.CHARACTER).getConfigurationSection("Characters." + character.getOwnerId()));
-        fallout.getConfigManager().getConfigAccessor(ConfigType.CHARACTER).saveConfig();
+        character.save(plugin.getConfigManager().getConfig(ConfigType.CHARACTER).getConfigurationSection("Characters." + character.getOwnerId()));
+        plugin.getConfigManager().getConfigAccessor(ConfigType.CHARACTER).saveConfig();
     }
 
     @Override
     public List<String> getTabCompleteList(String[] args) {
         if (args.length == 0) {
-            return fallout.getCharacterManager().getCharacterList();
+            return plugin.getCharacterManager().getCharacterList();
         } else if (args.length == 1) {
             return Perk.getPerkNames();
         } else {

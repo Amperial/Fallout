@@ -16,22 +16,24 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.config;
+package ninja.amp.fallout.menus.items;
+
+import ninja.amp.fallout.menus.events.ItemClickEvent;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 /**
- * An enumeration of the fallout custom config types.
+ * A {@link ninja.amp.fallout.menus.items.StaticMenuItem} that closes the {@link ninja.amp.fallout.menus.ItemMenu}.
  */
-public enum ConfigType {
-    MESSAGE("Messages.yml"),
-    CHARACTER("Characters.yml");
+public class CloseItem extends StaticMenuItem {
 
-    private final String fileName;
-
-    private ConfigType(String fileName) {
-        this.fileName = fileName;
+    public CloseItem() {
+        super(ChatColor.RED + "Close", new ItemStack(Material.RECORD_4));
     }
 
-    public String getFileName() {
-        return fileName;
+    @Override
+    public void onItemClick(ItemClickEvent event) {
+        event.setWillClose(true);
     }
 }

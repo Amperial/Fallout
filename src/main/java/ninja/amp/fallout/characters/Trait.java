@@ -1,7 +1,7 @@
 /*
  * This file is part of Fallout.
  *
- * Copyright (c) 2013-2014 <http://github.com/ampayne2/Fallout//>
+ * Copyright (c) 2013-2015 <http://github.com/ampayne2/Fallout//>
  *
  * Fallout is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,9 +19,7 @@
 package ninja.amp.fallout.characters;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * An enum of character traits used in fallout.
@@ -37,7 +35,6 @@ public enum Trait {
 
     private final String name;
     private static final List<String> traitNames;
-    private static final Map<Integer, Integer> rollModifiers = new HashMap<>();
 
     private Trait(String name) {
         this.name = name;
@@ -76,34 +73,10 @@ public enum Trait {
         return traitNames;
     }
 
-    /**
-     * Gets the roll modifier of a trait at a certain value.
-     *
-     * @param value The value.
-     * @return The roll modifier.
-     */
-    public static int getRollModifier(int value) {
-        return rollModifiers.containsKey(value) ? rollModifiers.get(value) : 0;
-    }
-
     static {
         traitNames = new ArrayList<>();
         for (Trait special : Trait.class.getEnumConstants()) {
             traitNames.add(special.getName());
         }
-
-        rollModifiers.put(1, -20);
-        rollModifiers.put(2, -10);
-        rollModifiers.put(3, 0);
-        rollModifiers.put(4, 1);
-        rollModifiers.put(5, 2);
-        rollModifiers.put(6, 3);
-        rollModifiers.put(7, 4);
-        rollModifiers.put(8, 5);
-        rollModifiers.put(9, 6);
-        rollModifiers.put(10, 7);
-        rollModifiers.put(11, 8);
-        rollModifiers.put(12, 9);
-        rollModifiers.put(13, 10);
     }
 }

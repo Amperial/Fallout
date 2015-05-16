@@ -16,39 +16,34 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.utils;
+package ninja.amp.fallout.menus;
 
-import java.util.Random;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 
 /**
- * Fallout utilities.
+ * Allows you to set the {@link ninja.amp.fallout.menus.ItemMenu} that created the Inventory as the Inventory's holder.
  */
-public final class FOUtils {
-    private static final Random RANDOM = new Random();
+public class MenuHolder implements InventoryHolder {
+    private ItemMenu menu;
+    private Inventory inventory;
 
-    private FOUtils() {
+    public MenuHolder(ItemMenu menu, Inventory inventory) {
+        this.menu = menu;
+        this.inventory = inventory;
     }
 
     /**
-     * Clamps a value between a minimum and maximum value.
+     * Gets the {@link ninja.amp.fallout.menus.ItemMenu} holding the Inventory.
      *
-     * @param value The value.
-     * @param min   The minimum value.
-     * @param max   The maximum value.
-     * @return The clamped value.
+     * @return The {@link ninja.amp.fallout.menus.ItemMenu} holding the Inventory.
      */
-    public static int clamp(int value, int min, int max) {
-        return Math.max(min, Math.min(max, value));
+    public ItemMenu getMenu() {
+        return menu;
     }
 
-    /**
-     * Returns a random int between min and max, inclusive.
-     *
-     * @param min The minimum value.
-     * @param max The maximum value.
-     * @return The random int.
-     */
-    public static int random(int min, int max) {
-        return RANDOM.nextInt((max - min) + 1) + min;
+    @Override
+    public Inventory getInventory() {
+        return inventory;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * This file is part of Fallout.
  *
- * Copyright (c) 2013-2014 <http://github.com/ampayne2/Fallout//>
+ * Copyright (c) 2013-2015 <http://github.com/ampayne2/Fallout//>
  *
  * Fallout is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,12 +18,22 @@
  */
 package ninja.amp.fallout.message;
 
-import ninja.amp.amplib.messenger.Message;
-
 /**
  * Messages in Fallout.
  */
-public enum FOMessage implements Message {
+public enum FOMessage {
+    PREFIX("Prefix", "&c[&eFallout&c] &e"),
+    RELOAD("Reload", "Reloaded Fallout."),
+
+    COMMAND_NOTAPLAYER("Command.NotAPlayer", "&4You must be a player to use this command."),
+    COMMAND_NOPERMISSION("Command.NoPermission", "&4You do not have permission to use this command."),
+    COMMAND_INVALID("Command.Invalid", "&4%s is not a sub command of %s."),
+    COMMAND_USAGE("Command.Usage", "&4Usage: %s"),
+
+    ERROR_NUMBERFORMAT("Error.NumberFormat", "&4Value must be a positive integer."),
+    ERROR_BOOLEANFORMAT("Error.BooleanFormat", "&4Value must be true or false."),
+    ERROR_MODIFIERSYNTAX("Error.ModifierSyntax", "&4Modifier must be appended with +integer or -integer"),
+
     CHARACTER_CREATE("Character.Create", "Created a character named %s."),
     CHARACTER_DELETE("Character.Delete", "Deleted your character."),
     CHARACTER_NAME("Character.Name", "%s's real name is %s."),
@@ -51,9 +61,9 @@ public enum FOMessage implements Message {
     PERK_NOPERKS("Perk.NoPerks", "&4%s has no perks."),
     PERK_MISSINGREQUIRED("Perk.MissingRequired", "&4You are missing the required perk %s."),
 
-    ROLL_MESSAGE("Roll.Message", "You rolled a %s in %s."),
-    ROLL_BROADCAST("Roll.Broadcast", "%s rolled a %s in %s."),
-    ROLL_NOTATRAIT("Roll.NotATrait", "&4%s is not a SPECIAL trait.");
+    ROLL_MESSAGE("Roll.Message", "You rolled a %s in %s with a modifier of %s. %s!"),
+    ROLL_BROADCAST("Roll.Broadcast", "%s rolled a %s in %s with a modifier of %s. %s!"),
+    ROLL_CANTROLL("Roll.CantRoll", "&4%s is not a Skill or SPECIAL trait.");
 
     private String message;
     private final String path;
@@ -65,27 +75,22 @@ public enum FOMessage implements Message {
         this.defaultMessage = defaultMessage;
     }
 
-    @Override
     public String getMessage() {
         return message;
     }
 
-    @Override
     public void setMessage(String message) {
         this.message = message;
     }
 
-    @Override
     public String getPath() {
         return path;
     }
 
-    @Override
     public String getDefault() {
         return defaultMessage;
     }
 
-    @Override
     public String toString() {
         return message;
     }

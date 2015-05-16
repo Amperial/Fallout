@@ -16,22 +16,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.config;
+package ninja.amp.fallout.menus.items;
+
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 /**
- * An enumeration of the fallout custom config types.
+ * A {@link ninja.amp.fallout.menus.items.MenuItem} whose icon never changes.
  */
-public enum ConfigType {
-    MESSAGE("Messages.yml"),
-    CHARACTER("Characters.yml");
+public class StaticMenuItem extends MenuItem {
 
-    private final String fileName;
-
-    private ConfigType(String fileName) {
-        this.fileName = fileName;
+    public StaticMenuItem(String displayName, ItemStack icon, String... lore) {
+        super(displayName, icon, lore);
+        setNameAndLore(getIcon(), getDisplayName(), getLore());
     }
 
-    public String getFileName() {
-        return fileName;
+    @Override
+    public ItemStack getFinalIcon(Player player) {
+        return getIcon();
     }
 }

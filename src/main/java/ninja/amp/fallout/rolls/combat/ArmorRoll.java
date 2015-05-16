@@ -16,22 +16,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.config;
+package ninja.amp.fallout.rolls.combat;
 
-/**
- * An enumeration of the fallout custom config types.
- */
-public enum ConfigType {
-    MESSAGE("Messages.yml"),
-    CHARACTER("Characters.yml");
+import ninja.amp.fallout.utils.FOArmor;
+import ninja.amp.fallout.utils.FOUtils;
 
-    private final String fileName;
+public class ArmorRoll {
+    private final FOArmor armorType;
+    private final DamageType damageType;
 
-    private ConfigType(String fileName) {
-        this.fileName = fileName;
+    public ArmorRoll(FOArmor armorType, DamageType damageType) {
+        this.armorType = armorType;
+        this.damageType = damageType;
     }
 
-    public String getFileName() {
-        return fileName;
+    public int roll() {
+        int roll = FOUtils.random(1, 6);
+        return roll;
+        //return armorType.canBlock(damageType, roll);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * This file is part of Fallout.
  *
- * Copyright (c) 2013-2014 <http://github.com/ampayne2/Fallout//>
+ * Copyright (c) 2013-2015 <http://github.com/ampayne2/Fallout//>
  *
  * Fallout is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,7 +18,6 @@
  */
 package ninja.amp.fallout.utils;
 
-import ninja.amp.fallout.characters.Special;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -26,25 +25,25 @@ import org.bukkit.entity.Player;
  * Materials of armor.
  */
 public enum ArmorMaterial {
-    LEATHER(new Special(0, 0, 0, 0, 0, 0, 0)),
-    CHAINMAIL(new Special(0, 0, 5, 0, 0, -5, 0)),
-    IRON(new Special(0, 0, 10, 0, 0, -5, 0)),
-    GOLD(new Special(0, 0, 0, 0, 0, 0, 0)),
-    DIAMOND(new Special(10, 0, 15, 0, 0, -15, 0));
+    LEATHER(FOArmor.LEATHER),
+    CHAINMAIL(FOArmor.COMBAT),
+    IRON(FOArmor.RIOT),
+    GOLD(FOArmor.ENVIRONMENTAL),
+    DIAMOND(FOArmor.POWER);
 
-    private final Special rollModifier;
+    private final FOArmor foArmor;
 
-    private ArmorMaterial(Special rollModifier) {
-        this.rollModifier = rollModifier;
+    private ArmorMaterial(FOArmor foArmor) {
+        this.foArmor = foArmor;
     }
 
     /**
-     * Gets the roll modifier of the ArmorMaterial.
+     * Gets the fallout version of an armor material.
      *
-     * @return The ArmorMaterial's roll modifier.
+     * @return The FOArmor.
      */
-    public Special getRollModifier() {
-        return rollModifier;
+    public FOArmor getFOVersion() {
+        return foArmor;
     }
 
     /**

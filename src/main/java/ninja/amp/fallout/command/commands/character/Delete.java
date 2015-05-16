@@ -1,7 +1,7 @@
 /*
  * This file is part of Fallout.
  *
- * Copyright (c) 2013-2014 <http://github.com/ampayne2/Fallout//>
+ * Copyright (c) 2013-2015 <http://github.com/ampayne2/Fallout//>
  *
  * Fallout is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.commands.character;
+package ninja.amp.fallout.command.commands.character;
 
-import ninja.amp.amplib.command.Command;
 import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.characters.CharacterManager;
+import ninja.amp.fallout.command.Command;
 import ninja.amp.fallout.message.FOMessage;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -31,25 +31,23 @@ import org.bukkit.permissions.PermissionDefault;
  * A command that deletes the senders fallout character.
  */
 public class Delete extends Command {
-    private final Fallout fallout;
 
-    public Delete(Fallout fallout) {
-        super(fallout, "delete");
+    public Delete(Fallout plugin) {
+        super(plugin, "delete");
         setDescription("Deletes your fallout character.");
         setCommandUsage("/fo character delete");
         setPermission(new Permission("fallout.character.delete", PermissionDefault.TRUE));
-        this.fallout = fallout;
     }
 
     @Override
     public void execute(String command, CommandSender sender, String[] args) {
         Player player = (Player) sender;
-        CharacterManager characterManager = fallout.getCharacterManager();
+        CharacterManager characterManager = plugin.getCharacterManager();
         if (characterManager.isOwner(player.getUniqueId())) {
             characterManager.removeCharacter(characterManager.getCharacterByOwner(player.getUniqueId()));
-            fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_DELETE);
+            plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_DELETE);
         } else {
-            fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_NOTOWNER);
+            plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_NOTOWNER);
         }
     }
 }

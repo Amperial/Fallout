@@ -16,22 +16,24 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.config;
+package ninja.amp.fallout.menus.items;
+
+import ninja.amp.fallout.menus.events.ItemClickEvent;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 /**
- * An enumeration of the fallout custom config types.
+ * A {@link ninja.amp.fallout.menus.items.StaticMenuItem} that opens the {@link ninja.amp.fallout.menus.ItemMenu}'s parent menu if it exists.
  */
-public enum ConfigType {
-    MESSAGE("Messages.yml"),
-    CHARACTER("Characters.yml");
+public class BackItem extends StaticMenuItem {
 
-    private final String fileName;
-
-    private ConfigType(String fileName) {
-        this.fileName = fileName;
+    public BackItem() {
+        super(ChatColor.RED + "Back", new ItemStack(Material.FENCE_GATE));
     }
 
-    public String getFileName() {
-        return fileName;
+    @Override
+    public void onItemClick(ItemClickEvent event) {
+        event.setWillGoBack(true);
     }
 }
