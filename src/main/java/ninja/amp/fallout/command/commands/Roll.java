@@ -88,12 +88,12 @@ public class Roll extends Command {
                     plugin.getMessenger().sendMessage(player, FOMessage.ROLL_CANTROLL, args[0]);
                 } else {
                     int roll = FOUtils.random(1, 20);
-                    Result outcome = getResult(roll, skillModifier(character, skill, modifier));
+                    Result outcome = getResult(roll, skillModifier(character, skill, modifier), character.getSpecial().get(Trait.LUCK));
                     plugin.getMessenger().sendMessage(plugin.getServer(), FOMessage.ROLL_BROADCAST, character.getCharacterName(), roll, skill.getName(), modifier, outcome.getName());
                 }
             } else {
                 int roll = FOUtils.random(1, 20);
-                Result outcome = getResult(roll, specialModifier(character, trait, modifier));
+                Result outcome = getResult(roll, specialModifier(character, trait, modifier), character.getSpecial().get(Trait.LUCK));
                 plugin.getMessenger().sendMessage(plugin.getServer(), FOMessage.ROLL_BROADCAST, character.getCharacterName(), roll, trait.getName(), modifier, outcome.getName());
             }
         } else {
@@ -115,26 +115,40 @@ public class Roll extends Command {
     }
 
     public static int specialModifier(Character character, Trait trait, int modifier) {
-        return modifier + character.getSpecial().get(trait);
+        return character.getSpecial().get(trait) + modifier;
     }
 
     public static int skillModifier(Character character, Skill skill, int modifier) {
-        return modifier + skill.getRollModifier(character.skillLevel(skill), character.getSpecial());
+        return character.skillLevel(skill) + skill.getRollModifier(character.getSpecial()) + modifier;
     }
 
-    public static Result getResult(int roll, int modifier) {
+    public static Result getResult(int roll, int modifier, int luck) {
+        // 1 or 20 is always critical
         if (roll == 1) {
             return Result.CRITICAL_FAILURE;
         } else if (roll == 20) {
             return Result.CRITICAL_SUCCESS;
         }
+
         int nearSuccess = 18 - modifier;
         if (roll > nearSuccess) {
-            return Result.SUCCESS;
+            // Check if result should be critical
+            int criticals = Math.max(1, Math.min(4, luck - 5));
+            if (roll >= criticals) {
+                return Result.CRITICAL_SUCCESS;
+            } else {
+                return Result.SUCCESS;
+            }
         } else if (roll >= nearSuccess) {
             return Result.NEAR_SUCCESS;
         } else {
-            return Result.FAILURE;
+            // Check if result should be critical
+            int criticals = Math.max(1, 5 - luck);
+            if (roll <= criticals) {
+                return Result.CRITICAL_FAILURE;
+            } else {
+                return Result.FAILURE;
+            }
         }
     }
 

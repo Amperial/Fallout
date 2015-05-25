@@ -55,12 +55,10 @@ public enum Perk {
     INCREASED_SNEAK(4, "Shadow", "+3 to Daytime Sneak and +5 to Nighttime Sneak rolls"),
 
     BATTLEFIELD_TERROR(5, "Death or Glory", "Can keep fighting until body has sustained extreme damage. Refer to guide"),
-    MISCELLANEOUS(5, "Miscellaneous", ""),
     GENERAL(5, "Old-World General", "Provides benefits to followers in exchange for devotion. Refer to guide"),
     CREATURES(5, "One With the Wasteland", ""),
-    TELEKINESIS(5, "Telekinetic Powers", ""),
-    TELEPATHY(5, "Telepathic Powers", ""),
-    PSYCHIC(5, "The Master's Legacy", ""),
+    TELEKINESIS(5, "The Master's Legacy", ""),
+    TELEPATHY(5, "The Master's Legacy", ""),
     SPIRIT_FORM(5, "Undying Will", "");
 
     private final String name;

@@ -62,18 +62,16 @@ public enum Skill {
     /**
      * Gets the roll modifier of the Skill for a given Special.
      *
-     * @param level The level of the skill.
      * @param special The Special.
      * @return The Skill's roll modifier for the given Special.
      */
-    public int getRollModifier(int level, Special special) {
+    public int getRollModifier(Special special) {
         int average = 0;
         for (Trait trait : affected) {
             average += special.get(trait);
         }
         average = (average + affected.length - 1) / affected.length;
-        average += level;
-        return (average + 1) / 2;
+        return average;
     }
 
     /**

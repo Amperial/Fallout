@@ -88,12 +88,12 @@ public class PrivateRoll extends Command {
                     plugin.getMessenger().sendMessage(player, FOMessage.ROLL_CANTROLL, args[0]);
                 } else {
                     int roll = FOUtils.random(1, 20);
-                    Roll.Result outcome = Roll.getResult(roll, Roll.skillModifier(character, skill, modifier));
+                    Roll.Result outcome = Roll.getResult(roll, Roll.skillModifier(character, skill, modifier), character.getSpecial().get(Trait.LUCK));
                     plugin.getMessenger().sendMessage(plugin.getServer(), FOMessage.ROLL_MESSAGE, roll, skill.getName(), modifier, outcome.getName());
                 }
             } else {
                 int roll = FOUtils.random(1, 20);
-                Roll.Result outcome = Roll.getResult(roll, Roll.specialModifier(character, trait, modifier));
+                Roll.Result outcome = Roll.getResult(roll, Roll.specialModifier(character, trait, modifier), character.getSpecial().get(Trait.LUCK));
                 plugin.getMessenger().sendMessage(plugin.getServer(), FOMessage.ROLL_MESSAGE, roll, trait.getName(), modifier, outcome.getName());
             }
         } else {
