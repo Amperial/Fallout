@@ -106,6 +106,19 @@ public class Special {
         return traits;
     }
 
+    /**
+     * Gets the total value of all the special's traits.
+     *
+     * @return The total value of the special.
+     */
+    public int getTotal() {
+        int total = 0;
+        for (Map.Entry<Trait, Integer> trait : traits.entrySet()) {
+            total += trait.getValue();
+        }
+        return total;
+    }
+
     @Override
     public String toString() {
         return new StringBuilder()

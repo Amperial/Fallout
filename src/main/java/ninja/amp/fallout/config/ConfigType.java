@@ -23,7 +23,8 @@ package ninja.amp.fallout.config;
  */
 public enum ConfigType {
     MESSAGE("Messages.yml"),
-    CHARACTER("Characters.yml");
+    CHARACTER("Characters.yml"),
+    PLAYER("Players.yml");
 
     private final String fileName;
 

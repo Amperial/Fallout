@@ -19,6 +19,7 @@
 package ninja.amp.fallout.characters;
 
 import ninja.amp.fallout.Fallout;
+import ninja.amp.fallout.config.ConfigManager;
 import ninja.amp.fallout.config.ConfigType;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -52,57 +53,45 @@ public class CharacterManager {
     }
 
     /**
-     * Loads a character if it exists.
+     * Loads a player's character if currently owning one.
      *
-     * @param owner The character's owner.
+     * @param owner The player.
+     * @return The player's character.
      */
     public Character loadCharacter(Player owner) {
+        ConfigManager configManager = plugin.getConfigManager();
+
         UUID ownerId = owner.getUniqueId();
-        FileConfiguration characterConfig = plugin.getConfigManager().getConfig(ConfigType.CHARACTER);
-        if (!isOwner(ownerId)) {
-            String path = "Characters." + ownerId;
-            if (characterConfig.contains(path)) {
-                Character character = new Character(characterConfig.getConfigurationSection(path));
-                plugin.getConfigManager().getConfigAccessor(ConfigType.CHARACTER).saveConfig();
-                return addCharacter(character);
-            }
+        FileConfiguration playerConfig = configManager.getConfig(ConfigType.PLAYER);
+        if (playerConfig.contains(ownerId.toString())) {
+            // Find name of player's character
+            String characterName = playerConfig.getString(ownerId.toString());
+
+            // Load character from character config
+            FileConfiguration characterConfig = configManager.getConfig(ConfigType.CHARACTER);
+            Character character = new Character(characterConfig.getConfigurationSection(characterName));
+
+            // Save loaded character to update any information
+            character.save(characterConfig.getConfigurationSection(characterName));
+            configManager.getConfigAccessor(ConfigType.CHARACTER).saveConfig();
+
+            // Add character to manager
+            return addToManager(character);
         }
+
         return null;
     }
 
     /**
-     * Unloads a character.
+     * Unloads a player's character if currently owning one.
      *
-     * @param character The character to unload.
+     * @param owner The player.
      */
-    public void unloadCharacter(Character character) {
-        charactersByOwner.remove(character.getOwnerId());
-        charactersByName.remove(character.getCharacterName());
-    }
-
-    /**
-     * Creates a character and adds it to the manager.
-     *
-     * @param owner         The character's owner.
-     * @param builder The character builder.
-     * @return The Character.
-     */
-    public Character createCharacter(Player owner, Character.CharacterBuilder builder) {
-        if (!charactersByOwner.containsKey(owner.getUniqueId())) {
-            Character character = new Character(builder);
-            addCharacter(character);
-            FileConfiguration characterConfig = plugin.getConfigManager().getConfig(ConfigType.CHARACTER);
-            String path = "Characters." + owner.getUniqueId();
-            characterConfig.createSection(path);
-            character.save(characterConfig.getConfigurationSection(path));
-            plugin.getConfigManager().getConfigAccessor(ConfigType.CHARACTER).saveConfig();
-
-            if (plugin.getConfig().getBoolean("NicknamePlayers", true)) {
-                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), "nick " + owner.getName() + " " + character.getCharacterName());
-            }
-            return character;
+    public void unloadCharacter(Player owner) {
+        UUID ownerId = owner.getUniqueId();
+        if (charactersByOwner.containsKey(ownerId)) {
+            removeFromManager(charactersByOwner.get(ownerId));
         }
-        return null;
     }
 
     /**
@@ -110,23 +99,149 @@ public class CharacterManager {
      *
      * @param character The character.
      */
-    public Character addCharacter(Character character) {
+    private Character addToManager(Character character) {
         charactersByOwner.put(character.getOwnerId(), character);
         charactersByName.put(character.getCharacterName().toLowerCase(), character);
         return character;
     }
 
     /**
-     * Removes a character.
+     * Removes a character from the manager.
      *
      * @param character The character.
      */
-    public void removeCharacter(Character character) {
-        plugin.getConfigManager().getConfig(ConfigType.CHARACTER).set("Characters." + character.getOwnerId(), null);
-        plugin.getConfigManager().getConfigAccessor(ConfigType.CHARACTER).saveConfig();
+    private void removeFromManager(Character character) {
         charactersByOwner.remove(character.getOwnerId());
         charactersByName.remove(character.getCharacterName().toLowerCase());
+    }
 
+    /**
+     * Creates a character and adds it to the manager.
+     * Player must not already own a character.
+     *
+     * @param owner The character's owner.
+     * @param builder The character builder.
+     * @return The Character.
+     */
+    public Character createCharacter(Player owner, Character.CharacterBuilder builder) {
+        ConfigManager configManager = plugin.getConfigManager();
+
+        // Create character from character builder and add to manager
+        Character character = new Character(builder);
+        addToManager(character);
+
+        // Add owning player to players config
+        UUID ownerId = owner.getUniqueId();
+        FileConfiguration playerConfig = configManager.getConfig(ConfigType.PLAYER);
+        playerConfig.set(ownerId.toString(), character.getCharacterName());
+        configManager.getConfigAccessor(ConfigType.PLAYER).saveConfig();
+
+        // Add character to character config
+        FileConfiguration characterConfig = configManager.getConfig(ConfigType.CHARACTER);
+        characterConfig.createSection(character.getCharacterName());
+        character.save(characterConfig.getConfigurationSection(character.getCharacterName()));
+        configManager.getConfigAccessor(ConfigType.CHARACTER).saveConfig();
+
+        // Nickname player
+        if (plugin.getConfig().getBoolean("NicknamePlayers", true)) {
+            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), "nick " + owner.getName() + " " + character.getCharacterName());
+        }
+
+        return character;
+    }
+
+    /**
+     * Deletes a character
+     *
+     * @param character The character.
+     */
+    public void deleteCharacter(Character character) {
+        ConfigManager configManager = plugin.getConfigManager();
+
+        // Remove character from character config
+        configManager.getConfig(ConfigType.CHARACTER).set(character.getCharacterName(), null);
+        configManager.getConfigAccessor(ConfigType.CHARACTER).saveConfig();
+
+        // Remove owning player from players config
+        configManager.getConfig(ConfigType.PLAYER).set(character.getOwnerId().toString(), null);
+        configManager.getConfigAccessor(ConfigType.PLAYER).saveConfig();
+
+        // Remove character from manager
+        removeFromManager(character);
+
+        // Remove nickname from player if set
+        if (plugin.getConfig().getBoolean("NicknamePlayers", true)) {
+            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), "nick " + character.getOwnerName() + " off");
+        }
+    }
+
+    /**
+     * Possesses a currently unowned character.
+     * Character must exist in character config.
+     *
+     * @param owner The character's new owner.
+     * @param characterName The character's name.
+     * @return The character.
+     */
+    public Character possessCharacter(Player owner, String characterName) {
+        ConfigManager configManager = plugin.getConfigManager();
+
+        // Load character from character config
+        FileConfiguration characterConfig = configManager.getConfig(ConfigType.CHARACTER);
+        Character character = new Character(characterConfig.getConfigurationSection(characterName));
+        if (character.getOwnerName() == null) {
+            // Possess character
+            character.possess(owner);
+
+            // Save loaded character to update owner information
+            character.save(characterConfig.getConfigurationSection(characterName));
+            configManager.getConfigAccessor(ConfigType.CHARACTER).saveConfig();
+
+            // Add owning player to players config
+            FileConfiguration playerConfig = configManager.getConfig(ConfigType.PLAYER);
+            playerConfig.set(owner.getUniqueId().toString(), character.getCharacterName());
+            configManager.getConfigAccessor(ConfigType.PLAYER).saveConfig();
+
+            // Nickname player
+            if (plugin.getConfig().getBoolean("NicknamePlayers", true)) {
+                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), "nick " + owner.getName() + " " + character.getCharacterName());
+            }
+
+            // Add character to manager
+            return addToManager(character);
+        }
+
+        return null;
+    }
+
+    /**
+     * Separates a character from its owner.
+     * Player must be the owner of the character.
+     *
+     * @param owner The character's owner.
+     */
+    public void abandonCharacter(Player owner) {
+        ConfigManager configManager = plugin.getConfigManager();
+
+        UUID ownerId = owner.getUniqueId();
+        Character character = charactersByOwner.get(ownerId);
+
+        // Abandon character
+        character.abandon();
+
+        // Save character to update owner information
+        FileConfiguration characterConfig = configManager.getConfig(ConfigType.CHARACTER);
+        character.save(characterConfig.getConfigurationSection(character.getCharacterName()));
+        configManager.getConfigAccessor(ConfigType.CHARACTER).saveConfig();
+
+        // Remove owning player from players config
+        configManager.getConfig(ConfigType.PLAYER).set(owner.getUniqueId().toString(), null);
+        configManager.getConfigAccessor(ConfigType.PLAYER).saveConfig();
+
+        // Remove character from manager
+        removeFromManager(character);
+
+        // Remove nickname from player if set
         if (plugin.getConfig().getBoolean("NicknamePlayers", true)) {
             plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), "nick " + character.getOwnerName() + " off");
         }
@@ -149,7 +264,7 @@ public class CharacterManager {
      * @return True if the character exists, else false.
      */
     public boolean isCharacter(String characterName) {
-        return charactersByName.containsKey(characterName.toLowerCase());
+        return charactersByName.containsKey(characterName.toLowerCase()) || plugin.getConfigManager().getConfig(ConfigType.CHARACTER).contains(characterName);
     }
 
     /**
@@ -163,7 +278,7 @@ public class CharacterManager {
     }
 
     /**
-     * Gets the character of a given name.
+     * Gets the character of a given name. Character must have an online owner.
      *
      * @param characterName The character's name.
      * @return The character with the given name.

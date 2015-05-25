@@ -57,6 +57,10 @@ public class Fallout extends JavaPlugin {
         configManager = new ConfigManager(this);
         messenger = new Messenger(this);
         commandController = new CommandController(this);
+        characterManager = new CharacterManager(this);
+        foListener = new FOListener(this);
+        menuListener = new MenuListener(this);
+
         // Create fallout command tree
         CommandGroup character = new CommandGroup(this, "character")
                 .addChildCommand(new Create(this))
@@ -77,9 +81,6 @@ public class Fallout extends JavaPlugin {
                 .addChildCommand(character);
         fallout.setPermission(new Permission("fallout.all", PermissionDefault.OP));
         commandController.addCommand(fallout);
-        characterManager = new CharacterManager(this);
-        foListener = new FOListener(this);
-        menuListener = new MenuListener(this);
     }
 
     @Override

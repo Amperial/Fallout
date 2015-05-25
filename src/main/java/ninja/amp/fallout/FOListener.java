@@ -18,11 +18,7 @@
  */
 package ninja.amp.fallout;
 
-import ninja.amp.fallout.characters.Character;
 import ninja.amp.fallout.characters.CharacterManager;
-import ninja.amp.fallout.characters.Perk;
-import ninja.amp.fallout.characters.Race;
-import ninja.amp.fallout.message.FOMessage;
 import ninja.amp.fallout.utils.ArmorMaterial;
 import ninja.amp.fallout.utils.ArmorType;
 import org.bukkit.Material;
@@ -31,18 +27,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
@@ -64,7 +56,7 @@ public class FOListener implements Listener {
     }
 
     /**
-     * Attempts to load the player's character.
+     * Loads the player's character into the character manager if the player has a character.
      */
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
@@ -76,11 +68,7 @@ public class FOListener implements Listener {
      */
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        CharacterManager characterManager = plugin.getCharacterManager();
-        Character character = characterManager.getCharacterByOwner(event.getPlayer().getUniqueId());
-        if (character != null) {
-            characterManager.unloadCharacter(character);
-        }
+        plugin.getCharacterManager().unloadCharacter(event.getPlayer());
     }
 
     /**

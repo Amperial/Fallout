@@ -63,7 +63,7 @@ public class Character {
         this.weight = builder.weight;
         this.gender = builder.gender;
         this.alignment = builder.alignment;
-        this.special = new Special(race.getMinSpecial());
+        this.special = race.getMinSpecial();
         this.level = 0;
     }
 
@@ -73,16 +73,21 @@ public class Character {
      * @param section The ConfigurationSection.
      */
     public Character(ConfigurationSection section) {
-        String lastOwnerName = section.getString("ownerName");
-        ownerId = UUID.fromString(section.getString("ownerId"));
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (ownerId.equals(player.getUniqueId())) {
-                lastOwnerName = player.getName();
-                break;
+        if (section.contains("ownerName")) {
+            String lastOwnerName = section.getString("ownerName");
+            this.ownerId = UUID.fromString(section.getString("ownerId"));
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (ownerId.equals(player.getUniqueId())) {
+                    lastOwnerName = player.getName();
+                    break;
+                }
             }
+            this.ownerName = lastOwnerName;
+        } else {
+            this.ownerName = null;
+            this.ownerId = null;
         }
-        this.ownerName = lastOwnerName;
-        this.characterName = section.getString("characterName");
+        this.characterName = section.getName();
         this.race = Race.fromName(section.getString("race"));
         this.age = section.getInt("age");
         this.height = section.getInt("height");
@@ -284,14 +289,36 @@ public class Character {
     }
 
     /**
+     * Possesses the character by a player.
+     *
+     * @param owner The character's new owner.
+     */
+    public void possess(Player owner) {
+        this.ownerName = owner.getName();
+        this.ownerId = owner.getUniqueId();
+    }
+
+    /**
+     * Abandons the character's owner.
+     */
+    public void abandon() {
+        ownerName = null;
+        ownerId = null;
+    }
+
+    /**
      * Saves the Character to a ConfigurationSection.
      *
      * @param section The ConfigurationSection to save the Character to.
      */
     public void save(ConfigurationSection section) {
-        section.set("ownerName", ownerName);
-        section.set("ownerId", ownerId.toString());
-        section.set("characterName", characterName);
+        if (ownerName == null) {
+            section.set("ownerName", null);
+            section.set("ownerId", null);
+        } else {
+            section.set("ownerName", ownerName);
+            section.set("ownerId", ownerId.toString());
+        }
         section.set("race", race.getName());
         section.set("age", age);
         section.set("height", height);

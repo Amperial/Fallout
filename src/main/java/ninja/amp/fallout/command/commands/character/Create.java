@@ -21,6 +21,8 @@ package ninja.amp.fallout.command.commands.character;
 import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.characters.Race;
 import ninja.amp.fallout.command.Command;
+import ninja.amp.fallout.menus.ItemMenu;
+import ninja.amp.fallout.menus.items.special.SpecialMenu;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
@@ -33,6 +35,8 @@ import java.util.List;
  * A command that creates a fallout character.
  */
 public class Create extends Command {
+    private CreateMenu createMenu;
+    private SpecialMenu specialMenu;
 
     public Create(Fallout plugin) {
         super(plugin, "create");
@@ -40,11 +44,14 @@ public class Create extends Command {
         setCommandUsage("/fo character create <name> <age> <height in.> <weight lb.>");
         setPermission(new Permission("fallout.character.create", PermissionDefault.TRUE));
         setArgumentRange(4, 4);
+
+        createMenu = new CreateMenu(plugin);
+        specialMenu = new SpecialMenu(plugin);
     }
 
     @Override
     public void execute(String command, CommandSender sender, String[] args) {
-//        Player player = (Player) sender;
+        Player player = (Player) sender;
 //        CharacterManager characterManager = plugin.getCharacterManager();
 //        if (characterManager.isOwner(player.getUniqueId())) {
 //            plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_ALREADYEXISTS);
@@ -72,4 +79,13 @@ public class Create extends Command {
             return new ArrayList<>();
         }
     }
+
+    public class CreateMenu extends ItemMenu {
+        public CreateMenu(Fallout plugin) {
+            super("Character Creation", Size.FIVE_LINE, plugin);
+
+
+        }
+    }
+
 }

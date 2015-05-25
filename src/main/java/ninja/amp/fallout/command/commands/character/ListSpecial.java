@@ -19,12 +19,8 @@
 package ninja.amp.fallout.command.commands.character;
 
 import ninja.amp.fallout.Fallout;
-import ninja.amp.fallout.characters.Character;
-import ninja.amp.fallout.characters.CharacterManager;
 import ninja.amp.fallout.command.Command;
-import ninja.amp.fallout.message.FOMessage;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 

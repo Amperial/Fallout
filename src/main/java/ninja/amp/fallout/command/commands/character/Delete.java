@@ -44,7 +44,7 @@ public class Delete extends Command {
         Player player = (Player) sender;
         CharacterManager characterManager = plugin.getCharacterManager();
         if (characterManager.isOwner(player.getUniqueId())) {
-            characterManager.removeCharacter(characterManager.getCharacterByOwner(player.getUniqueId()));
+            characterManager.deleteCharacter(characterManager.getCharacterByOwner(player.getUniqueId()));
             plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_DELETE);
         } else {
             plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_NOTOWNER);

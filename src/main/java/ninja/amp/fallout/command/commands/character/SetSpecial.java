@@ -19,51 +19,44 @@
 package ninja.amp.fallout.command.commands.character;
 
 import ninja.amp.fallout.Fallout;
+import ninja.amp.fallout.characters.Character;
+import ninja.amp.fallout.characters.CharacterManager;
 import ninja.amp.fallout.command.Command;
+import ninja.amp.fallout.menus.ItemMenu;
+import ninja.amp.fallout.menus.items.special.SpecialMenu;
+import ninja.amp.fallout.message.FOMessage;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
+
+import java.util.UUID;
 
 /**
  * A command that sets the sender's character's SPECIAL traits.
  */
 public class SetSpecial extends Command {
+    private ItemMenu menu;
 
     public SetSpecial(Fallout plugin) {
         super(plugin, "setspecial");
         setDescription("Sets your fallout character's traits.");
         setCommandUsage("/fo character setspecial");
         setPermission(new Permission("fallout.character.setspecial", PermissionDefault.TRUE));
-        setArgumentRange(7, 7);
+
+        menu = new SpecialMenu(plugin);
     }
 
     @Override
     public void execute(String command, CommandSender sender, String[] args) {
-//        Player player = (Player) sender;
-//        UUID playerId = player.getUniqueId();
-//        CharacterManager characterManager = plugin.getCharacterManager();
-//        if (characterManager.isOwner(playerId)) {
-//            Character character = characterManager.getCharacterByOwner(playerId);
-//            int[] s = new int[7];
-//            try {
-//                for (int i = 0; i < 7; i++) {
-//                    s[i] = Integer.parseInt(args[i]);
-//                }
-//            } catch (NumberFormatException exception) {
-//                plugin.getMessenger().sendMessage(player, FOMessage.ERROR_NUMBERFORMAT);
-//                return;
-//            }
-//            Special special = new Special(s[0], s[1], s[2], s[3], s[4], s[5], s[6]);
-//            if (character.getRace().isValid(special)) {
-//                character.getSpecial().set(special);
-//                plugin.getMessenger().sendMessage(player, FOMessage.SPECIAL_SET, character.getCharacterName());
-//                character.save(plugin.getConfigManager().getConfig(ConfigType.CHARACTER).getConfigurationSection("Characters." + playerId));
-//                plugin.getConfigManager().getConfigAccessor(ConfigType.CHARACTER).saveConfig();
-//            } else {
-//                plugin.getMessenger().sendMessage(player, FOMessage.SPECIAL_INVALID);
-//            }
-//        } else {
-//            plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_NOTOWNER);
-//        }
+        Player player = (Player) sender;
+        UUID playerId = player.getUniqueId();
+        CharacterManager characterManager = plugin.getCharacterManager();
+        if (characterManager.isOwner(playerId)) {
+            Character character = characterManager.getCharacterByOwner(playerId);
+            menu.open(player);
+        } else {
+            plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_NOTOWNER);
+        }
     }
 }

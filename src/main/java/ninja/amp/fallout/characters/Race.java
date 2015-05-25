@@ -26,10 +26,10 @@ import java.util.Map;
  * Character races used in fallout.
  */
 public enum Race {
-    WASTELANDER("Human", new Special(3, 3, 3, 3, 3, 3, 3), new Special(10, 10, 10, 10, 10, 10, 10)),
+    WASTELANDER("Human", new Special(1, 1, 1, 1, 1, 1, 1), new Special(10, 10, 10, 10, 10, 10, 10)),
     GHOUL("Ghoul", new Special(1, 4, 1, 1, 4, 1, 5), new Special(6, 13, 9, 7, 10, 8, 10)),
     SUPER_MUTANT("SuperMutant", new Special(5, 1, 4, 1, 1, 1, 1), new Special(13, 10, 12, 4, 5, 10, 10)),
-    VAULT_DWELLER("VaultDweller", new Special(3, 3, 3, 3, 3, 3, 3), new Special(10, 10, 10, 10, 10, 10, 10));
+    VAULT_DWELLER("VaultDweller", new Special(1, 1, 1, 1, 1, 1, 1), new Special(10, 10, 10, 10, 10, 10, 10));
 
     private final String name;
     private final Special min;
@@ -81,14 +81,21 @@ public enum Race {
         for (Integer value : special.getTraits().values()) {
             total += value;
         }
-        if (total != 40) {
+        if (total > 40) {
             return false;
         }
 
-        // Check to see if any traits aren't within the min/max limits
+        // Check to see if any traits aren't within the min/max limits or multiple are maxed
+        int maxTraits = 0;
         for (Map.Entry<Trait, Integer> entry : special.getTraits().entrySet()) {
             if (entry.getValue() < min.get(entry.getKey()) || entry.getValue() > max.get(entry.getKey())) {
                 return false;
+            } else if (entry.getValue() == max.get(entry.getKey())) {
+                if (maxTraits > 1) {
+                    return false;
+                } else {
+                    maxTraits++;
+                }
             }
         }
 
