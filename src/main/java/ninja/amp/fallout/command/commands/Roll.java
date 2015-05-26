@@ -134,7 +134,7 @@ public class Roll extends Command {
         if (roll > nearSuccess) {
             // Check if result should be critical
             int criticals = Math.max(1, Math.min(4, luck - 5));
-            if (roll >= criticals) {
+            if (roll + criticals > 20) {
                 return Result.CRITICAL_SUCCESS;
             } else {
                 return Result.SUCCESS;
@@ -144,7 +144,7 @@ public class Roll extends Command {
         } else {
             // Check if result should be critical
             int criticals = Math.max(1, 5 - luck);
-            if (roll <= criticals) {
+            if (roll - criticals < 1) {
                 return Result.CRITICAL_FAILURE;
             } else {
                 return Result.FAILURE;

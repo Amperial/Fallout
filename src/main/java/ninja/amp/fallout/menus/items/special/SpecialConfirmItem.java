@@ -54,7 +54,7 @@ public class SpecialConfirmItem extends MenuItem {
         if (character.getRace().isValid(special)) {
             character.getSpecial().set(special);
             plugin.getMessenger().sendMessage(player, FOMessage.SPECIAL_SET, character.getCharacterName());
-            character.save(plugin.getConfigManager().getConfig(ConfigType.CHARACTER).getConfigurationSection("Characters." + playerId));
+            character.save(plugin.getConfigManager().getConfig(ConfigType.CHARACTER).getConfigurationSection(character.getCharacterName()));
             plugin.getConfigManager().getConfigAccessor(ConfigType.CHARACTER).saveConfig();
         } else {
             plugin.getMessenger().sendMessage(player, FOMessage.SPECIAL_INVALID);

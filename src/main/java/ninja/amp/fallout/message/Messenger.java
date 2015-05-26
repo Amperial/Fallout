@@ -113,10 +113,11 @@ public class Messenger {
      * @param recipient The recipient of the message.
      * @param message   The {@link ninja.amp.fallout.message.FOMessage}.
      * @param replace   Strings to replace any occurences of %s in the message with.
-     * @return True if the message was sent, else false.
      */
-    public boolean sendMessage(Object recipient, FOMessage message, Object... replace) {
-        return sendRawMessage(recipient, FOMessage.PREFIX + (replace == null ? message.getMessage() : String.format(message.getMessage(), (Object[]) replace)));
+    public void sendMessage(Object recipient, FOMessage message, Object... replace) {
+        for (String s : (replace == null ? message.getMessage() : String.format(message.getMessage(), (Object[]) replace)).split("\\\\n")) {
+            sendRawMessage(recipient, FOMessage.PREFIX + s);
+        }
     }
 
     /**
@@ -124,18 +125,16 @@ public class Messenger {
      *
      * @param recipient The recipient of the message. Type of recipient must be registered.
      * @param message   The message.
-     * @return True if the message was sent, else false.
      */
-    public boolean sendRawMessage(Object recipient, Object message) {
+    public void sendRawMessage(Object recipient, Object message) {
         if (recipient != null && message != null) {
             for (Class<?> recipientClass : recipientHandlers.keySet()) {
                 if (recipientClass.isAssignableFrom(recipient.getClass())) {
                     recipientHandlers.get(recipientClass).sendMessage(recipient, message.toString());
-                    return true;
+                    break;
                 }
             }
         }
-        return false;
     }
 
     /**
