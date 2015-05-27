@@ -107,6 +107,12 @@ public class RollManager {
                     }
                 }
             } else {
+                if (trait == Trait.STRENGTH && ArmorMaterial.isWearingFullSet(player)) {
+                    FOArmor foArmor = ArmorMaterial.getArmorMaterial(player.getInventory().getHelmet().getType()).getFOVersion();
+                    if (foArmor == FOArmor.POWER) {
+                        modifier += 2;
+                    }
+                }
                 int roll = FOUtils.random(1, 20);
                 Result outcome = getResult(roll, specialModifier(character, trait, modifier), character.getSpecial().get(Trait.LUCK));
                 switch (distance) {
