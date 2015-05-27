@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.menus.items.special;
+package ninja.amp.fallout.command.commands.character.special;
 
 import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.characters.Character;
 import ninja.amp.fallout.characters.Special;
 import ninja.amp.fallout.config.ConfigType;
 import ninja.amp.fallout.menus.events.ItemClickEvent;
-import ninja.amp.fallout.menus.items.MenuItem;
+import ninja.amp.fallout.menus.items.StaticMenuItem;
 import ninja.amp.fallout.message.FOMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -32,7 +32,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
-public class SpecialConfirmItem extends MenuItem {
+public class SpecialConfirmItem extends StaticMenuItem {
     private Fallout plugin;
     private SpecialMenu menu;
 
@@ -60,7 +60,7 @@ public class SpecialConfirmItem extends MenuItem {
             plugin.getMessenger().sendMessage(player, FOMessage.SPECIAL_INVALID);
         }
 
-        menu.clearPendingSpecial(character);
+        menu.resetPendingSpecial(character);
         event.setWillClose(true);
     }
 }

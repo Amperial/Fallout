@@ -37,7 +37,7 @@ public class MenuItem implements ItemClickEventHandler {
 
     public MenuItem(String displayName, ItemStack icon, String... lore) {
         this.displayName = displayName;
-        this.icon = icon;
+        this.icon = icon.clone();
         this.lore = Arrays.asList(lore);
     }
 

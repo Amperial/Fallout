@@ -387,6 +387,10 @@ public class Character {
             return this;
         }
 
+        public String getName() {
+            return characterName;
+        }
+
         public CharacterBuilder race(Race race) {
             this.race = race;
             return this;

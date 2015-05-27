@@ -19,21 +19,26 @@
 package ninja.amp.fallout;
 
 import ninja.amp.fallout.characters.CharacterManager;
+import ninja.amp.fallout.command.Command;
 import ninja.amp.fallout.command.CommandController;
 import ninja.amp.fallout.command.CommandGroup;
 import ninja.amp.fallout.command.commands.AboutCommand;
 import ninja.amp.fallout.command.commands.HelpCommand;
-import ninja.amp.fallout.command.commands.PrivateRoll;
 import ninja.amp.fallout.command.commands.ReloadCommand;
-import ninja.amp.fallout.command.commands.Roll;
 import ninja.amp.fallout.command.commands.Whois;
-import ninja.amp.fallout.command.commands.character.Create;
+import ninja.amp.fallout.command.commands.character.Abandon;
 import ninja.amp.fallout.command.commands.character.Delete;
-import ninja.amp.fallout.command.commands.character.ListPerks;
-import ninja.amp.fallout.command.commands.character.ListSpecial;
-import ninja.amp.fallout.command.commands.character.SetSpecial;
-import ninja.amp.fallout.command.commands.character.Teach;
-import ninja.amp.fallout.command.commands.character.Unteach;
+import ninja.amp.fallout.command.commands.character.Possess;
+import ninja.amp.fallout.command.commands.character.creation.Create;
+import ninja.amp.fallout.command.commands.character.special.ListSpecial;
+import ninja.amp.fallout.command.commands.character.special.SetSpecial;
+import ninja.amp.fallout.command.commands.character.special.SpecialMenu;
+import ninja.amp.fallout.command.commands.roll.ArmorRoll;
+import ninja.amp.fallout.command.commands.roll.DiceRoll;
+import ninja.amp.fallout.command.commands.roll.GlobalRoll;
+import ninja.amp.fallout.command.commands.roll.LocalRoll;
+import ninja.amp.fallout.command.commands.roll.PrivateRoll;
+import ninja.amp.fallout.command.commands.roll.RollManager;
 import ninja.amp.fallout.config.ConfigManager;
 import ninja.amp.fallout.menus.MenuListener;
 import ninja.amp.fallout.message.Messenger;
@@ -51,6 +56,7 @@ public class Fallout extends JavaPlugin {
     private CharacterManager characterManager;
     private FOListener foListener;
     private MenuListener menuListener;
+    private RollManager rollManager;
 
     @Override
     public void onEnable() {
@@ -58,26 +64,34 @@ public class Fallout extends JavaPlugin {
         messenger = new Messenger(this);
         commandController = new CommandController(this);
         characterManager = new CharacterManager(this);
+        rollManager = new RollManager(this);
         foListener = new FOListener(this);
         menuListener = new MenuListener(this);
 
         // Create fallout command tree
+        SpecialMenu specialMenu = new SpecialMenu(this);
+        Command setSpecial = new SetSpecial(this, specialMenu);
+        Command listSpecial = new ListSpecial(this);
         CommandGroup character = new CommandGroup(this, "character")
-                .addChildCommand(new Create(this))
+                .addChildCommand(new Create(this, specialMenu))
                 .addChildCommand(new Delete(this))
-                .addChildCommand(new ListSpecial(this))
-                .addChildCommand(new SetSpecial(this))
-                .addChildCommand(new Teach(this))
-                .addChildCommand(new Unteach(this))
-                .addChildCommand(new ListPerks(this));
+                .addChildCommand(new Possess(this))
+                .addChildCommand(new Abandon(this))
+                .addChildCommand(listSpecial)
+                .addChildCommand(setSpecial);
         character.setPermission(new Permission("fallout.character.all", PermissionDefault.OP));
         CommandGroup fallout = new CommandGroup(this, "fallout")
                 .addChildCommand(new AboutCommand(this))
                 .addChildCommand(new HelpCommand(this))
                 .addChildCommand(new ReloadCommand(this))
-                .addChildCommand(new Whois(this))
-                .addChildCommand(new Roll(this))
+                .addChildCommand(new LocalRoll(this)
+                        .addChildCommand(new ArmorRoll(this))
+                        .addChildCommand(new DiceRoll(this)))
+                .addChildCommand(new GlobalRoll(this))
                 .addChildCommand(new PrivateRoll(this))
+                .addChildCommand(new Whois(this))
+                .addChildCommand(listSpecial)
+                .addChildCommand(setSpecial)
                 .addChildCommand(character);
         fallout.setPermission(new Permission("fallout.all", PermissionDefault.OP));
         commandController.addCommand(fallout);
@@ -89,6 +103,7 @@ public class Fallout extends JavaPlugin {
         menuListener = null;
         foListener.destroy();
         foListener = null;
+        rollManager = null;
         characterManager = null;
         commandController.destroy();
         commandController = null;
@@ -130,6 +145,15 @@ public class Fallout extends JavaPlugin {
      */
     public CharacterManager getCharacterManager() {
         return characterManager;
+    }
+
+    /**
+     * Gets the {@link ninja.amp.fallout.command.commands.roll.RollManager}.
+     *
+     * @return The {@link ninja.amp.fallout.command.commands.roll.RollManager} instance.
+     */
+    public RollManager getRollManager() {
+        return rollManager;
     }
 
     /**

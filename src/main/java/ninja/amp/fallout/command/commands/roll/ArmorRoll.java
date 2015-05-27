@@ -16,24 +16,26 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.menus.items;
+package ninja.amp.fallout.command.commands.roll;
 
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
+import ninja.amp.fallout.Fallout;
+import ninja.amp.fallout.command.Command;
+import org.bukkit.command.CommandSender;
 
 /**
- * A {@link ninja.amp.fallout.menus.items.MenuItem} whose icon never changes.
+ * A command that lets you roll to see if your armor can absorb a hit.
  */
-public class StaticMenuItem extends MenuItem {
+public class ArmorRoll extends Command {
 
-    public StaticMenuItem(String displayName, ItemStack icon, String... lore) {
-        super(displayName, icon, lore);
-
-        setNameAndLore(getIcon(), getDisplayName(), getLore());
+    public ArmorRoll(Fallout plugin) {
+        super(plugin, "armor");
+        setDescription("Rolls to see if your armor can absorb a hit.");
+        setCommandUsage("/fo [global/private]roll armor <damage type>[+/-modifier]");
     }
 
     @Override
-    public ItemStack getFinalIcon(Player player) {
-        return getIcon();
+    public void execute(String command, CommandSender sender, String[] args) {
+        // Command is only here to be shown in help.
+        // Rolling is handled in GlobalRoll/LocalRoll/PrivateRoll commands
     }
 }

@@ -19,11 +19,10 @@
 package ninja.amp.fallout.utils;
 
 import ninja.amp.fallout.characters.Special;
-import ninja.amp.fallout.rolls.combat.DamageType;
 import org.bukkit.entity.Player;
 
 /**
- * Types of armor in fallout.
+ * The types of armor in fallout.
  */
 public enum FOArmor {
     NONE(new Special(0, 0, 0, 0, 0, 0, 0)),

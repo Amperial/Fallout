@@ -40,6 +40,7 @@ public class CommandGroup {
     private int maxArgsLength = -1;
     private boolean playerOnly = true;
     private final Map<String, CommandGroup> children = new LinkedHashMap<>();
+    private final List<String> tabCompleteList = new ArrayList<>();
 
     /**
      * Creates a new CommandGroup.
@@ -157,6 +158,9 @@ public class CommandGroup {
      */
     public CommandGroup addChildCommand(CommandGroup command) {
         children.put(command.getName().toLowerCase(), command);
+        if (command instanceof Command && ((Command) command).getVisible()) {
+            tabCompleteList.add(command.getName().toLowerCase());
+        }
         if (permission != null && command.getPermission() != null) {
             command.getPermission().addParent(permission, true);
         }
@@ -173,11 +177,13 @@ public class CommandGroup {
         if (deep) {
             List<CommandGroup> deepChildren = new ArrayList<>();
             for (CommandGroup child : children.values()) {
-                if (child instanceof Command) {
+                if (child instanceof Command && !deepChildren.contains(child)) {
                     deepChildren.add(child);
                 }
                 for (CommandGroup deepChild : child.getChildren(true)) {
-                    deepChildren.add(deepChild);
+                    if (!deepChildren.contains(deepChild)) {
+                        deepChildren.add(deepChild);
+                    }
                 }
             }
             return deepChildren;
@@ -193,7 +199,7 @@ public class CommandGroup {
      * @return The tab completion list of the command.
      */
     public List<String> getTabCompleteList(String[] args) {
-        return new ArrayList<>(children.keySet());
+        return tabCompleteList;
     }
 
     /**

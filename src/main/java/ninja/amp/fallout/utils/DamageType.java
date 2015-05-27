@@ -16,15 +16,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.rolls.combat;
-
-import ninja.amp.fallout.utils.FOArmor;
+package ninja.amp.fallout.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The types of damage in fallout.
+ */
 public enum DamageType {
     BULLET("Bullet", 6, 5, 3, 2, 1),
     LASER("Laser", 5, 4, 4, 3, 0),

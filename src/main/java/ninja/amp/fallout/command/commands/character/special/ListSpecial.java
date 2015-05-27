@@ -16,11 +16,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.command.commands.character;
+package ninja.amp.fallout.command.commands.character.special;
 
 import ninja.amp.fallout.Fallout;
+import ninja.amp.fallout.characters.Character;
+import ninja.amp.fallout.characters.CharacterManager;
 import ninja.amp.fallout.command.Command;
+import ninja.amp.fallout.message.FOMessage;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
@@ -42,25 +46,25 @@ public class ListSpecial extends Command {
 
     @Override
     public void execute(String command, CommandSender sender, String[] args) {
-//        Player player = (Player) sender;
-//        Character character;
-//        CharacterManager characterManager = plugin.getCharacterManager();
-//        if (args.length == 1) {
-//            if (characterManager.isCharacter(args[0])) {
-//                character = characterManager.getCharacterByName(args[0]);
-//            } else {
-//                plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_DOESNTEXIST);
-//                return;
-//            }
-//        } else {
-//            if (characterManager.isOwner(player.getUniqueId())) {
-//                character = characterManager.getCharacterByOwner(player.getUniqueId());
-//            } else {
-//                plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_NOTOWNER);
-//                return;
-//            }
-//        }
-//        plugin.getMessenger().sendMessage(player, FOMessage.SPECIAL_LIST, character.getCharacterName(), character.getSpecial());
+        Player player = (Player) sender;
+        Character character;
+        CharacterManager characterManager = plugin.getCharacterManager();
+        if (args.length == 1) {
+            if (characterManager.isCharacter(args[0])) {
+                character = characterManager.getCharacterByName(args[0]);
+            } else {
+                plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_DOESNTEXIST);
+                return;
+            }
+        } else {
+            if (characterManager.isOwner(player.getUniqueId())) {
+                character = characterManager.getCharacterByOwner(player.getUniqueId());
+            } else {
+                plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_NOTOWNER);
+                return;
+            }
+        }
+        plugin.getMessenger().sendMessage(player, FOMessage.SPECIAL_LIST, character.getCharacterName(), character.getSpecial());
     }
 
     @Override

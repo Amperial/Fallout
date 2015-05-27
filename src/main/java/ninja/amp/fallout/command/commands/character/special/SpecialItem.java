@@ -16,34 +16,36 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.menus.items.special;
+package ninja.amp.fallout.command.commands.character.special;
 
 import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.characters.CharacterManager;
-import ninja.amp.fallout.menus.events.ItemClickEvent;
-import ninja.amp.fallout.menus.items.MenuItem;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import ninja.amp.fallout.characters.Special;
+import ninja.amp.fallout.characters.Trait;
+import ninja.amp.fallout.menus.items.StaticMenuItem;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class SpecialCancelItem extends MenuItem {
+public class SpecialItem extends StaticMenuItem {
     private CharacterManager characterManager;
     private SpecialMenu menu;
+    private Trait trait;
 
-    public SpecialCancelItem(Fallout plugin, SpecialMenu menu) {
-        super(ChatColor.DARK_RED + "Cancel SPECIAL Modification",
-                new ItemStack(Material.REDSTONE_BLOCK),
-                "Cancels the current",
-                "selection and exits",
-                "the menu.");
+    public SpecialItem(Fallout plugin, SpecialMenu menu, Trait trait, ItemStack icon, String... lore) {
+        super(trait.getName(), icon, lore);
 
         this.characterManager = plugin.getCharacterManager();
         this.menu = menu;
+        this.trait = trait;
     }
 
     @Override
-    public void onItemClick(ItemClickEvent event) {
-        menu.clearPendingSpecial(characterManager.getCharacterByOwner(event.getPlayer().getUniqueId()));
-        event.setWillClose(true);
+    public ItemStack getFinalIcon(Player player) {
+        ItemStack finalIcon = getIcon().clone();
+
+        Special special = menu.getPendingSpecial(characterManager.getCharacterByOwner(player.getUniqueId()));
+        finalIcon.setAmount(special.get(trait));
+
+        return finalIcon;
     }
 }

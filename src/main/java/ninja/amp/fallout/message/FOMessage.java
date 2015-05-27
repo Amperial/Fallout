@@ -32,13 +32,17 @@ public enum FOMessage {
 
     ERROR_NUMBERFORMAT("Error.NumberFormat", "&4Value must be a positive integer."),
     ERROR_BOOLEANFORMAT("Error.BooleanFormat", "&4Value must be true or false."),
-    ERROR_MODIFIERSYNTAX("Error.ModifierSyntax", "&4Modifier must be appended with +integer or -integer"),
+    ERROR_MODIFIERSYNTAX("Error.ModifierSyntax", "&4Modifier must be appended with +integer or -integer."),
+    ERROR_ALLOPTIONS("Error.AllOptions", "&4All options must be selected."),
 
     CHARACTER_CREATE("Character.Create", "Created a character named %s."),
     CHARACTER_DELETE("Character.Delete", "Deleted your character."),
+    CHARACTER_POSSESS("Character.Possess", "Possessed the character named %s."),
+    CHARACTER_ABANDON("Character.Abandon", "Abandoned your character."),
     CHARACTER_NAME("Character.Name", "%s's real name is %s."),
     CHARACTER_RACE("Character.Race", "%s is a %s."),
     CHARACTER_ALREADYEXISTS("Character.AlreadyExists", "&4You already have a character!"),
+    CHARACTER_ALREADYOWNED("Character.AlreadyOwned", "&4A character of that name is already possessed!"),
     CHARACTER_NAMETAKEN("Character.NameTaken", "&4A character of that name already exists!"),
     CHARACTER_NOTOWNER("Character.NotOwner", "&4You do not have a character!"),
     CHARACTER_DOESNTEXIST("Character.DoesntExist", "&4A character of that name doesn't exist!"),

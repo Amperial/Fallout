@@ -1,6 +1,12 @@
+# Enables debug messages to be shown in console
 Debug: false
+# How far away a normal roll is broadcasted
+MessageRadius: 30
+# If players should be nicknamed as their character
 NicknamePlayers: true
+# If mobs should drop exp upon death
 PreventMobsDroppingExp: true
+# If players should be prevented from crafting diamond armor
 PreventCraftingDiamondArmor: true
 colors:
   primary: YELLOW

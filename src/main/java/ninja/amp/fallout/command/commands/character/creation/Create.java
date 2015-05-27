@@ -16,13 +16,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.command.commands.character;
+package ninja.amp.fallout.command.commands.character.creation;
 
 import ninja.amp.fallout.Fallout;
+import ninja.amp.fallout.characters.Character;
+import ninja.amp.fallout.characters.CharacterManager;
 import ninja.amp.fallout.characters.Race;
 import ninja.amp.fallout.command.Command;
-import ninja.amp.fallout.menus.ItemMenu;
-import ninja.amp.fallout.menus.items.special.SpecialMenu;
+import ninja.amp.fallout.command.commands.character.special.SpecialMenu;
+import ninja.amp.fallout.message.FOMessage;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
@@ -36,39 +38,43 @@ import java.util.List;
  */
 public class Create extends Command {
     private CreateMenu createMenu;
-    private SpecialMenu specialMenu;
 
-    public Create(Fallout plugin) {
+    public Create(Fallout plugin, SpecialMenu specialMenu) {
         super(plugin, "create");
         setDescription("Creates a fallout character.");
         setCommandUsage("/fo character create <name> <age> <height in.> <weight lb.>");
         setPermission(new Permission("fallout.character.create", PermissionDefault.TRUE));
         setArgumentRange(4, 4);
 
-        createMenu = new CreateMenu(plugin);
-        specialMenu = new SpecialMenu(plugin);
+        createMenu = new CreateMenu(plugin, specialMenu);
     }
 
     @Override
     public void execute(String command, CommandSender sender, String[] args) {
         Player player = (Player) sender;
-//        CharacterManager characterManager = plugin.getCharacterManager();
-//        if (characterManager.isOwner(player.getUniqueId())) {
-//            plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_ALREADYEXISTS);
-//        } else {
-//            String characterName = args[0];
-//            if (characterManager.isCharacter(characterName)) {
-//                plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_NAMETAKEN);
-//            } else {
-//                Race race = Race.fromName(args[1]);
-//                if (race == null) {
-//                    plugin.getMessenger().sendMessage(player, FOMessage.RACE_DOESNTEXIST, args[1]);
-//                } else {
-//                    characterManager.createCharacter(player, characterName, race);
-//                    plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_CREATE, characterName);
-//                }
-//            }
-//        }
+
+        CharacterManager characterManager = plugin.getCharacterManager();
+        if (characterManager.isOwner(player.getUniqueId())) {
+            plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_ALREADYEXISTS);
+        } else {
+            String characterName = args[0];
+            if (characterManager.isCharacter(characterName)) {
+                plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_NAMETAKEN);
+            } else {
+                Character.CharacterBuilder builder = new Character.CharacterBuilder(player);
+                builder.name(characterName);
+                try {
+                    builder.age(Integer.parseInt(args[1]));
+                    builder.height(Integer.parseInt(args[2]));
+                    builder.weight(Integer.parseInt(args[3]));
+                } catch (NumberFormatException e) {
+                    plugin.getMessenger().sendMessage(player, FOMessage.ERROR_NUMBERFORMAT);
+                    return;
+                }
+                plugin.getCharacterManager().addCharacterBuilder(player, builder);
+                createMenu.open(player);
+            }
+        }
     }
 
     @Override
@@ -79,13 +85,4 @@ public class Create extends Command {
             return new ArrayList<>();
         }
     }
-
-    public class CreateMenu extends ItemMenu {
-        public CreateMenu(Fallout plugin) {
-            super("Character Creation", Size.FIVE_LINE, plugin);
-
-
-        }
-    }
-
 }

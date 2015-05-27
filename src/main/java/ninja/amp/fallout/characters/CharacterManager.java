@@ -38,6 +38,7 @@ public class CharacterManager {
     private Fallout plugin;
     private Map<UUID, Character> charactersByOwner = new HashMap<>();
     private Map<String, Character> charactersByName = new HashMap<>();
+    private Map<UUID, Character.CharacterBuilder> characterBuilders = new HashMap<>();
 
     /**
      * Creates a new {@link ninja.amp.fallout.characters.CharacterManager}.
@@ -92,6 +93,9 @@ public class CharacterManager {
         if (charactersByOwner.containsKey(ownerId)) {
             removeFromManager(charactersByOwner.get(ownerId));
         }
+        if (characterBuilders.containsKey(ownerId)) {
+            characterBuilders.remove(ownerId);
+        }
     }
 
     /**
@@ -118,20 +122,21 @@ public class CharacterManager {
     /**
      * Creates a character and adds it to the manager.
      * Player must not already own a character.
+     * Player must have a valid builder in the manager.
      *
      * @param owner The character's owner.
-     * @param builder The character builder.
      * @return The Character.
      */
-    public Character createCharacter(Player owner, Character.CharacterBuilder builder) {
+    public Character createCharacter(Player owner) {
         ConfigManager configManager = plugin.getConfigManager();
 
         // Create character from character builder and add to manager
-        Character character = new Character(builder);
+        UUID ownerId = owner.getUniqueId();
+        Character character = new Character(characterBuilders.get(ownerId));
+        characterBuilders.remove(ownerId);
         addToManager(character);
 
         // Add owning player to players config
-        UUID ownerId = owner.getUniqueId();
         FileConfiguration playerConfig = configManager.getConfig(ConfigType.PLAYER);
         playerConfig.set(ownerId.toString(), character.getCharacterName());
         configManager.getConfigAccessor(ConfigType.PLAYER).saveConfig();
@@ -178,6 +183,7 @@ public class CharacterManager {
     /**
      * Possesses a currently unowned character.
      * Character must exist in character config.
+     * Player must not already be an owner.
      *
      * @param owner The character's new owner.
      * @param characterName The character's name.
@@ -226,6 +232,9 @@ public class CharacterManager {
         UUID ownerId = owner.getUniqueId();
         Character character = charactersByOwner.get(ownerId);
 
+        // Remove character from manager
+        removeFromManager(character);
+
         // Abandon character
         character.abandon();
 
@@ -238,13 +247,30 @@ public class CharacterManager {
         configManager.getConfig(ConfigType.PLAYER).set(owner.getUniqueId().toString(), null);
         configManager.getConfigAccessor(ConfigType.PLAYER).saveConfig();
 
-        // Remove character from manager
-        removeFromManager(character);
-
         // Remove nickname from player if set
         if (plugin.getConfig().getBoolean("NicknamePlayers", true)) {
             plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), "nick " + character.getOwnerName() + " off");
         }
+    }
+
+    /**
+     * Adds a character builder to the manager for creation.
+     *
+     * @param player The character's owner.
+     * @param builder The character builder.
+     */
+    public void addCharacterBuilder(Player player, Character.CharacterBuilder builder) {
+        characterBuilders.put(player.getUniqueId(), builder);
+    }
+
+    /**
+     * Gets the character builder of a player.
+     *
+     * @param player The character's owner.
+     * @return The character builder.
+     */
+    public Character.CharacterBuilder getCharacterBuilder(Player player) {
+        return characterBuilders.get(player.getUniqueId());
     }
 
     /**
@@ -265,6 +291,17 @@ public class CharacterManager {
      */
     public boolean isCharacter(String characterName) {
         return charactersByName.containsKey(characterName.toLowerCase()) || plugin.getConfigManager().getConfig(ConfigType.CHARACTER).contains(characterName);
+    }
+
+    /**
+     * Checks if the character of a certain name can be possessed.
+     *
+     * @param characterName The character's name.
+     * @return True if the character can be possessed, else false.
+     */
+    public boolean canPossess(String characterName) {
+        FileConfiguration characterConfig = plugin.getConfigManager().getConfig(ConfigType.CHARACTER);
+        return characterConfig.contains(characterName) && !characterConfig.contains(characterName + ".ownerId");
     }
 
     /**

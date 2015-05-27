@@ -19,6 +19,7 @@
 package ninja.amp.fallout.message;
 
 import ninja.amp.fallout.Fallout;
+import ninja.amp.fallout.utils.FOUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +79,7 @@ public class PageList {
      */
     public void sendPage(int pageNumber, Object recipient) {
         int pageAmount = getPageAmount();
-        pageNumber = clamp(pageNumber, 1, pageAmount);
+        pageNumber = FOUtils.clamp(pageNumber, 1, pageAmount);
         Messenger messenger = plugin.getMessenger();
         messenger.sendRawMessage(recipient, Messenger.HIGHLIGHT_COLOR + "<-------<| " + Messenger.PRIMARY_COLOR + name + ": Page " + pageNumber + "/" + pageAmount + " " + Messenger.HIGHLIGHT_COLOR + "|>------->");
         int startIndex = messagesPerPage * (pageNumber - 1);
@@ -94,18 +95,6 @@ public class PageList {
      */
     public void setStrings(List<String> strings) {
         this.strings = strings;
-    }
-
-    /**
-     * Clamps a value between a minimum and maximum value.
-     *
-     * @param value The value.
-     * @param min   The minimum value.
-     * @param max   The maximum value.
-     * @return The clamped value.
-     */
-    private int clamp(int value, int min, int max) {
-        return Math.max(min, Math.min(max, value));
     }
 
     /**

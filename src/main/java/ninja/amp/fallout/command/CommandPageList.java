@@ -34,8 +34,10 @@ public class CommandPageList extends PageList {
         List<String> strings = new ArrayList<>();
         for (CommandGroup command : plugin.getCommandController().getCommands()) {
             for (CommandGroup child : command.getChildren(true)) {
-                strings.add(Messenger.PRIMARY_COLOR + ((Command) child).getCommandUsage());
-                strings.add(Messenger.SECONDARY_COLOR + "-" + ((Command) child).getDescription());
+                if (((Command) child).getVisible()) {
+                    strings.add(Messenger.PRIMARY_COLOR + ((Command) child).getCommandUsage());
+                    strings.add(Messenger.SECONDARY_COLOR + "-" + ((Command) child).getDescription());
+                }
             }
         }
         setStrings(strings);

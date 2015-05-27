@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.menus.items.special;
+package ninja.amp.fallout.command.commands.character.special;
 
 import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.characters.Character;
@@ -32,6 +32,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Inventory menu used for setting a character's SPECIAL.
+ */
 public class SpecialMenu extends ItemMenu {
     private CharacterManager characterManager;
     private Map<Character, Special> pendingSpecials = new HashMap<>();
@@ -73,6 +76,7 @@ public class SpecialMenu extends ItemMenu {
         setItem(25, new SpecialRemoveItem(plugin, this, Trait.LUCK));
     }
 
+    @Override
     public void open(Player player) {
         UUID playerId = player.getUniqueId();
         Character character = characterManager.getCharacterByOwner(playerId);
@@ -81,11 +85,22 @@ public class SpecialMenu extends ItemMenu {
         super.open(player);
     }
 
+    /**
+     * Gets the pending SPECIAL of a character.
+     *
+     * @param character The character.
+     * @return The character's modified SPECIAL.
+     */
     public Special getPendingSpecial(Character character) {
         return pendingSpecials.get(character);
     }
 
-    public void clearPendingSpecial(Character character) {
+    /**
+     * Resets a character's pending SPECIAL.
+     *
+     * @param character The character.
+     */
+    public void resetPendingSpecial(Character character) {
         pendingSpecials.remove(character);
     }
 }

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.menus.items.special;
+package ninja.amp.fallout.command.commands.character.special;
 
 import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.characters.Character;

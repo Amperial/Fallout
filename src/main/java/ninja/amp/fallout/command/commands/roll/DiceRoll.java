@@ -16,23 +16,26 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.rolls.combat;
+package ninja.amp.fallout.command.commands.roll;
 
-import ninja.amp.fallout.utils.FOArmor;
-import ninja.amp.fallout.utils.FOUtils;
+import ninja.amp.fallout.Fallout;
+import ninja.amp.fallout.command.Command;
+import org.bukkit.command.CommandSender;
 
-public class ArmorRoll {
-    private final FOArmor armorType;
-    private final DamageType damageType;
+/**
+ * A command that lets you manually roll the dice with an optional modifier.
+ */
+public class DiceRoll extends Command {
 
-    public ArmorRoll(FOArmor armorType, DamageType damageType) {
-        this.armorType = armorType;
-        this.damageType = damageType;
+    public DiceRoll(Fallout plugin) {
+        super(plugin, "dice");
+        setDescription("Manually rolls the dice with an optional modifier.");
+        setCommandUsage("/fo [global/private]roll dice <amount>d<sides>[+/-modifier]");
     }
 
-    public int roll() {
-        int roll = FOUtils.random(1, 6);
-        return roll;
-        //return armorType.canBlock(damageType, roll);
+    @Override
+    public void execute(String command, CommandSender sender, String[] args) {
+        // Command is only here to be shown in help.
+        // Rolling is handled in GlobalRoll/LocalRoll/PrivateRoll commands
     }
 }

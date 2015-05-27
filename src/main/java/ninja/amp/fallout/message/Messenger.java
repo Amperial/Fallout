@@ -23,9 +23,11 @@ import ninja.amp.fallout.characters.Character;
 import ninja.amp.fallout.config.ConfigType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,7 +54,7 @@ public class Messenger {
      * @param plugin The {@link ninja.amp.fallout.Fallout} instance.
      */
     public Messenger(Fallout plugin) {
-        this.debug = plugin.getConfig().getBoolean("debug", false);
+        this.debug = plugin.getConfig().getBoolean("Debug", false);
         this.log = plugin.getLogger();
 
         // Add missing messages to message config
@@ -85,6 +87,19 @@ public class Messenger {
             @Override
             public void sendMessage(Object recipient, String message) {
                 Bukkit.getPlayer(((Character) recipient).getOwnerId()).sendMessage(message);
+            }
+        });
+        int radius = plugin.getConfig().getInt("MessageRadius", 30);
+        final int radiusSquared = radius * radius;
+        registerRecipient(Location.class, new RecipientHandler() {
+            @Override
+            public void sendMessage(Object recipient, String message) {
+                Location location = (Location) recipient;
+                for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+                    if (location.getWorld().equals(player.getWorld()) && location.distanceSquared(player.getLocation()) <=  radiusSquared) {
+                        player.sendMessage(message);
+                    }
+                }
             }
         });
 

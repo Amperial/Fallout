@@ -27,6 +27,7 @@ import org.bukkit.command.CommandSender;
 public abstract class Command extends CommandGroup {
     private String commandUsage;
     private String description;
+    private boolean visible = true;
 
     /**
      * Creates a new Command.
@@ -72,6 +73,24 @@ public abstract class Command extends CommandGroup {
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /**
+     * Gets the command's visibility.
+     *
+     * @return The visibility.
+     */
+    public boolean getVisible() {
+        return visible;
+    }
+
+    /**
+     * Sets the command's visibility.
+     *
+     * @param visible The visibility.
+     */
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     @Override

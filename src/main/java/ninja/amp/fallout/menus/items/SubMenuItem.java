@@ -28,12 +28,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 /**
  * A {@link ninja.amp.fallout.menus.items.MenuItem} that opens a sub {@link ninja.amp.fallout.menus.ItemMenu}.
  */
-public class SubMenuItem extends MenuItem {
+public class SubMenuItem extends StaticMenuItem {
     private final JavaPlugin plugin;
     private final ItemMenu menu;
 
     public SubMenuItem(JavaPlugin plugin, String displayName, ItemStack icon, ItemMenu menu, String... lore) {
         super(displayName, icon, lore);
+
         this.plugin = plugin;
         this.menu = menu;
     }

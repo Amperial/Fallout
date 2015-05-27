@@ -19,44 +19,44 @@
 package ninja.amp.fallout.command.commands.character;
 
 import ninja.amp.fallout.Fallout;
-import ninja.amp.fallout.characters.Character;
 import ninja.amp.fallout.characters.CharacterManager;
 import ninja.amp.fallout.command.Command;
-import ninja.amp.fallout.menus.ItemMenu;
-import ninja.amp.fallout.menus.items.special.SpecialMenu;
 import ninja.amp.fallout.message.FOMessage;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
-import java.util.UUID;
-
 /**
- * A command that sets the sender's character's SPECIAL traits.
+ * A command that possesses a fallout character.
  */
-public class SetSpecial extends Command {
-    private ItemMenu menu;
+public class Possess extends Command {
 
-    public SetSpecial(Fallout plugin) {
-        super(plugin, "setspecial");
-        setDescription("Sets your fallout character's traits.");
-        setCommandUsage("/fo character setspecial");
-        setPermission(new Permission("fallout.character.setspecial", PermissionDefault.TRUE));
-
-        menu = new SpecialMenu(plugin);
+    public Possess(Fallout plugin) {
+        super(plugin, "possess");
+        setDescription("Possesses an unowned fallout character, abandoning your current.");
+        setCommandUsage("/fo character possess <character>");
+        setPermission(new Permission("fallout.character.possess", PermissionDefault.OP));
+        setArgumentRange(1, 1);
     }
 
     @Override
     public void execute(String command, CommandSender sender, String[] args) {
         Player player = (Player) sender;
-        UUID playerId = player.getUniqueId();
         CharacterManager characterManager = plugin.getCharacterManager();
-        if (characterManager.isOwner(playerId)) {
-            Character character = characterManager.getCharacterByOwner(playerId);
-            menu.open(player);
+        if (characterManager.isCharacter(args[0])) {
+            if (characterManager.canPossess(args[0])) {
+                if (characterManager.isOwner(player.getUniqueId())) {
+                    characterManager.abandonCharacter(player);
+                    plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_ABANDON);
+                }
+                characterManager.possessCharacter(player, args[0]);
+                plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_POSSESS, args[0]);
+            } else {
+                plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_ALREADYOWNED);
+            }
         } else {
-            plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_NOTOWNER);
+            plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_DOESNTEXIST);
         }
     }
 }
