@@ -67,7 +67,13 @@ public enum FOMessage {
 
     ROLL_MESSAGE("Roll.Message", "You rolled a %s in %s with a modifier of %s. %s!"),
     ROLL_BROADCAST("Roll.Broadcast", "%s rolled a %s in %s with a modifier of %s. %s!"),
-    ROLL_CANTROLL("Roll.CantRoll", "&4%s is not a Skill or SPECIAL trait.");
+    ROLL_DICEMESSAGE("Roll.DiceMessage", "You rolled a %s. %s: %s"),
+    ROLL_DICEBROADCAST("Roll.DiceBroadcast", "%s rolled a %s. %s: %s"),
+    ROLL_ARMORMESSAGE("Roll.ArmorMessage", ""),
+    ROLL_ARMORBROADCAST("Roll.ArmorBroadcast", ""),
+    ROLL_CANTROLL("Roll.CantRoll", "&4%s is not a Skill or SPECIAL trait."),
+    ROLL_DICEAMOUNT("Roll.DiceAmount", "&4Cannot roll this many dice at once!"),
+    ROLL_DICESIDES("Roll.DiceSides", "&4Dice cannot have this many sides!");
 
     private String message;
     private final String path;

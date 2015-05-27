@@ -4,6 +4,12 @@ Debug: false
 MessageRadius: 30
 # If players should be nicknamed as their character
 NicknamePlayers: true
+# Maximum amount of dice rolled at once in a global or local roll
+PublicDiceLimit: 15
+# Maximum amount of dice rolled at once in a private roll
+PrivateDiceLimit: 40
+# Maximum dice sides in a roll
+DiceSidesLimit: 99
 # If mobs should drop exp upon death
 PreventMobsDroppingExp: true
 # If players should be prevented from crafting diamond armor

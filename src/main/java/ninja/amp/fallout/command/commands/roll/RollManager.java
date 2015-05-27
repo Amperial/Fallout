@@ -28,15 +28,28 @@ import ninja.amp.fallout.utils.ArmorMaterial;
 import ninja.amp.fallout.utils.DamageType;
 import ninja.amp.fallout.utils.FOArmor;
 import ninja.amp.fallout.utils.FOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
+/**
+ * Manages all rolling in fallout.
+ */
 public class RollManager {
     private Fallout plugin;
+    private int publicDiceLimit;
+    private int privateDiceLimit;
+    private int diceSidesLimit;
 
     public RollManager(Fallout plugin) {
         this.plugin = plugin;
+
+        FileConfiguration config = plugin.getConfig();
+        publicDiceLimit = config.getInt("PublicDiceLimit", 15);
+        privateDiceLimit = config.getInt("PrivateDiceLimit", 40);
+        diceSidesLimit = config.getInt("DiceSidesLimit", 99);
     }
 
     public void rollDefault(Player player, String value, Distance distance) {
@@ -135,7 +148,7 @@ public class RollManager {
             // Perform the roll
             DamageType damageType = DamageType.fromName(rolling);
             if (damageType == null) {
-                // TODO: error u fukd up syntax
+                plugin.getMessenger().sendMessage(player, FOMessage.COMMAND_USAGE, "/fo roll armor <damage type>[+/-modifier]");
                 return;
             }
             boolean blocked;
@@ -199,23 +212,41 @@ public class RollManager {
                     }
                 }
             } catch (ArrayIndexOutOfBoundsException e) {
-                // TODO: error u fukd up syntax
+                plugin.getMessenger().sendMessage(player, FOMessage.COMMAND_USAGE, "/fo roll dice <amount>d<sides>[+/-modifier]");
                 return;
             } catch (NumberFormatException e) {
                 plugin.getMessenger().sendMessage(player, FOMessage.ERROR_MODIFIERSYNTAX);
                 return;
             }
 
-            // Perform the roll
-            // TODO: amount?
-            int roll = FOUtils.random(1, sides) + modifier;
-            // TODO: messages
+            if ((distance == Distance.PRIVATE && amount > privateDiceLimit) || (distance != Distance.PRIVATE && amount > publicDiceLimit)) {
+                plugin.getMessenger().sendMessage(player, FOMessage.ROLL_DICEAMOUNT);
+                return;
+            }
+            if (sides > diceSidesLimit) {
+                plugin.getMessenger().sendMessage(player, FOMessage.ROLL_DICESIDES);
+                return;
+            }
+
+            // Perform the rolls
+            Object[] rolls = new Object[amount];
+            int total = 0;
+            for (int i = 0; i < amount; i++) {
+                int roll = FOUtils.random(1, sides) + modifier;
+                rolls[i] = roll;
+                total += roll;
+            }
+            String outcome = StringUtils.join(rolls, '+');
+
             switch (distance) {
                 case GLOBAL:
+                    plugin.getMessenger().sendMessage(plugin.getServer(), FOMessage.ROLL_DICEBROADCAST, character.getCharacterName(), value, outcome, total);
                     break;
                 case LOCAL:
+                    plugin.getMessenger().sendMessage(player.getLocation(), FOMessage.ROLL_DICEBROADCAST, character.getCharacterName(), value, outcome, total);
                     break;
                 case PRIVATE:
+                    plugin.getMessenger().sendMessage(player, FOMessage.ROLL_DICEMESSAGE, value, outcome, total);
                     break;
             }
         } else {
