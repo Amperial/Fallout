@@ -69,8 +69,8 @@ public enum FOMessage {
     ROLL_BROADCAST("Roll.Broadcast", "%s rolled a %s in %s with a modifier of %s. %s!"),
     ROLL_DICEMESSAGE("Roll.DiceMessage", "You rolled a %s. %s: %s"),
     ROLL_DICEBROADCAST("Roll.DiceBroadcast", "%s rolled a %s. %s: %s"),
-    ROLL_ARMORMESSAGE("Roll.ArmorMessage", ""),
-    ROLL_ARMORBROADCAST("Roll.ArmorBroadcast", ""),
+    ROLL_ARMORMESSAGE("Roll.ArmorMessage", "You attempt to block %s damage. %s!"),
+    ROLL_ARMORBROADCAST("Roll.ArmorBroadcast", "%s attempts to block %s damage. %s!"),
     ROLL_CANTROLL("Roll.CantRoll", "&4%s is not a Skill or SPECIAL trait."),
     ROLL_DICEAMOUNT("Roll.DiceAmount", "&4Cannot roll this many dice at once!"),
     ROLL_DICESIDES("Roll.DiceSides", "&4Dice cannot have this many sides!");

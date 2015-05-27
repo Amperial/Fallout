@@ -52,6 +52,13 @@ public class RollManager {
         diceSidesLimit = config.getInt("DiceSidesLimit", 99);
     }
 
+    /**
+     * Rolls a skill or trait with an optional modifier.
+     *
+     * @param player The player rolling.
+     * @param value The roll parameters: <trait/skill>[+/-modifier].
+     * @param distance The broadcast distance of the roll.
+     */
     public void rollDefault(Player player, String value, Distance distance) {
         UUID playerId = player.getUniqueId();
         CharacterManager characterManager = plugin.getCharacterManager();
@@ -119,6 +126,13 @@ public class RollManager {
         }
     }
 
+    /**
+     * Rolls to see if a player's armor can absorb a hit with an optional modifier.
+     *
+     * @param player The player rolling.
+     * @param value T roll parameters: <damage type>[+/-modifier].
+     * @param distance The broadcast distance of the roll.
+     */
     public void rollArmor(Player player, String value, Distance distance) {
         UUID playerId = player.getUniqueId();
         CharacterManager characterManager = plugin.getCharacterManager();
@@ -154,29 +168,33 @@ public class RollManager {
             boolean blocked;
             if (ArmorMaterial.isWearingFullSet(player)) {
                 FOArmor foArmor = ArmorMaterial.getArmorMaterial(player.getInventory().getHelmet().getType()).getFOVersion();
-                int roll = FOUtils.random(1, 20) + modifier;
+                int roll = FOUtils.random(1, 6) + modifier;
                 blocked = foArmor.canBlock(damageType, roll);
             } else {
                 blocked = false;
             }
             if (blocked) {
-                // TODO: blocked messages
                 switch (distance) {
                     case GLOBAL:
+                        plugin.getMessenger().sendMessage(plugin.getServer(), FOMessage.ROLL_ARMORBROADCAST, character.getCharacterName(), damageType.getName(), "Success");
                         break;
                     case LOCAL:
+                        plugin.getMessenger().sendMessage(player.getLocation(), FOMessage.ROLL_ARMORBROADCAST, character.getCharacterName(), damageType.getName(), "Success");
                         break;
                     case PRIVATE:
+                        plugin.getMessenger().sendMessage(player, FOMessage.ROLL_ARMORMESSAGE, damageType.getName(), "Success");
                         break;
                 }
             } else {
-                // TODO: not blocked messages
                 switch (distance) {
                     case GLOBAL:
+                        plugin.getMessenger().sendMessage(plugin.getServer(), FOMessage.ROLL_ARMORBROADCAST, character.getCharacterName(), damageType.getName(), "Failure");
                         break;
                     case LOCAL:
+                        plugin.getMessenger().sendMessage(player.getLocation(), FOMessage.ROLL_ARMORBROADCAST, character.getCharacterName(), damageType.getName(), "Failure");
                         break;
                     case PRIVATE:
+                        plugin.getMessenger().sendMessage(player, FOMessage.ROLL_ARMORMESSAGE, damageType.getName(), "Failure");
                         break;
                 }
             }
@@ -185,6 +203,13 @@ public class RollManager {
         }
     }
 
+    /**
+     * Manually rolls the dice with an optional modifier.
+     *
+     * @param player The player rolling.
+     * @param value The roll parameters: <amount>d<sides>[+/-modifier].
+     * @param distance The broadcast distance of the roll.
+     */
     public void rollDice(Player player, String value, Distance distance) {
         UUID playerId = player.getUniqueId();
         CharacterManager characterManager = plugin.getCharacterManager();
@@ -254,14 +279,38 @@ public class RollManager {
         }
     }
 
+    /**
+     * Gets the modifier of a SPECIAL roll.
+     *
+     * @param character The character rolling.
+     * @param trait The trait being rolled.
+     * @param modifier The optional extra modifier.
+     * @return The final modifier of the SPECIAL roll.
+     */
     public int specialModifier(ninja.amp.fallout.characters.Character character, Trait trait, int modifier) {
         return character.getSpecial().get(trait) + modifier;
     }
 
+    /**
+     * Gets the modifier of a skill roll.
+     *
+     * @param character The character rolling.
+     * @param skill The skill being rolled.
+     * @param modifier The optional extra modifier.
+     * @return The final modifier of the skill roll.
+     */
     public int skillModifier(Character character, Skill skill, int modifier) {
         return character.skillLevel(skill) + skill.getRollModifier(character.getSpecial()) + modifier;
     }
 
+    /**
+     * Gets the result of a SPECIAL or skill roll.
+     *
+     * @param roll The roll value.
+     * @param modifier The roll modifier.
+     * @param luck The luck value.
+     * @return The final result of the SPECIAL or skill roll.
+     */
     public Result getResult(int roll, int modifier, int luck) {
         // 1 or 20 is always critical
         if (roll == 1) {
@@ -313,6 +362,9 @@ public class RollManager {
         }
     }
 
+    /**
+     * Broadcast distance of a roll.
+     */
     public enum Distance {
         GLOBAL,
         LOCAL,
