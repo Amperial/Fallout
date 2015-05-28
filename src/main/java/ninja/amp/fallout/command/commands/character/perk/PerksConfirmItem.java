@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.command.commands.character.special;
+package ninja.amp.fallout.command.commands.character.perk;
 
 import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.characters.Character;
-import ninja.amp.fallout.characters.Special;
+import ninja.amp.fallout.characters.Perk;
 import ninja.amp.fallout.menus.events.ItemClickEvent;
 import ninja.amp.fallout.menus.items.StaticMenuItem;
 import ninja.amp.fallout.message.FOMessage;
@@ -29,15 +29,17 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
 import java.util.UUID;
 
-public class SpecialConfirmItem extends StaticMenuItem {
+public class PerksConfirmItem extends StaticMenuItem {
     private Fallout plugin;
-    private SpecialMenu menu;
+    private PerksMenu menu;
 
-    public SpecialConfirmItem(Fallout plugin, SpecialMenu menu) {
-        super(ChatColor.GREEN + "Confirm SPECIAL Modification",
-                new ItemStack(Material.EMERALD_BLOCK));
+    public PerksConfirmItem(Fallout plugin, PerksMenu menu) {
+        super(ChatColor.GREEN + "Confirm Perk Selection",
+                new ItemStack(Material.EMERALD_BLOCK),
+                "THIS IS PERMANENT");
 
         this.plugin = plugin;
         this.menu = menu;
@@ -48,17 +50,17 @@ public class SpecialConfirmItem extends StaticMenuItem {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
         Character character = plugin.getCharacterManager().getCharacterByOwner(playerId);
-        Special special = menu.getPendingSpecial(character);
 
-        if (character.getRace().isValid(special)) {
-            character.getSpecial().set(special);
-            plugin.getCharacterManager().saveCharacter(character);
-            plugin.getMessenger().sendMessage(player, FOMessage.SPECIAL_SET, character.getCharacterName());
-        } else {
-            plugin.getMessenger().sendMessage(player, FOMessage.SPECIAL_INVALID);
+        List<Perk> perks = menu.getPerks(player);
+        for (Perk perk : perks) {
+            if (!character.hasPerk(perk)) {
+                character.addPerk(perk);
+            }
         }
+        plugin.getCharacterManager().saveCharacter(character);
+        plugin.getMessenger().sendMessage(player, FOMessage.PERKS_CONFIRM);
 
-        menu.resetPendingSpecial(character);
+        menu.resetOptions(player);
         event.setWillClose(true);
     }
 }

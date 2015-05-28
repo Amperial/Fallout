@@ -30,10 +30,9 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 /**
- * Inventory menu used for setting a character's SPECIAL.
+ * Inventory menu used for viewing and setting a character's SPECIAL.
  */
 public class SpecialMenu extends ItemMenu {
     private CharacterManager characterManager;
@@ -74,12 +73,13 @@ public class SpecialMenu extends ItemMenu {
         setItem(16, new SpecialItem(plugin, this, Trait.LUCK, new ItemStack(Material.DIAMOND_SWORD)));
         setItem(7, new SpecialAddItem(plugin, this, Trait.LUCK));
         setItem(25, new SpecialRemoveItem(plugin, this, Trait.LUCK));
+
+        fillEmptySlots();
     }
 
     @Override
     public void open(Player player) {
-        UUID playerId = player.getUniqueId();
-        Character character = characterManager.getCharacterByOwner(playerId);
+        Character character = characterManager.getCharacterByOwner(player.getUniqueId());
         pendingSpecials.put(character, new Special(character.getSpecial()));
 
         super.open(player);

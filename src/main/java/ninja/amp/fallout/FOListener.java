@@ -43,6 +43,8 @@ import java.util.UUID;
  */
 public class FOListener implements Listener {
     private Fallout plugin;
+    private boolean preventCraftingDiamondArmor;
+    private boolean preventMobsDroppingExp;
 
     /**
      * Creates a new FOListener.
@@ -53,6 +55,8 @@ public class FOListener implements Listener {
         this.plugin = plugin;
 
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        preventCraftingDiamondArmor = plugin.getConfig().getBoolean("PreventCraftingDiamondArmor", false);
+        preventMobsDroppingExp = plugin.getConfig().getBoolean("PreventMobsDroppingExp", false);
     }
 
     /**
@@ -186,7 +190,7 @@ public class FOListener implements Listener {
      */
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
-        if (event.getEntity() instanceof Creature && plugin.getConfig().getBoolean("PreventMobsDroppingExp", true)) {
+        if (event.getEntity() instanceof Creature && preventMobsDroppingExp) {
             event.setDroppedExp(0);
         }
     }
@@ -196,7 +200,7 @@ public class FOListener implements Listener {
      */
     @EventHandler
     public void onDiamondArmorCraft(CraftItemEvent event) {
-        if (plugin.getConfig().getBoolean("PreventCraftingDiamondArmor", true)) {
+        if (preventCraftingDiamondArmor) {
             Material material = event.getRecipe().getResult().getType();
             if (ArmorType.isArmor(material) && ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.DIAMOND)) {
                 event.setCancelled(true);

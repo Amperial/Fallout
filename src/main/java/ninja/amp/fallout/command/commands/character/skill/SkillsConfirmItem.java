@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.command.commands.character.special;
+package ninja.amp.fallout.command.commands.character.skill;
 
 import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.characters.Character;
-import ninja.amp.fallout.characters.Special;
+import ninja.amp.fallout.characters.Skill;
 import ninja.amp.fallout.menus.events.ItemClickEvent;
 import ninja.amp.fallout.menus.items.StaticMenuItem;
 import ninja.amp.fallout.message.FOMessage;
@@ -29,15 +29,17 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Map;
 import java.util.UUID;
 
-public class SpecialConfirmItem extends StaticMenuItem {
+public class SkillsConfirmItem extends StaticMenuItem {
     private Fallout plugin;
-    private SpecialMenu menu;
+    private SkillsMenu menu;
 
-    public SpecialConfirmItem(Fallout plugin, SpecialMenu menu) {
-        super(ChatColor.GREEN + "Confirm SPECIAL Modification",
-                new ItemStack(Material.EMERALD_BLOCK));
+    public SkillsConfirmItem(Fallout plugin, SkillsMenu menu) {
+        super(ChatColor.GREEN + "Confirm Skill Allocation",
+                new ItemStack(Material.EMERALD_BLOCK),
+                "THIS IS PERMANENT");
 
         this.plugin = plugin;
         this.menu = menu;
@@ -48,17 +50,15 @@ public class SpecialConfirmItem extends StaticMenuItem {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
         Character character = plugin.getCharacterManager().getCharacterByOwner(playerId);
-        Special special = menu.getPendingSpecial(character);
+        Map<Skill, Integer> skills = menu.getPendingSkills(character);
 
-        if (character.getRace().isValid(special)) {
-            character.getSpecial().set(special);
-            plugin.getCharacterManager().saveCharacter(character);
-            plugin.getMessenger().sendMessage(player, FOMessage.SPECIAL_SET, character.getCharacterName());
-        } else {
-            plugin.getMessenger().sendMessage(player, FOMessage.SPECIAL_INVALID);
+        for (Map.Entry<Skill, Integer> skill : skills.entrySet()) {
+            character.setSkillLevel(skill.getKey(), skill.getValue());
         }
+        plugin.getCharacterManager().saveCharacter(character);
+        plugin.getMessenger().sendMessage(player, FOMessage.SKILLS_CONFIRM);
 
-        menu.resetPendingSpecial(character);
+        menu.resetPendingSkills(character);
         event.setWillClose(true);
     }
 }

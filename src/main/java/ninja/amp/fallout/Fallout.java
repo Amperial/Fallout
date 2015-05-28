@@ -29,7 +29,12 @@ import ninja.amp.fallout.command.commands.Whois;
 import ninja.amp.fallout.command.commands.character.Abandon;
 import ninja.amp.fallout.command.commands.character.Delete;
 import ninja.amp.fallout.command.commands.character.Possess;
+import ninja.amp.fallout.command.commands.character.Upgrade;
 import ninja.amp.fallout.command.commands.character.creation.Create;
+import ninja.amp.fallout.command.commands.character.perk.Perks;
+import ninja.amp.fallout.command.commands.character.perk.ResetPerks;
+import ninja.amp.fallout.command.commands.character.skill.ResetSkills;
+import ninja.amp.fallout.command.commands.character.skill.Skills;
 import ninja.amp.fallout.command.commands.character.special.ListSpecial;
 import ninja.amp.fallout.command.commands.character.special.SetSpecial;
 import ninja.amp.fallout.command.commands.character.special.SpecialMenu;
@@ -70,15 +75,29 @@ public class Fallout extends JavaPlugin {
 
         // Create fallout command tree
         SpecialMenu specialMenu = new SpecialMenu(this);
-        Command setSpecial = new SetSpecial(this, specialMenu);
+        Command create = new Create(this, specialMenu);
+        Command delete = new Delete(this);
+        Command possess = new Possess(this);
+        Command abandon = new Abandon(this);
+        Command upgrade = new Upgrade(this);
         Command listSpecial = new ListSpecial(this);
+        Command setSpecial = new SetSpecial(this, specialMenu);
+        Command skills = new Skills(this);
+        Command resetSkills = new ResetSkills(this);
+        Command perks = new Perks(this);
+        Command resetPerks = new ResetPerks(this);
         CommandGroup character = new CommandGroup(this, "character")
-                .addChildCommand(new Create(this, specialMenu))
-                .addChildCommand(new Delete(this))
-                .addChildCommand(new Possess(this))
-                .addChildCommand(new Abandon(this))
+                .addChildCommand(create)
+                .addChildCommand(delete)
+                .addChildCommand(possess)
+                .addChildCommand(abandon)
+                .addChildCommand(upgrade)
                 .addChildCommand(listSpecial)
-                .addChildCommand(setSpecial);
+                .addChildCommand(setSpecial)
+                .addChildCommand(skills)
+                .addChildCommand(resetSkills)
+                .addChildCommand(perks)
+                .addChildCommand(resetPerks);
         character.setPermission(new Permission("fallout.character.all", PermissionDefault.OP));
         CommandGroup fallout = new CommandGroup(this, "fallout")
                 .addChildCommand(new AboutCommand(this))
@@ -90,8 +109,17 @@ public class Fallout extends JavaPlugin {
                 .addChildCommand(new GlobalRoll(this))
                 .addChildCommand(new PrivateRoll(this))
                 .addChildCommand(new Whois(this))
+                .addChildCommand(create)
+                .addChildCommand(delete)
+                .addChildCommand(possess)
+                .addChildCommand(abandon)
+                .addChildCommand(upgrade)
                 .addChildCommand(listSpecial)
                 .addChildCommand(setSpecial)
+                .addChildCommand(skills)
+                .addChildCommand(resetSkills)
+                .addChildCommand(perks)
+                .addChildCommand(resetPerks)
                 .addChildCommand(character);
         fallout.setPermission(new Permission("fallout.all", PermissionDefault.OP));
         commandController.addCommand(fallout);

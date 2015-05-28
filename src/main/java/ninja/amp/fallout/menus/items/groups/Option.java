@@ -29,6 +29,7 @@ import java.util.UUID;
  */
 public class Option {
     private Map<UUID, OptionItem> selected = new HashMap<>();
+    private Map<String, OptionItem> options = new HashMap<>();
 
     /**
      * Gets the OptionItem selected by a player.
@@ -57,5 +58,24 @@ public class Option {
      */
     public void removeSelected(Player player) {
         selected.remove(player.getUniqueId());
+    }
+
+    /**
+     * Gets the OptionItem represented by its display name.
+     *
+     * @param name The name.
+     * @return The OptionItem.
+     */
+    public OptionItem getOption(String name) {
+        return options.get(name);
+    }
+
+    /**
+     * Adds an OptionItem to the group of possible options.
+     *
+     * @param option The OptionItem.
+     */
+    public void addOption(OptionItem option) {
+        options.put(option.getDisplayName(), option);
     }
 }

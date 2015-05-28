@@ -52,24 +52,26 @@ public class CreateMenu extends ItemMenu {
         ItemStack unselected = new ItemStack(Material.WOOL, 1, DyeColor.GRAY.getWoolData());
 
         gender = new EnumOption<>();
-        setItem(1, new EnumOptionItem<>(plugin, gender, Character.Gender.MALE, "Male", selected, unselected));
-        setItem(2, new EnumOptionItem<>(plugin, gender, Character.Gender.FEMALE, "Female", selected, unselected));
+        setItem(1, new EnumOptionItem<>(gender, Character.Gender.MALE, "Male", selected, unselected));
+        setItem(2, new EnumOptionItem<>(gender, Character.Gender.FEMALE, "Female", selected, unselected));
 
         race = new EnumOption<>();
-        setItem(4, new EnumOptionItem<>(plugin, race, Race.WASTELANDER, "Wastelander", selected, unselected));
-        setItem(5, new EnumOptionItem<>(plugin, race, Race.GHOUL, "Ghoul", selected, unselected));
-        setItem(6, new EnumOptionItem<>(plugin, race, Race.SUPER_MUTANT, "Super Mutant", selected, unselected));
-        setItem(7, new EnumOptionItem<>(plugin, race, Race.VAULT_DWELLER, "Vault Dweller", selected, unselected));
+        setItem(4, new EnumOptionItem<>(race, Race.WASTELANDER, "Wastelander", selected, unselected));
+        setItem(5, new EnumOptionItem<>(race, Race.GHOUL, "Ghoul", selected, unselected));
+        setItem(6, new EnumOptionItem<>(race, Race.SUPER_MUTANT, "Super Mutant", selected, unselected));
+        setItem(7, new EnumOptionItem<>(race, Race.VAULT_DWELLER, "Vault Dweller", selected, unselected));
 
         conformity = new Option();
-        setItem(19, new OptionItem(plugin, conformity, "Lawful", selected, unselected));
-        setItem(20, new OptionItem(plugin, conformity, "Balanced", selected, unselected));
-        setItem(21, new OptionItem(plugin, conformity, "Chaotic", selected, unselected));
+        setItem(19, new OptionItem(conformity, "Lawful", selected, unselected));
+        setItem(20, new OptionItem(conformity, "Balanced", selected, unselected));
+        setItem(21, new OptionItem(conformity, "Chaotic", selected, unselected));
 
         morality = new Option();
-        setItem(23, new OptionItem(plugin, morality, "Good", selected, unselected));
-        setItem(24, new OptionItem(plugin, morality, "Neutral", selected, unselected));
-        setItem(25, new OptionItem(plugin, morality, "Evil", selected, unselected));
+        setItem(23, new OptionItem(morality, "Good", selected, unselected));
+        setItem(24, new OptionItem(morality, "Neutral", selected, unselected));
+        setItem(25, new OptionItem(morality, "Evil", selected, unselected));
+
+        fillEmptySlots();
     }
 
     /**

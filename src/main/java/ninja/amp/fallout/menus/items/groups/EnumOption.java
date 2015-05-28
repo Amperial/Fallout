@@ -29,6 +29,7 @@ import java.util.UUID;
  */
 public class EnumOption<E extends Enum<E>> {
     private Map<UUID, EnumOptionItem<E>> selected = new HashMap<>();
+    private Map<E, EnumOptionItem<E>> options = new HashMap<>();
 
     /**
      * Gets the EnumOptionItem selected by a player.
@@ -57,5 +58,24 @@ public class EnumOption<E extends Enum<E>> {
      */
     public void removeSelected(Player player) {
         selected.remove(player.getUniqueId());
+    }
+
+    /**
+     * Gets the EnumOptionItem represented by a certain Enum constant.
+     *
+     * @param e The Enum constant.
+     * @return The EnumOptionItem.
+     */
+    public EnumOptionItem<E> getOption(E e) {
+        return options.get(e);
+    }
+
+    /**
+     * Adds an EnumOptionItem to the group of possible options.
+     *
+     * @param option The EnumOptionItem.
+     */
+    public void addOption(EnumOptionItem<E> option) {
+        options.put(option.getEnum(), option);
     }
 }

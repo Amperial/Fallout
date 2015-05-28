@@ -16,44 +16,34 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.menus.items.groups;
+package ninja.amp.fallout.command.commands.character.skill;
 
+import ninja.amp.fallout.Fallout;
+import ninja.amp.fallout.characters.CharacterManager;
 import ninja.amp.fallout.menus.events.ItemClickEvent;
 import ninja.amp.fallout.menus.items.StaticMenuItem;
-import org.bukkit.entity.Player;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-/**
- * A {@link ninja.amp.fallout.menus.items.MenuItem} that is part of an {@link Option}.
- */
-public class OptionItem extends StaticMenuItem {
-    private Option group;
-    private ItemStack unselected;
+public class SkillsCancelItem extends StaticMenuItem {
+    private CharacterManager characterManager;
+    private SkillsMenu menu;
 
-    public OptionItem(Option group, String displayName, ItemStack selected, ItemStack unselected, String... lore) {
-        super(displayName, selected, lore);
+    public SkillsCancelItem(Fallout plugin, SkillsMenu menu) {
+        super(ChatColor.DARK_RED + "Cancel Skill Allocation",
+                new ItemStack(Material.REDSTONE_BLOCK),
+                "Cancels the current",
+                "selection and exits",
+                "the menu.");
 
-        this.group = group;
-        group.addOption(this);
-        this.unselected = unselected.clone();
-        setNameAndLore(this.unselected, getDisplayName(), getLore());
-    }
-
-    @Override
-    public ItemStack getFinalIcon(Player player) {
-        ItemStack finalIcon = super.getFinalIcon(player);
-
-        if (!this.equals(group.getSelected(player))) {
-            finalIcon = unselected;
-        }
-
-        return finalIcon;
+        this.characterManager = plugin.getCharacterManager();
+        this.menu = menu;
     }
 
     @Override
     public void onItemClick(ItemClickEvent event) {
-        group.setSelected(event.getPlayer(), this);
-
-        event.setWillUpdate(true);
+        menu.resetPendingSkills(characterManager.getCharacterByOwner(event.getPlayer().getUniqueId()));
+        event.setWillClose(true);
     }
 }

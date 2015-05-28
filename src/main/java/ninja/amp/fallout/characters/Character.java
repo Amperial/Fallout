@@ -64,6 +64,9 @@ public class Character {
         this.gender = builder.gender;
         this.alignment = builder.alignment;
         this.special = race.getMinSpecial();
+        for (Skill skill : Skill.class.getEnumConstants()) {
+            skills.put(skill, 1);
+        }
         this.level = 0;
     }
 
@@ -101,9 +104,7 @@ public class Character {
         special = new Special(traits);
         ConfigurationSection skillLevels = section.getConfigurationSection("skills");
         for (Skill skill : Skill.class.getEnumConstants()) {
-            if (skillLevels.contains(skill.name())) {
-                skills.put(skill, skillLevels.getInt(skill.name()));
-            }
+            skills.put(skill, skillLevels.getInt(skill.name()));
         }
         List<String> perkNames = section.getStringList("perks");
         for (String perkName : perkNames) {
@@ -213,12 +214,21 @@ public class Character {
     }
 
     /**
-     * Teaches the character a perk.
+     * Adds a perk to the character.
      *
      * @param perk The perk to add.
      */
-    public void teachPerk(Perk perk) {
+    public void addPerk(Perk perk) {
         perks.add(perk);
+    }
+
+    /**
+     * Removes a perk from the character.
+     *
+     * @param perk The perk to remove.
+     */
+    public void removePerk(Perk perk) {
+        perks.remove(perk);
     }
 
     /**
@@ -254,16 +264,13 @@ public class Character {
     }
 
     /**
-     * Increases the level of the character's skill.
+     * Sets the level of the character's skill.
      *
      * @param skill The skill.
+     * @param level The level.
      */
-    public void increaseSkill(Skill skill) {
-        if (skills.containsKey(skill)) {
-            skills.put(skill, skills.get(skill) + 1);
-        } else {
-            skills.put(skill, 1);
-        }
+    public void setSkillLevel(Skill skill, int level) {
+        skills.put(skill, level);
     }
 
     /**
@@ -286,6 +293,22 @@ public class Character {
             skillLevels.add(skill.getKey().getName() + " - " + skill.getValue());
         }
         return StringUtils.join(skillLevels, ", ");
+    }
+
+    /**
+     * Gets the character's level.
+     *
+     * @return The level.
+     */
+    public int getLevel() {
+        return level;
+    }
+
+    /**
+     * Increases the character's level by 1.
+     */
+    public void increaseLevel() {
+        level += 1;
     }
 
     /**

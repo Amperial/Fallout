@@ -63,14 +63,14 @@ public enum Perk {
 
     private final String name;
     private int tier;
-    private final String modifiers;
+    private final String description;
     private static final Map<Integer, Set<Perk>> tiers;
     private static final List<String> perkNames;
 
-    private Perk(int tier, String name, String modifiers) {
+    private Perk(int tier, String name, String description) {
         this.name = name;
         this.tier = tier;
-        this.modifiers = modifiers;
+        this.description = description;
     }
 
     /**
@@ -92,12 +92,12 @@ public enum Perk {
     }
 
     /**
-     * Gets the modifiers of the perk.
+     * Gets the description of the perk.
      *
-     * @return The perk's modifiers.
+     * @return The perk's description.
      */
-    public String getModifiers() {
-        return modifiers;
+    public String getDescription() {
+        return description;
     }
 
     /**

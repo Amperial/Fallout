@@ -306,7 +306,7 @@ public class RollManager {
      * @return The final modifier of the skill roll.
      */
     public int skillModifier(Character character, Skill skill, int modifier) {
-        return character.skillLevel(skill) + skill.getRollModifier(character.getSpecial()) + modifier;
+        return character.skillLevel(skill) - 1 + skill.getRollModifier(character.getSpecial()) + modifier;
     }
 
     /**

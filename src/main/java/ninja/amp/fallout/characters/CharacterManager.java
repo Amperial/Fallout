@@ -73,8 +73,7 @@ public class CharacterManager {
             Character character = new Character(characterConfig.getConfigurationSection(characterName));
 
             // Save loaded character to update any information
-            character.save(characterConfig.getConfigurationSection(characterName));
-            configManager.getConfigAccessor(ConfigType.CHARACTER).saveConfig();
+            saveCharacter(character);
 
             // Add character to manager
             return addToManager(character);
@@ -96,6 +95,17 @@ public class CharacterManager {
         if (characterBuilders.containsKey(ownerId)) {
             characterBuilders.remove(ownerId);
         }
+    }
+
+    /**
+     * Saves a character to the correct location in the character config.
+     *
+     * @param character The character.
+     */
+    public void saveCharacter(Character character) {
+        FileConfiguration characterConfig = plugin.getConfigManager().getConfig(ConfigType.CHARACTER);
+        character.save(characterConfig.getConfigurationSection(character.getCharacterName()));
+        plugin.getConfigManager().getConfigAccessor(ConfigType.CHARACTER).saveConfig();
     }
 
     /**
@@ -142,10 +152,8 @@ public class CharacterManager {
         configManager.getConfigAccessor(ConfigType.PLAYER).saveConfig();
 
         // Add character to character config
-        FileConfiguration characterConfig = configManager.getConfig(ConfigType.CHARACTER);
-        characterConfig.createSection(character.getCharacterName());
-        character.save(characterConfig.getConfigurationSection(character.getCharacterName()));
-        configManager.getConfigAccessor(ConfigType.CHARACTER).saveConfig();
+        configManager.getConfig(ConfigType.CHARACTER).createSection(character.getCharacterName());
+        saveCharacter(character);
 
         // Nickname player
         if (plugin.getConfig().getBoolean("NicknamePlayers", true)) {
@@ -200,8 +208,7 @@ public class CharacterManager {
             character.possess(owner);
 
             // Save loaded character to update owner information
-            character.save(characterConfig.getConfigurationSection(characterName));
-            configManager.getConfigAccessor(ConfigType.CHARACTER).saveConfig();
+            saveCharacter(character);
 
             // Add owning player to players config
             FileConfiguration playerConfig = configManager.getConfig(ConfigType.PLAYER);
@@ -232,16 +239,14 @@ public class CharacterManager {
         UUID ownerId = owner.getUniqueId();
         Character character = charactersByOwner.get(ownerId);
 
-        // Remove character from manager
+        // Remove character from manager (must be done before abandoning)
         removeFromManager(character);
 
         // Abandon character
         character.abandon();
 
         // Save character to update owner information
-        FileConfiguration characterConfig = configManager.getConfig(ConfigType.CHARACTER);
-        character.save(characterConfig.getConfigurationSection(character.getCharacterName()));
-        configManager.getConfigAccessor(ConfigType.CHARACTER).saveConfig();
+        saveCharacter(character);
 
         // Remove owning player from players config
         configManager.getConfig(ConfigType.PLAYER).set(owner.getUniqueId().toString(), null);
@@ -290,7 +295,17 @@ public class CharacterManager {
      * @return True if the character exists, else false.
      */
     public boolean isCharacter(String characterName) {
-        return charactersByName.containsKey(characterName.toLowerCase()) || plugin.getConfigManager().getConfig(ConfigType.CHARACTER).contains(characterName);
+        return plugin.getConfigManager().getConfig(ConfigType.CHARACTER).contains(characterName);
+    }
+
+    /**
+     * Checks if the character of a certain name is loaded.
+     *
+     * @param characterName The character's name.
+     * @return True if the character is loaded, else false.
+     */
+    public boolean isLoaded(String characterName) {
+        return charactersByName.containsKey(characterName.toLowerCase());
     }
 
     /**

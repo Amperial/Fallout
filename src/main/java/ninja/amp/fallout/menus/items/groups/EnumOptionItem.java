@@ -18,7 +18,6 @@
  */
 package ninja.amp.fallout.menus.items.groups;
 
-import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.menus.events.ItemClickEvent;
 import ninja.amp.fallout.menus.items.StaticMenuItem;
 import org.bukkit.entity.Player;
@@ -32,13 +31,14 @@ public class EnumOptionItem<E extends Enum<E>> extends StaticMenuItem {
     private EnumOption<E> group;
     private ItemStack unselected;
 
-    public EnumOptionItem(Fallout plugin, EnumOption<E> group, E e, String displayName, ItemStack selected, ItemStack unselected, String... lore) {
+    public EnumOptionItem(EnumOption<E> group, E e, String displayName, ItemStack selected, ItemStack unselected, String... lore) {
         super(displayName, selected, lore);
 
+        this.e = e;
         this.group = group;
+        group.addOption(this);
         this.unselected = unselected.clone();
         setNameAndLore(this.unselected, getDisplayName(), getLore());
-        this.e = e;
     }
 
     @Override

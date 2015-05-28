@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.command.commands.character.special;
+package ninja.amp.fallout.command.commands.character.perk;
 
 import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.command.Command;
@@ -30,18 +30,18 @@ import org.bukkit.permissions.PermissionDefault;
 import java.util.UUID;
 
 /**
- * A command that lets the sender view and set their character's SPECIAL traits.
+ * A command that lets the sender view and select their character's perks.
  */
-public class SetSpecial extends Command {
+public class Perks extends Command {
     private ItemMenu menu;
 
-    public SetSpecial(Fallout plugin, SpecialMenu menu) {
-        super(plugin, "setspecial");
-        setDescription("Sets your fallout character's traits.");
-        setCommandUsage("/fo character setspecial");
-        setPermission(new Permission("fallout.character.setspecial", PermissionDefault.TRUE));
+    public Perks(Fallout plugin) {
+        super(plugin, "perks");
+        setDescription("View and select your fallout character's perks.");
+        setCommandUsage("/fo character perks");
+        setPermission(new Permission("fallout.character.perks", PermissionDefault.TRUE));
 
-        this.menu = menu;
+        this.menu = new PerksMenu(plugin);
     }
 
     @Override

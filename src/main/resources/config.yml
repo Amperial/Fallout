@@ -10,10 +10,10 @@ PublicDiceLimit: 15
 PrivateDiceLimit: 40
 # Maximum dice sides in a roll
 DiceSidesLimit: 99
-# If mobs should drop exp upon death
-PreventMobsDroppingExp: true
+# If mobs should be prevented from dropping exp upon death
+PreventMobsDroppingExp: false
 # If players should be prevented from crafting diamond armor
-PreventCraftingDiamondArmor: true
+PreventCraftingDiamondArmor: false
 colors:
   primary: YELLOW
   secondary: GRAY

@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.command.commands.character.special;
+package ninja.amp.fallout.command.commands.character.skill;
 
 import ninja.amp.fallout.Fallout;
-import ninja.amp.fallout.characters.Character;
 import ninja.amp.fallout.characters.CharacterManager;
+import ninja.amp.fallout.characters.Skill;
 import ninja.amp.fallout.command.Command;
 import ninja.amp.fallout.message.FOMessage;
 import org.bukkit.command.CommandSender;
@@ -32,22 +32,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A command that lists a character's SPECIAL traits.
+ * A command that resets a character's skill levels.
  */
-public class ListSpecial extends Command {
+public class ResetSkills extends Command {
 
-    public ListSpecial(Fallout plugin) {
-        super(plugin, "listspecial");
-        setDescription("Lists your or another fallout character's traits.");
-        setCommandUsage("/fo character listspecial [character]");
-        setPermission(new Permission("fallout.character.listspecial", PermissionDefault.TRUE));
+    public ResetSkills(Fallout plugin) {
+        super(plugin, "resetskills");
+        setDescription("Resets your or another fallout character's skill levels.");
+        setCommandUsage("/fo character resetskills [character]");
+        setPermission(new Permission("fallout.character.resetskills", PermissionDefault.OP));
         setArgumentRange(0, 1);
     }
 
     @Override
     public void execute(String command, CommandSender sender, String[] args) {
         Player player = (Player) sender;
-        Character character;
+        ninja.amp.fallout.characters.Character character;
         CharacterManager characterManager = plugin.getCharacterManager();
         if (args.length == 1) {
             if (characterManager.isLoaded(args[0])) {
@@ -64,7 +64,14 @@ public class ListSpecial extends Command {
                 return;
             }
         }
-        plugin.getMessenger().sendMessage(player, FOMessage.SPECIAL_LIST, character.getCharacterName(), character.getSpecial());
+        for (Skill skill : Skill.class.getEnumConstants()) {
+            character.setSkillLevel(skill, 1);
+        }
+        characterManager.saveCharacter(character);
+        plugin.getMessenger().sendMessage(player, FOMessage.SKILLS_RESET, character.getCharacterName());
+        if (!character.getOwnerId().equals(player.getUniqueId())) {
+            plugin.getMessenger().sendMessage(character, FOMessage.SKILLS_RESETTED);
+        }
     }
 
     @Override
