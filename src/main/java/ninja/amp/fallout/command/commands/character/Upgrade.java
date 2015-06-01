@@ -22,11 +22,15 @@ import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.characters.Character;
 import ninja.amp.fallout.characters.CharacterManager;
 import ninja.amp.fallout.command.Command;
+import ninja.amp.fallout.command.CommandController;
 import ninja.amp.fallout.message.FOMessage;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A command that upgrades the level of a fallout character.
@@ -64,6 +68,30 @@ public class Upgrade extends Command {
             }
         } else {
             plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_DOESNTEXIST);
+        }
+    }
+
+    @Override
+    public List<String> getTabCompleteList(String[] args) {
+        if (args.length == 1) {
+            if (args[0].isEmpty()) {
+                return plugin.getCharacterManager().getCharacterList();
+            } else {
+                String arg = args[0].toLowerCase();
+                List<String> modifiedList = new ArrayList<>();
+                for (String suggestion : plugin.getCharacterManager().getCharacterList()) {
+                    if (suggestion.toLowerCase().startsWith(arg)) {
+                        modifiedList.add(suggestion);
+                    }
+                }
+                if (modifiedList.isEmpty()) {
+                    return plugin.getCharacterManager().getCharacterList();
+                } else {
+                    return modifiedList;
+                }
+            }
+        } else {
+            return CommandController.EMPTY_LIST;
         }
     }
 }

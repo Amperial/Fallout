@@ -22,6 +22,7 @@ import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.characters.Skill;
 import ninja.amp.fallout.characters.Trait;
 import ninja.amp.fallout.command.Command;
+import ninja.amp.fallout.command.CommandController;
 import ninja.amp.fallout.message.FOMessage;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -45,13 +46,13 @@ public class LocalRoll extends Command {
         setArgumentRange(1, 2);
         tabCompleteList.addAll(Trait.getTraitNames());
         tabCompleteList.addAll(Skill.getSkillNames());
-        tabCompleteList.add("dice");
-        tabCompleteList.add("armor");
+        tabCompleteList.add("Dice");
+        tabCompleteList.add("Armor");
     }
 
     @Override
     public void execute(String command, CommandSender sender, String[] args) {
-        switch (args[0]) {
+        switch (args[0].toLowerCase()) {
             case "dice":
                 if (args.length == 2) {
                     plugin.getRollManager().rollDice((Player) sender, args[1], RollManager.Distance.LOCAL);
@@ -73,10 +74,25 @@ public class LocalRoll extends Command {
 
     @Override
     public List<String> getTabCompleteList(String[] args) {
-        if (args.length == 0) {
-            return tabCompleteList;
+        if (args.length == 1) {
+            if (args[0].isEmpty()) {
+                return tabCompleteList;
+            } else {
+                String arg = args[0].toLowerCase();
+                List<String> modifiedList = new ArrayList<>();
+                for (String suggestion : tabCompleteList) {
+                    if (suggestion.toLowerCase().startsWith(arg)) {
+                        modifiedList.add(suggestion);
+                    }
+                }
+                if (modifiedList.isEmpty()) {
+                    return tabCompleteList;
+                } else {
+                    return modifiedList;
+                }
+            }
         } else {
-            return new ArrayList<>();
+            return CommandController.EMPTY_LIST;
         }
     }
 }

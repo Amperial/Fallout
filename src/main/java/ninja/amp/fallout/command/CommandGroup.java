@@ -199,7 +199,26 @@ public class CommandGroup {
      * @return The tab completion list of the command.
      */
     public List<String> getTabCompleteList(String[] args) {
-        return tabCompleteList;
+        if (args.length == 1) {
+            if (args[0].isEmpty()) {
+                return tabCompleteList;
+            } else {
+                String arg = args[0].toLowerCase();
+                List<String> modifiedList = new ArrayList<>();
+                for (String suggestion : tabCompleteList) {
+                    if (suggestion.toLowerCase().startsWith(arg)) {
+                        modifiedList.add(suggestion);
+                    }
+                }
+                if (modifiedList.isEmpty()) {
+                    return tabCompleteList;
+                } else {
+                    return modifiedList;
+                }
+            }
+        } else {
+            return CommandController.EMPTY_LIST;
+        }
     }
 
     /**

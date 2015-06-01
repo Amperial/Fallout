@@ -55,7 +55,7 @@ public class SkillPointsItem extends StaticMenuItem {
         ItemStack finalIcon = super.getFinalIcon(player);
 
         Character character = characterManager.getCharacterByOwner(player.getUniqueId());
-        Map<Skill, Integer> skills = menu.getPendingSkills(character);
+        Map<Skill, Integer> skills = menu.getPendingSkills(character.getOwnerId());
 
         int totalPoints = character.getLevel() * 5;
         int allocatedPoints = 0;

@@ -30,13 +30,14 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Inventory menu used for viewing and increasing a player's skill levels.
  */
 public class SkillsMenu extends ItemMenu {
     private CharacterManager characterManager;
-    private Map<Character, Map<Skill, Integer>> pendingSkills = new HashMap<>();
+    private Map<UUID, Map<Skill, Integer>> pendingSkills = new HashMap<>();
 
     @SuppressWarnings("deprecation")
     public SkillsMenu(Fallout plugin) {
@@ -46,7 +47,7 @@ public class SkillsMenu extends ItemMenu {
 
         setItem(41, new SkillsConfirmItem(plugin, this));
         setItem(40, new SkillPointsItem(plugin, this));
-        setItem(39, new SkillsCancelItem(plugin, this));
+        setItem(39, new SkillsCancelItem(this));
 
         ItemStack icon = new ItemStack(Material.WOOL, 1, DyeColor.LIME.getWoolData());
         setItem(0, new SkillItem(plugin, this, Skill.BIG_GUNS, "Big Guns", icon));
@@ -75,7 +76,7 @@ public class SkillsMenu extends ItemMenu {
     @Override
     public void open(Player player) {
         Character character = characterManager.getCharacterByOwner(player.getUniqueId());
-        pendingSkills.put(character, new HashMap<>(character.getSkills()));
+        pendingSkills.put(character.getOwnerId(), new HashMap<>(character.getSkills()));
 
         super.open(player);
     }
@@ -83,19 +84,19 @@ public class SkillsMenu extends ItemMenu {
     /**
      * Gets the pending skill levels of a character.
      *
-     * @param character The character.
+     * @param ownerId The character's owner's id.
      * @return The character's modified skill levels.
      */
-    public Map<Skill, Integer> getPendingSkills(Character character) {
-        return pendingSkills.get(character);
+    public Map<Skill, Integer> getPendingSkills(UUID ownerId) {
+        return pendingSkills.get(ownerId);
     }
 
     /**
      * Resets a character's pending skill levels.
      *
-     * @param character The character.
+     * @param ownerId The character's owner's id.
      */
-    public void resetPendingSkills(Character character) {
-        pendingSkills.remove(character);
+    public void resetPendingSkills(UUID ownerId) {
+        pendingSkills.remove(ownerId);
     }
 }

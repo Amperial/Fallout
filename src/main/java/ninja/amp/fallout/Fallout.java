@@ -65,6 +65,7 @@ public class Fallout extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        // The order managers are created in is important
         configManager = new ConfigManager(this);
         messenger = new Messenger(this);
         commandController = new CommandController(this);
@@ -74,6 +75,8 @@ public class Fallout extends JavaPlugin {
         menuListener = new MenuListener(this);
 
         // Create fallout command tree
+
+        // Character commands. These are added to both /fo and /fo character
         SpecialMenu specialMenu = new SpecialMenu(this);
         Command create = new Create(this, specialMenu);
         Command delete = new Delete(this);
@@ -99,6 +102,8 @@ public class Fallout extends JavaPlugin {
                 .addChildCommand(perks)
                 .addChildCommand(resetPerks);
         character.setPermission(new Permission("fallout.character.all", PermissionDefault.OP));
+
+        // Main /fo command tree
         CommandGroup fallout = new CommandGroup(this, "fallout")
                 .addChildCommand(new AboutCommand(this))
                 .addChildCommand(new HelpCommand(this))
@@ -122,11 +127,14 @@ public class Fallout extends JavaPlugin {
                 .addChildCommand(resetPerks)
                 .addChildCommand(character);
         fallout.setPermission(new Permission("fallout.all", PermissionDefault.OP));
+
+        // Add fallout command tree to command controller
         commandController.addCommand(fallout);
     }
 
     @Override
     public void onDisable() {
+        // The order managers are destroyed in is not important
         menuListener.destroy();
         menuListener = null;
         foListener.destroy();

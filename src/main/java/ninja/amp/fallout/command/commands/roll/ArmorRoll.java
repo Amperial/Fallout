@@ -20,7 +20,12 @@ package ninja.amp.fallout.command.commands.roll;
 
 import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.command.Command;
+import ninja.amp.fallout.command.CommandController;
+import ninja.amp.fallout.utils.DamageType;
 import org.bukkit.command.CommandSender;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A command that lets you roll to see if your armor can absorb a hit.
@@ -31,11 +36,36 @@ public class ArmorRoll extends Command {
         super(plugin, "armor");
         setDescription("Rolls to see if your armor can absorb a hit.");
         setCommandUsage("/fo [global/private]roll armor <damage type>[+/-modifier]");
+        setArgumentRange(1, 1);
     }
 
     @Override
     public void execute(String command, CommandSender sender, String[] args) {
         // Command is only here to be shown in help.
         // Rolling is handled in GlobalRoll/LocalRoll/PrivateRoll commands
+    }
+
+    @Override
+    public List<String> getTabCompleteList(String[] args) {
+        if (args.length == 1) {
+            if (args[0].isEmpty()) {
+                return DamageType.getDamageTypeNames();
+            } else {
+                String arg = args[0].toLowerCase();
+                List<String> modifiedList = new ArrayList<>();
+                for (String suggestion : DamageType.getDamageTypeNames()) {
+                    if (suggestion.toLowerCase().startsWith(arg)) {
+                        modifiedList.add(suggestion);
+                    }
+                }
+                if (modifiedList.isEmpty()) {
+                    return DamageType.getDamageTypeNames();
+                } else {
+                    return modifiedList;
+                }
+            }
+        } else {
+            return CommandController.EMPTY_LIST;
+        }
     }
 }

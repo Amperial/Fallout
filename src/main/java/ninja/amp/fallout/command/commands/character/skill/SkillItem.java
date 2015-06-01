@@ -46,7 +46,7 @@ public class SkillItem extends StaticMenuItem {
     public ItemStack getFinalIcon(Player player) {
         ItemStack finalIcon = super.getFinalIcon(player);
 
-        Map<Skill, Integer> skills = menu.getPendingSkills(characterManager.getCharacterByOwner(player.getUniqueId()));
+        Map<Skill, Integer> skills = menu.getPendingSkills(player.getUniqueId());
         finalIcon.setAmount(skills.get(skill));
 
         return finalIcon;
@@ -55,7 +55,7 @@ public class SkillItem extends StaticMenuItem {
     @Override
     public void onItemClick(ItemClickEvent event) {
         Character character = characterManager.getCharacterByOwner(event.getPlayer().getUniqueId());
-        Map<Skill, Integer> skills = menu.getPendingSkills(character);
+        Map<Skill, Integer> skills = menu.getPendingSkills(character.getOwnerId());
 
         int totalPoints = character.getLevel() * 5;
         int allocatedPoints = 0;

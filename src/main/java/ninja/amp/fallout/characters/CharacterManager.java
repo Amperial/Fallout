@@ -48,6 +48,7 @@ public class CharacterManager {
     public CharacterManager(Fallout plugin) {
         this.plugin = plugin;
 
+        // Players may already be online in case of reload
         for (Player player : plugin.getServer().getOnlinePlayers()) {
             loadCharacter(player);
         }
@@ -70,7 +71,7 @@ public class CharacterManager {
 
             // Load character from character config
             FileConfiguration characterConfig = configManager.getConfig(ConfigType.CHARACTER);
-            Character character = new Character(characterConfig.getConfigurationSection(characterName));
+            Character character = new Character(characterConfig.getConfigurationSection(characterName.toLowerCase()));
 
             // Save loaded character to update any information
             saveCharacter(character);
@@ -89,7 +90,7 @@ public class CharacterManager {
      */
     public void unloadCharacter(Player owner) {
         UUID ownerId = owner.getUniqueId();
-        if (charactersByOwner.containsKey(ownerId)) {
+        if (isOwner(ownerId)) {
             removeFromManager(charactersByOwner.get(ownerId));
         }
         if (characterBuilders.containsKey(ownerId)) {
@@ -104,7 +105,7 @@ public class CharacterManager {
      */
     public void saveCharacter(Character character) {
         FileConfiguration characterConfig = plugin.getConfigManager().getConfig(ConfigType.CHARACTER);
-        character.save(characterConfig.getConfigurationSection(character.getCharacterName()));
+        character.save(characterConfig.getConfigurationSection(character.getCharacterName().toLowerCase()));
         plugin.getConfigManager().getConfigAccessor(ConfigType.CHARACTER).saveConfig();
     }
 
@@ -152,7 +153,7 @@ public class CharacterManager {
         configManager.getConfigAccessor(ConfigType.PLAYER).saveConfig();
 
         // Add character to character config
-        configManager.getConfig(ConfigType.CHARACTER).createSection(character.getCharacterName());
+        configManager.getConfig(ConfigType.CHARACTER).createSection(character.getCharacterName().toLowerCase());
         saveCharacter(character);
 
         // Nickname player
@@ -172,7 +173,7 @@ public class CharacterManager {
         ConfigManager configManager = plugin.getConfigManager();
 
         // Remove character from character config
-        configManager.getConfig(ConfigType.CHARACTER).set(character.getCharacterName(), null);
+        configManager.getConfig(ConfigType.CHARACTER).set(character.getCharacterName().toLowerCase(), null);
         configManager.getConfigAccessor(ConfigType.CHARACTER).saveConfig();
 
         // Remove owning player from players config
@@ -193,7 +194,7 @@ public class CharacterManager {
      * Character must exist in character config.
      * Player must not already be an owner.
      *
-     * @param owner The character's new owner.
+     * @param owner         The character's new owner.
      * @param characterName The character's name.
      * @return The character.
      */
@@ -202,7 +203,7 @@ public class CharacterManager {
 
         // Load character from character config
         FileConfiguration characterConfig = configManager.getConfig(ConfigType.CHARACTER);
-        Character character = new Character(characterConfig.getConfigurationSection(characterName));
+        Character character = new Character(characterConfig.getConfigurationSection(characterName.toLowerCase()));
         if (character.getOwnerName() == null) {
             // Possess character
             character.possess(owner);
@@ -261,7 +262,7 @@ public class CharacterManager {
     /**
      * Adds a character builder to the manager for creation.
      *
-     * @param player The character's owner.
+     * @param player  The character's owner.
      * @param builder The character builder.
      */
     public void addCharacterBuilder(Player player, Character.CharacterBuilder builder) {
@@ -295,7 +296,7 @@ public class CharacterManager {
      * @return True if the character exists, else false.
      */
     public boolean isCharacter(String characterName) {
-        return plugin.getConfigManager().getConfig(ConfigType.CHARACTER).contains(characterName);
+        return plugin.getConfigManager().getConfig(ConfigType.CHARACTER).contains(characterName.toLowerCase());
     }
 
     /**
@@ -316,7 +317,7 @@ public class CharacterManager {
      */
     public boolean canPossess(String characterName) {
         FileConfiguration characterConfig = plugin.getConfigManager().getConfig(ConfigType.CHARACTER);
-        return characterConfig.contains(characterName) && !characterConfig.contains(characterName + ".ownerId");
+        return characterConfig.contains(characterName.toLowerCase()) && !characterConfig.contains(characterName.toLowerCase() + ".ownerId");
     }
 
     /**

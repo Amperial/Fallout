@@ -64,6 +64,7 @@ public class Character {
         this.gender = builder.gender;
         this.alignment = builder.alignment;
         this.special = race.getMinSpecial();
+        // All skill levels start at 1
         for (Skill skill : Skill.class.getEnumConstants()) {
             skills.put(skill, 1);
         }
@@ -90,16 +91,17 @@ public class Character {
             this.ownerName = null;
             this.ownerId = null;
         }
-        this.characterName = section.getName();
+        this.characterName = section.getString("name");
         this.race = Race.fromName(section.getString("race"));
         this.age = section.getInt("age");
         this.height = section.getInt("height");
         this.weight = section.getInt("weight");
         this.gender = Gender.valueOf(section.getString("gender"));
         this.alignment = Alignment.valueOf(section.getString("alignment"));
+        ConfigurationSection specialSection = section.getConfigurationSection("special");
         Map<Trait, Integer> traits = new HashMap<>();
         for (Trait trait : Trait.class.getEnumConstants()) {
-            traits.put(trait, section.getInt(trait.getName()));
+            traits.put(trait, specialSection.getInt(trait.getName()));
         }
         special = new Special(traits);
         ConfigurationSection skillLevels = section.getConfigurationSection("skills");
@@ -342,14 +344,16 @@ public class Character {
             section.set("ownerName", ownerName);
             section.set("ownerId", ownerId.toString());
         }
+        section.set("name", characterName);
         section.set("race", race.getName());
         section.set("age", age);
         section.set("height", height);
         section.set("weight", weight);
         section.set("gender", gender.name());
         section.set("alignment", alignment.name());
+        ConfigurationSection specialSection = section.createSection("special");
         for (Map.Entry<Trait, Integer> entry : special.getTraits().entrySet()) {
-            section.set(entry.getKey().getName(), entry.getValue());
+            specialSection.set(entry.getKey().getName(), entry.getValue());
         }
         ConfigurationSection skillLevels = section.createSection("skills");
         for (Map.Entry<Skill, Integer> skill : skills.entrySet()) {

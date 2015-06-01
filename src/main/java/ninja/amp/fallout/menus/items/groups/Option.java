@@ -45,7 +45,7 @@ public class Option {
      * Sets the OptionItem selected by a player.
      *
      * @param player The player.
-     * @param item The OptionItem.
+     * @param item   The OptionItem.
      */
     public void setSelected(Player player, OptionItem item) {
         selected.put(player.getUniqueId(), item);

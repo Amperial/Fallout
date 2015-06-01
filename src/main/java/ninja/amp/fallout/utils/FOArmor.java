@@ -33,7 +33,7 @@ public enum FOArmor {
      * Checks if the FOArmor type is able to defend against a roll of a certain damage type.
      *
      * @param damageType The damage type.
-     * @param roll The roll.
+     * @param roll       The roll.
      * @return If the armor is able to block the damage.
      */
     public boolean canBlock(DamageType damageType, int roll) {

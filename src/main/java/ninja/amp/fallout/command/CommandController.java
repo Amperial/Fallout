@@ -20,7 +20,6 @@ package ninja.amp.fallout.command;
 
 import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.message.FOMessage;
-import ninja.amp.fallout.message.PageList;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 
@@ -35,7 +34,9 @@ import java.util.Set;
 public class CommandController implements TabExecutor {
     private Fallout plugin;
     private Set<CommandGroup> commands = new HashSet<>();
-    private PageList pageList = null;
+    private CommandPageList pageList = null;
+
+    public static final List<String> EMPTY_LIST = new ArrayList<>();
 
     /**
      * Creates a new command controller.
@@ -78,26 +79,31 @@ public class CommandController implements TabExecutor {
         for (CommandGroup command : commands) {
             if (command.getName().equalsIgnoreCase(cmd.getName())) {
                 if (args.length > 0) {
-                    int commandAmount = 1;
+                    int commandAmount = 0;
                     for (String arg : args) {
-                        if (command.hasChildCommand(arg)) {
+                        if (!arg.isEmpty() && command.hasChildCommand(arg)) {
                             command = command.getChildCommand(arg);
                             commandAmount++;
                         }
                     }
-                    String[] newArgs;
-                    if (args.length == 1) {
-                        newArgs = new String[0];
+                    if (command instanceof Command && args.length - commandAmount > command.getMaxArgsLength()) {
+                        return EMPTY_LIST;
                     } else {
-                        newArgs = new String[args.length - commandAmount];
-                        System.arraycopy(args, commandAmount, newArgs, 0, args.length - commandAmount);
+                        String[] actualArgs;
+                        if (args.length > commandAmount) {
+                            actualArgs = new String[args.length - commandAmount];
+                            System.arraycopy(args, commandAmount, actualArgs, 0, actualArgs.length);
+                        } else {
+                            actualArgs = new String[0];
+                        }
+                        return command.getTabCompleteList(actualArgs);
                     }
-                    return command.getTabCompleteList(newArgs);
+                } else {
+                    return command.getTabCompleteList(args);
                 }
-                return command.getTabCompleteList(args);
             }
         }
-        return new ArrayList<>();
+        return EMPTY_LIST;
     }
 
     /**
@@ -125,7 +131,7 @@ public class CommandController implements TabExecutor {
      *
      * @return The PageList of commands.
      */
-    public PageList getPageList() {
+    public CommandPageList getPageList() {
         return pageList;
     }
 

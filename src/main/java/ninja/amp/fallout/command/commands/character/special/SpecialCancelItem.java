@@ -18,8 +18,6 @@
  */
 package ninja.amp.fallout.command.commands.character.special;
 
-import ninja.amp.fallout.Fallout;
-import ninja.amp.fallout.characters.CharacterManager;
 import ninja.amp.fallout.menus.events.ItemClickEvent;
 import ninja.amp.fallout.menus.items.StaticMenuItem;
 import org.bukkit.ChatColor;
@@ -27,23 +25,21 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class SpecialCancelItem extends StaticMenuItem {
-    private CharacterManager characterManager;
     private SpecialMenu menu;
 
-    public SpecialCancelItem(Fallout plugin, SpecialMenu menu) {
+    public SpecialCancelItem(SpecialMenu menu) {
         super(ChatColor.DARK_RED + "Cancel SPECIAL Modification",
                 new ItemStack(Material.REDSTONE_BLOCK),
                 "Cancels the current",
                 "selection and exits",
                 "the menu.");
 
-        this.characterManager = plugin.getCharacterManager();
         this.menu = menu;
     }
 
     @Override
     public void onItemClick(ItemClickEvent event) {
-        menu.resetPendingSpecial(characterManager.getCharacterByOwner(event.getPlayer().getUniqueId()));
+        menu.resetPendingSpecial(event.getPlayer().getUniqueId());
         event.setWillClose(true);
     }
 }

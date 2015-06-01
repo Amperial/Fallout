@@ -50,7 +50,7 @@ public class SkillsConfirmItem extends StaticMenuItem {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
         Character character = plugin.getCharacterManager().getCharacterByOwner(playerId);
-        Map<Skill, Integer> skills = menu.getPendingSkills(character);
+        Map<Skill, Integer> skills = menu.getPendingSkills(playerId);
 
         for (Map.Entry<Skill, Integer> skill : skills.entrySet()) {
             character.setSkillLevel(skill.getKey(), skill.getValue());
@@ -58,7 +58,7 @@ public class SkillsConfirmItem extends StaticMenuItem {
         plugin.getCharacterManager().saveCharacter(character);
         plugin.getMessenger().sendMessage(player, FOMessage.SKILLS_CONFIRM);
 
-        menu.resetPendingSkills(character);
+        menu.resetPendingSkills(playerId);
         event.setWillClose(true);
     }
 }

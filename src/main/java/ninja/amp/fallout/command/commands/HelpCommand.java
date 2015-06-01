@@ -20,10 +20,14 @@ package ninja.amp.fallout.command.commands;
 
 import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.command.Command;
+import ninja.amp.fallout.command.CommandController;
 import ninja.amp.fallout.message.PageList;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A command that lists all plugin commands.
@@ -33,8 +37,9 @@ public class HelpCommand extends Command {
     public HelpCommand(Fallout plugin) {
         super(plugin, "help");
         setDescription("Lists all fallout commands");
-        setCommandUsage("/fo help");
+        setCommandUsage("/fo help [page]");
         setPermission(new Permission("fallout.help", PermissionDefault.TRUE));
+        setArgumentRange(0, 1);
         setPlayerOnly(false);
     }
 
@@ -45,5 +50,29 @@ public class HelpCommand extends Command {
             pageNumber = PageList.getPageNumber(args[0]);
         }
         plugin.getCommandController().getPageList().sendPage(pageNumber, sender);
+    }
+
+    @Override
+    public List<String> getTabCompleteList(String[] args) {
+        if (args.length == 1) {
+            if (args[0].isEmpty()) {
+                return plugin.getCommandController().getPageList().getPageNumbersList();
+            } else {
+                String arg = args[0].toLowerCase();
+                List<String> modifiedList = new ArrayList<>();
+                for (String suggestion : plugin.getCommandController().getPageList().getPageNumbersList()) {
+                    if (suggestion.toLowerCase().startsWith(arg)) {
+                        modifiedList.add(suggestion);
+                    }
+                }
+                if (modifiedList.isEmpty()) {
+                    return plugin.getCommandController().getPageList().getPageNumbersList();
+                } else {
+                    return modifiedList;
+                }
+            }
+        } else {
+            return CommandController.EMPTY_LIST;
+        }
     }
 }

@@ -48,7 +48,7 @@ public class SpecialConfirmItem extends StaticMenuItem {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
         Character character = plugin.getCharacterManager().getCharacterByOwner(playerId);
-        Special special = menu.getPendingSpecial(character);
+        Special special = menu.getPendingSpecial(playerId);
 
         if (character.getRace().isValid(special)) {
             character.getSpecial().set(special);
@@ -58,7 +58,7 @@ public class SpecialConfirmItem extends StaticMenuItem {
             plugin.getMessenger().sendMessage(player, FOMessage.SPECIAL_INVALID);
         }
 
-        menu.resetPendingSpecial(character);
+        menu.resetPendingSpecial(playerId);
         event.setWillClose(true);
     }
 }

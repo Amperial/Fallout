@@ -22,6 +22,7 @@ import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.characters.Character;
 import ninja.amp.fallout.characters.CharacterManager;
 import ninja.amp.fallout.command.Command;
+import ninja.amp.fallout.command.CommandController;
 import ninja.amp.fallout.message.FOMessage;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
@@ -48,7 +49,7 @@ public class Whois extends Command {
     public void execute(String command, CommandSender sender, String[] args) {
         Character character;
         CharacterManager characterManager = plugin.getCharacterManager();
-        if (characterManager.isCharacter(args[0])) {
+        if (characterManager.isLoaded(args[0])) {
             character = characterManager.getCharacterByName(args[0]);
             plugin.getMessenger().sendMessage(sender, FOMessage.CHARACTER_NAME, character.getCharacterName(), character.getOwnerName());
         } else {
@@ -58,10 +59,25 @@ public class Whois extends Command {
 
     @Override
     public List<String> getTabCompleteList(String[] args) {
-        if (args.length == 0) {
-            return plugin.getCharacterManager().getCharacterList();
+        if (args.length == 1) {
+            if (args[0].isEmpty()) {
+                return plugin.getCharacterManager().getCharacterList();
+            } else {
+                String arg = args[0].toLowerCase();
+                List<String> modifiedList = new ArrayList<>();
+                for (String suggestion : plugin.getCharacterManager().getCharacterList()) {
+                    if (suggestion.toLowerCase().startsWith(arg)) {
+                        modifiedList.add(suggestion);
+                    }
+                }
+                if (modifiedList.isEmpty()) {
+                    return plugin.getCharacterManager().getCharacterList();
+                } else {
+                    return modifiedList;
+                }
+            }
         } else {
-            return new ArrayList<>();
+            return CommandController.EMPTY_LIST;
         }
     }
 }

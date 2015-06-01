@@ -31,7 +31,7 @@ public enum DamageType {
     LASER("Laser", 5, 4, 4, 3, 0),
     FIRE("Fire", -1, 2, 6, 5, 2),
     PLASMA("Plasma", -1, 5, 6, 5, 4),
-    EMP("EMP",-1, -1, -1, -1, 5),
+    EMP("EMP", -1, -1, -1, -1, 5),
     EXPLOSION("Explosion", 6, 4, 6, 5, 3),
     CUTTING("Cutting", 3, 6, 5, 3, 1),
     THRUSTING("Thrusting", 5, -1, 4, 3, 0),

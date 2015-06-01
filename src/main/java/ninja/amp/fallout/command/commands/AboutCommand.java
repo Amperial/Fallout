@@ -45,7 +45,7 @@ public class AboutCommand extends Command {
         header = Messenger.HIGHLIGHT_COLOR + "<-------<| " + Messenger.PRIMARY_COLOR + "About Fallout " + Messenger.HIGHLIGHT_COLOR + "|>------->";
         info.add(Messenger.SECONDARY_COLOR + "Author: " + StringUtils.join(plugin.getDescription().getAuthors(), ", "));
         info.add(Messenger.SECONDARY_COLOR + "Version: " + plugin.getDescription().getVersion());
-        info.add(Messenger.SECONDARY_COLOR + "Help: /fo help");
+        info.add(Messenger.SECONDARY_COLOR + "Help: /fo help [page]");
     }
 
     @Override

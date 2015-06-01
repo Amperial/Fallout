@@ -58,7 +58,7 @@ public class SpecialRemoveItem extends StaticMenuItem {
         ItemStack finalIcon = super.getFinalIcon(player);
 
         Character character = characterManager.getCharacterByOwner(player.getUniqueId());
-        Special special = menu.getPendingSpecial(character);
+        Special special = menu.getPendingSpecial(character.getOwnerId());
 
         special.set(trait, special.get(trait) - 1);
         if (!character.getRace().isValid(special)) {
@@ -72,7 +72,7 @@ public class SpecialRemoveItem extends StaticMenuItem {
     @Override
     public void onItemClick(ItemClickEvent event) {
         Character character = characterManager.getCharacterByOwner(event.getPlayer().getUniqueId());
-        Special special = menu.getPendingSpecial(character);
+        Special special = menu.getPendingSpecial(character.getOwnerId());
 
         special.set(trait, special.get(trait) - 1);
         if (character.getRace().isValid(special)) {

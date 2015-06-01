@@ -55,8 +55,8 @@ public class RollManager {
     /**
      * Rolls a skill or trait with an optional modifier.
      *
-     * @param player The player rolling.
-     * @param value The roll parameters: <trait/skill>[+/-modifier].
+     * @param player   The player rolling.
+     * @param value    The roll parameters: <trait/skill>[+/-modifier].
      * @param distance The broadcast distance of the roll.
      */
     public void rollDefault(Player player, String value, Distance distance) {
@@ -135,8 +135,8 @@ public class RollManager {
     /**
      * Rolls to see if a player's armor can absorb a hit with an optional modifier.
      *
-     * @param player The player rolling.
-     * @param value T roll parameters: <damage type>[+/-modifier].
+     * @param player   The player rolling.
+     * @param value    T roll parameters: <damage type>[+/-modifier].
      * @param distance The broadcast distance of the roll.
      */
     public void rollArmor(Player player, String value, Distance distance) {
@@ -212,8 +212,8 @@ public class RollManager {
     /**
      * Manually rolls the dice with an optional modifier.
      *
-     * @param player The player rolling.
-     * @param value The roll parameters: <amount>d<sides>[+/-modifier].
+     * @param player   The player rolling.
+     * @param value    The roll parameters: <amount>d<sides>[+/-modifier].
      * @param distance The broadcast distance of the roll.
      */
     public void rollDice(Player player, String value, Distance distance) {
@@ -289,8 +289,8 @@ public class RollManager {
      * Gets the modifier of a SPECIAL roll.
      *
      * @param character The character rolling.
-     * @param trait The trait being rolled.
-     * @param modifier The optional extra modifier.
+     * @param trait     The trait being rolled.
+     * @param modifier  The optional extra modifier.
      * @return The final modifier of the SPECIAL roll.
      */
     public int specialModifier(ninja.amp.fallout.characters.Character character, Trait trait, int modifier) {
@@ -301,8 +301,8 @@ public class RollManager {
      * Gets the modifier of a skill roll.
      *
      * @param character The character rolling.
-     * @param skill The skill being rolled.
-     * @param modifier The optional extra modifier.
+     * @param skill     The skill being rolled.
+     * @param modifier  The optional extra modifier.
      * @return The final modifier of the skill roll.
      */
     public int skillModifier(Character character, Skill skill, int modifier) {
@@ -312,9 +312,9 @@ public class RollManager {
     /**
      * Gets the result of a SPECIAL or skill roll.
      *
-     * @param roll The roll value.
+     * @param roll     The roll value.
      * @param modifier The roll modifier.
-     * @param luck The luck value.
+     * @param luck     The luck value.
      * @return The final result of the SPECIAL or skill roll.
      */
     public Result getResult(int roll, int modifier, int luck) {

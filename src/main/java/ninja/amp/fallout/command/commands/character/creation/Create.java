@@ -21,7 +21,6 @@ package ninja.amp.fallout.command.commands.character.creation;
 import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.characters.Character;
 import ninja.amp.fallout.characters.CharacterManager;
-import ninja.amp.fallout.characters.Race;
 import ninja.amp.fallout.command.Command;
 import ninja.amp.fallout.command.commands.character.special.SpecialMenu;
 import ninja.amp.fallout.message.FOMessage;
@@ -29,9 +28,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A command that creates a fallout character.
@@ -74,15 +70,6 @@ public class Create extends Command {
                 plugin.getCharacterManager().addCharacterBuilder(player, builder);
                 createMenu.open(player);
             }
-        }
-    }
-
-    @Override
-    public List<String> getTabCompleteList(String[] args) {
-        if (args.length == 1) {
-            return Race.getRaceNames();
-        } else {
-            return new ArrayList<>();
         }
     }
 }

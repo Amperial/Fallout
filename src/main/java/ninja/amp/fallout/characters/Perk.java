@@ -38,24 +38,24 @@ public enum Perk {
 
     SIGHT_DISTANCE(2, "Eagle Eye", "+2 to Non-combat Perception rolls"),
     INCREASED_STRENGTH(2, "Intense Training", "+2 to Non-combat Strength rolls"),
-    INCREASED_SURVIVAL(2, "Survivalist", "+1 to First Aid and +1 to Logical Thinking rolls"),
+    INCREASED_SURVIVAL(2, "Survivalist", "+1 to First Aid and", "+1 to Logical Thinking rolls"),
     INCREASED_ENDURANCE(2, "Thick Skinned", "+1 to Endurance rolls"),
-    INCREASED_AIM(2, "Wasteland Cowboy", "+1 to Regular and Aimed Conventional Gun rolls"),
+    INCREASED_AIM(2, "Wasteland Cowboy", "+1 to Regular and Aimed", "Conventional Gun rolls"),
 
     DECREASED_BLEEDING(3, "Hoover", "Stop bleeding very quickly"),
-    ANTI_RADIATION(3, "Radio-Inactive", "An environmental suit will protect against most radiation"),
-    INCREASED_SENSES(3, "Sensory Overload", "Hear through walls and detect poison. Others have a harder time sneaking past"),
-    PERFECT_MEMORY(3, "Snapshot", "All images and sounds can be remembered without fail"),
-    FEIGN_DEATH(3, "Survivor", "Slow your heart and feign death, stopping bleeding. Cannot wake for two hours"),
+    ANTI_RADIATION(3, "Radio-Inactive", "An environmental suit will", "protect against most radiation"),
+    INCREASED_SENSES(3, "Sensory Overload", "Hear through walls and", "detect poison. Others have a", "harder time sneaking past"),
+    PERFECT_MEMORY(3, "Snapshot", "All images and sounds can", "be remembered without fail"),
+    FEIGN_DEATH(3, "Survivor", "Slow your heart and feign", "death, stopping bleeding.", "Cannot wake for two hours"),
 
     INCREASED_LOGIC(4, "Detective", "+3 to Logical Thinking rolls"),
-    INCREASED_CUNNING(4, "Gambler", "+2 to Lockpicking and +2 to Speech rolls"),
-    INCREASED_HEAL(4, "Healer", "+2 to First Aid and +2 to Surgery rolls"),
-    INNOCENT_DEFENSE(4, "Hero", "+2 to Combat rolls when defending the weak and innocent"),
-    INCREASED_SNEAK(4, "Shadow", "+3 to Daytime Sneak and +5 to Nighttime Sneak rolls"),
+    INCREASED_CUNNING(4, "Gambler", "+2 to Lockpicking and", "+2 to Speech rolls"),
+    INCREASED_HEAL(4, "Healer", "+2 to First Aid and", "+2 to Surgery rolls"),
+    INNOCENT_DEFENSE(4, "Hero", "+2 to Combat rolls when defending", "the weak and innocent"),
+    INCREASED_SNEAK(4, "Shadow", "+3 to Daytime Sneak and", "+5 to Nighttime Sneak rolls"),
 
-    BATTLEFIELD_TERROR(5, "Death or Glory", "Can keep fighting until body has sustained extreme damage. Refer to guide"),
-    GENERAL(5, "Old-World General", "Provides benefits to followers in exchange for devotion. Refer to guide"),
+    BATTLEFIELD_TERROR(5, "Death or Glory", "Can keep fighting until body has sustained", "extreme damage. Refer to guide"),
+    GENERAL(5, "Old-World General", "Provides benefits to followers in exchange", "for devotion. Refer to guide"),
     CREATURES(5, "One With the Wasteland", ""),
     TELEKINESIS(5, "The Master's Legacy", ""),
     TELEPATHY(5, "The Master's Legacy", ""),
@@ -63,11 +63,11 @@ public enum Perk {
 
     private final String name;
     private int tier;
-    private final String description;
+    private final String[] description;
     private static final Map<Integer, Set<Perk>> tiers;
     private static final List<String> perkNames;
 
-    private Perk(int tier, String name, String description) {
+    private Perk(int tier, String name, String... description) {
         this.name = name;
         this.tier = tier;
         this.description = description;
@@ -96,7 +96,7 @@ public enum Perk {
      *
      * @return The perk's description.
      */
-    public String getDescription() {
+    public String[] getDescription() {
         return description;
     }
 
@@ -139,11 +139,9 @@ public enum Perk {
         for (int i = 1; i <= 5; i++) {
             tiers.put(i, new HashSet<Perk>());
         }
-        for (Perk perk : Perk.class.getEnumConstants()) {
-            tiers.get(perk.getTier()).add(perk);
-        }
         perkNames = new ArrayList<>();
         for (Perk perk : Perk.class.getEnumConstants()) {
+            tiers.get(perk.getTier()).add(perk);
             perkNames.add(perk.getName());
         }
     }

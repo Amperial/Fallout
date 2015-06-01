@@ -18,8 +18,6 @@
  */
 package ninja.amp.fallout.command.commands.character.skill;
 
-import ninja.amp.fallout.Fallout;
-import ninja.amp.fallout.characters.CharacterManager;
 import ninja.amp.fallout.menus.events.ItemClickEvent;
 import ninja.amp.fallout.menus.items.StaticMenuItem;
 import org.bukkit.ChatColor;
@@ -27,23 +25,21 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class SkillsCancelItem extends StaticMenuItem {
-    private CharacterManager characterManager;
     private SkillsMenu menu;
 
-    public SkillsCancelItem(Fallout plugin, SkillsMenu menu) {
+    public SkillsCancelItem(SkillsMenu menu) {
         super(ChatColor.DARK_RED + "Cancel Skill Allocation",
                 new ItemStack(Material.REDSTONE_BLOCK),
                 "Cancels the current",
                 "selection and exits",
                 "the menu.");
 
-        this.characterManager = plugin.getCharacterManager();
         this.menu = menu;
     }
 
     @Override
     public void onItemClick(ItemClickEvent event) {
-        menu.resetPendingSkills(characterManager.getCharacterByOwner(event.getPlayer().getUniqueId()));
+        menu.resetPendingSkills(event.getPlayer().getUniqueId());
         event.setWillClose(true);
     }
 }

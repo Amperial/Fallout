@@ -45,7 +45,7 @@ public class EnumOption<E extends Enum<E>> {
      * Sets the EnumOptionItem selected by a player.
      *
      * @param player The player.
-     * @param item The EnumOptionItem.
+     * @param item   The EnumOptionItem.
      */
     public void setSelected(Player player, EnumOptionItem<E> item) {
         selected.put(player.getUniqueId(), item);

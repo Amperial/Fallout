@@ -96,7 +96,7 @@ public class Messenger {
             public void sendMessage(Object recipient, String message) {
                 Location location = (Location) recipient;
                 for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                    if (location.getWorld().equals(player.getWorld()) && location.distanceSquared(player.getLocation()) <=  radiusSquared) {
+                    if (location.getWorld().equals(player.getWorld()) && location.distanceSquared(player.getLocation()) <= radiusSquared) {
                         player.sendMessage(message);
                     }
                 }

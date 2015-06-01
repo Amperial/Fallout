@@ -29,6 +29,8 @@ import java.util.List;
  * A PageList that lists all of the commands and their description.
  */
 public class CommandPageList extends PageList {
+    private final List<String> pageNumbersList = new ArrayList<>();
+
     public CommandPageList(Fallout plugin) {
         super(plugin, "Commands", 8);
         List<String> strings = new ArrayList<>();
@@ -41,5 +43,19 @@ public class CommandPageList extends PageList {
             }
         }
         setStrings(strings);
+
+        int pageAmount = getPageAmount();
+        for (int i = 1; i <= pageAmount; i++) {
+            pageNumbersList.add(String.valueOf(i));
+        }
+    }
+
+    /**
+     * Gets the page numbers list of the command page list.
+     *
+     * @return The list of page numbers.
+     */
+    public List<String> getPageNumbersList() {
+        return pageNumbersList;
     }
 }

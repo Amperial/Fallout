@@ -18,8 +18,6 @@
  */
 package ninja.amp.fallout.command.commands.character.special;
 
-import ninja.amp.fallout.Fallout;
-import ninja.amp.fallout.characters.CharacterManager;
 import ninja.amp.fallout.characters.Special;
 import ninja.amp.fallout.characters.Trait;
 import ninja.amp.fallout.menus.items.StaticMenuItem;
@@ -27,14 +25,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class SpecialItem extends StaticMenuItem {
-    private CharacterManager characterManager;
     private SpecialMenu menu;
     private Trait trait;
 
-    public SpecialItem(Fallout plugin, SpecialMenu menu, Trait trait, ItemStack icon, String... lore) {
+    public SpecialItem(SpecialMenu menu, Trait trait, ItemStack icon, String... lore) {
         super(trait.getName(), icon, lore);
 
-        this.characterManager = plugin.getCharacterManager();
         this.menu = menu;
         this.trait = trait;
     }
@@ -43,7 +39,7 @@ public class SpecialItem extends StaticMenuItem {
     public ItemStack getFinalIcon(Player player) {
         ItemStack finalIcon = getIcon().clone();
 
-        Special special = menu.getPendingSpecial(characterManager.getCharacterByOwner(player.getUniqueId()));
+        Special special = menu.getPendingSpecial(player.getUniqueId());
         finalIcon.setAmount(special.get(trait));
 
         return finalIcon;
