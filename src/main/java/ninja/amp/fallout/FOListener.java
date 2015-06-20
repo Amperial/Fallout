@@ -26,12 +26,14 @@ import ninja.amp.fallout.utils.ArmorMaterial;
 import ninja.amp.fallout.utils.ArmorType;
 import org.bukkit.Material;
 import org.bukkit.entity.Creature;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -211,6 +213,23 @@ public class FOListener implements Listener {
             Material material = event.getRecipe().getResult().getType();
             if (ArmorType.isArmor(material) && ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.DIAMOND)) {
                 event.setCancelled(true);
+            }
+        }
+    }
+
+    /**
+     * Stops zombies from targeting ghouls.
+     */
+    @EventHandler
+    public void onEntityTargetLiving(EntityTargetLivingEntityEvent event) {
+        if (event.getEntityType() == EntityType.ZOMBIE && event.getTarget() instanceof Player) {
+            UUID playerId = event.getTarget().getUniqueId();
+            CharacterManager characterManager = plugin.getCharacterManager();
+            if (characterManager.isOwner(playerId)) {
+                Character character = characterManager.getCharacterByOwner(playerId);
+                if (character.getRace().equals(Race.GHOUL)) {
+                    event.setCancelled(true);
+                }
             }
         }
     }
