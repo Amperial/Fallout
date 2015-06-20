@@ -33,8 +33,8 @@ public enum Trait {
     AGILITY("Agility"),
     LUCK("Luck");
 
-    private final String name;
     private static final List<String> traitNames;
+    private final String name;
 
     private Trait(String name) {
         this.name = name;

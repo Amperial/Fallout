@@ -40,9 +40,9 @@ public enum Skill {
     SPEECH("Speech", Trait.CHARISMA),
     LOGICAL_THINKING("LogicalThinking", Trait.INTELLIGENCE);
 
+    private static final List<String> skillNames;
     private final String name;
     private final Trait[] affected;
-    private static final List<String> skillNames;
 
     private Skill(String name, Trait... affected) {
         this.name = name;

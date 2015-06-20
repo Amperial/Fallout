@@ -39,9 +39,6 @@ public class ConfigManager {
     public ConfigManager(Fallout plugin) {
         // Save main config
         plugin.saveDefaultConfig();
-        plugin.getConfig().options().copyDefaults(true);
-        plugin.getConfig().set("configversion", plugin.getDescription().getVersion());
-        plugin.saveConfig();
 
         // Save and load custom configs
         File dataFolder = plugin.getDataFolder();

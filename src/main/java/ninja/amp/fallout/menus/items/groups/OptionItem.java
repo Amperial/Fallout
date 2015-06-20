@@ -41,13 +41,11 @@ public class OptionItem extends StaticMenuItem {
 
     @Override
     public ItemStack getFinalIcon(Player player) {
-        ItemStack finalIcon = super.getFinalIcon(player);
-
-        if (!this.equals(group.getSelected(player))) {
-            finalIcon = unselected;
+        if (this.equals(group.getSelected(player))) {
+            return super.getFinalIcon(player);
+        } else {
+            return unselected;
         }
-
-        return finalIcon;
     }
 
     @Override

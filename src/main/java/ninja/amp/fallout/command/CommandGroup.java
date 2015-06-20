@@ -35,12 +35,12 @@ import java.util.Map;
 public class CommandGroup {
     protected final Fallout plugin;
     private final String name;
+    private final Map<String, CommandGroup> children = new LinkedHashMap<>();
+    private final List<String> tabCompleteList = new ArrayList<>();
     private Permission permission = null;
     private int minArgsLength = 0;
     private int maxArgsLength = -1;
     private boolean playerOnly = true;
-    private final Map<String, CommandGroup> children = new LinkedHashMap<>();
-    private final List<String> tabCompleteList = new ArrayList<>();
 
     /**
      * Creates a new CommandGroup.

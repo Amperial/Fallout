@@ -28,9 +28,8 @@ public class MenuHolder implements InventoryHolder {
     private ItemMenu menu;
     private Inventory inventory;
 
-    public MenuHolder(ItemMenu menu, Inventory inventory) {
+    public MenuHolder(ItemMenu menu) {
         this.menu = menu;
-        this.inventory = inventory;
     }
 
     /**
@@ -45,5 +44,9 @@ public class MenuHolder implements InventoryHolder {
     @Override
     public Inventory getInventory() {
         return inventory;
+    }
+
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
     }
 }

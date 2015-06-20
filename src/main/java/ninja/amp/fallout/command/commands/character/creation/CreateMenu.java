@@ -23,6 +23,7 @@ import ninja.amp.fallout.characters.Character;
 import ninja.amp.fallout.characters.Race;
 import ninja.amp.fallout.command.commands.character.special.SpecialMenu;
 import ninja.amp.fallout.menus.ItemMenu;
+import ninja.amp.fallout.menus.events.ItemClickEvent;
 import ninja.amp.fallout.menus.items.groups.EnumOption;
 import ninja.amp.fallout.menus.items.groups.EnumOptionItem;
 import ninja.amp.fallout.menus.items.groups.Option;
@@ -60,6 +61,25 @@ public class CreateMenu extends ItemMenu {
         setItem(5, new EnumOptionItem<>(race, Race.GHOUL, "Ghoul", selected, unselected));
         setItem(6, new EnumOptionItem<>(race, Race.SUPER_MUTANT, "Super Mutant", selected, unselected));
         setItem(7, new EnumOptionItem<>(race, Race.VAULT_DWELLER, "Vault Dweller", selected, unselected));
+        setItem(8, new EnumOptionItem<Race>(race, Race.DEITY, "Deity", selected, unselected) {
+            private final ItemStack invisibleItem = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.GRAY.getData());
+
+            @Override
+            public ItemStack getFinalIcon(Player player) {
+                if (player.hasPermission("fallout.race.deity")) {
+                    return super.getFinalIcon(player);
+                } else {
+                    return invisibleItem;
+                }
+            }
+
+            @Override
+            public void onItemClick(ItemClickEvent event) {
+                if (event.getPlayer().hasPermission("fallout.race.deity")) {
+                    super.onItemClick(event);
+                }
+            }
+        });
 
         conformity = new Option();
         setItem(19, new OptionItem(conformity, "Lawful", selected, unselected));

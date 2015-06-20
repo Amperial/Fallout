@@ -29,12 +29,13 @@ public enum Race {
     WASTELANDER("Human", new Special(1, 1, 1, 1, 1, 1, 1), new Special(10, 10, 10, 10, 10, 10, 10)),
     GHOUL("Ghoul", new Special(1, 4, 1, 1, 4, 1, 5), new Special(6, 13, 9, 7, 10, 8, 10)),
     SUPER_MUTANT("SuperMutant", new Special(5, 1, 4, 1, 1, 1, 1), new Special(13, 10, 12, 4, 5, 10, 10)),
-    VAULT_DWELLER("VaultDweller", new Special(1, 1, 1, 1, 1, 1, 1), new Special(10, 10, 10, 10, 10, 10, 10));
+    VAULT_DWELLER("VaultDweller", new Special(1, 1, 1, 1, 1, 1, 1), new Special(10, 10, 10, 10, 10, 10, 10)),
+    DEITY("Deity", new Special(1, 1, 1, 1, 1, 1, 1), null);
 
+    private static final List<String> raceNames;
     private final String name;
     private final Special min;
     private final Special max;
-    private static final List<String> raceNames;
 
     private Race(String name, Special min, Special max) {
         this.name = name;
@@ -76,26 +77,37 @@ public enum Race {
      * @return True if the Special is valid.
      */
     public boolean isValid(Special special) {
-        // Check to see if the total is 40
         int total = 0;
         for (Integer value : special.getTraits().values()) {
             total += value;
         }
-        if (total > 40) {
-            return false;
+
+        // These conditions don't apply to the deity race
+        if (this != DEITY) {
+            // Check to see if the total is 40
+            if (total > 40) {
+                return false;
+            }
+
+            // Check to see if any traits are greater than the max or that multiple are max
+            int maxTraits = 0;
+            for (Map.Entry<Trait, Integer> entry : special.getTraits().entrySet()) {
+                if (entry.getValue() > max.get(entry.getKey())) {
+                    return false;
+                } else if (entry.getValue() == max.get(entry.getKey())) {
+                    if (maxTraits > 1) {
+                        return false;
+                    } else {
+                        maxTraits++;
+                    }
+                }
+            }
         }
 
-        // Check to see if any traits aren't within the min/max limits or multiple are maxed
-        int maxTraits = 0;
+        // Check to see if any traits are less than the min
         for (Map.Entry<Trait, Integer> entry : special.getTraits().entrySet()) {
-            if (entry.getValue() < min.get(entry.getKey()) || entry.getValue() > max.get(entry.getKey())) {
+            if (entry.getValue() < min.get(entry.getKey())) {
                 return false;
-            } else if (entry.getValue() == max.get(entry.getKey())) {
-                if (maxTraits > 1) {
-                    return false;
-                } else {
-                    maxTraits++;
-                }
             }
         }
 

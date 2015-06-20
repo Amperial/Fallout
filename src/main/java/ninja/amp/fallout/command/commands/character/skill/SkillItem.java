@@ -44,7 +44,7 @@ public class SkillItem extends StaticMenuItem {
 
     @Override
     public ItemStack getFinalIcon(Player player) {
-        ItemStack finalIcon = super.getFinalIcon(player);
+        ItemStack finalIcon = super.getFinalIcon(player).clone();
 
         Map<Skill, Integer> skills = menu.getPendingSkills(player.getUniqueId());
         finalIcon.setAmount(skills.get(skill));

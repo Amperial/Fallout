@@ -161,7 +161,9 @@ public class ItemMenu {
      * @param player The player.
      */
     public void open(Player player) {
-        Inventory inventory = Bukkit.createInventory(new MenuHolder(this, Bukkit.createInventory(player, size.getSize())), size.getSize(), name);
+        MenuHolder owner = new MenuHolder(this);
+        Inventory inventory = Bukkit.createInventory(owner, size.getSize(), name);
+        owner.setInventory(inventory);
         apply(inventory, player);
         player.openInventory(inventory);
     }
@@ -188,7 +190,7 @@ public class ItemMenu {
      * @param inventory The Inventory.
      * @param player    The Player.
      */
-    private void apply(Inventory inventory, Player player) {
+    public void apply(Inventory inventory, Player player) {
         for (int i = 0; i < items.length; i++) {
             if (items[i] != null) {
                 inventory.setItem(i, items[i].getFinalIcon(player));

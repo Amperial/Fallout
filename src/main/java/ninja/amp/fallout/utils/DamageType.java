@@ -37,9 +37,9 @@ public enum DamageType {
     THRUSTING("Thrusting", 5, -1, 4, 3, 0),
     BASHING("Bashing", 4, 5, 5, 4, 3);
 
+    private static final List<String> damageTypeNames;
     private final String name;
     private final Map<FOArmor, Integer> defenseValues = new HashMap<>();
-    private static final List<String> damageTypeNames;
 
     private DamageType(String name, int leather, int env, int riot, int combat, int power) {
         this.name = name;

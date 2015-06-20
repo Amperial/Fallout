@@ -60,12 +60,11 @@ public enum Perk {
     TELEKINESIS(5, "The Master's Legacy", ""),
     TELEPATHY(5, "The Master's Legacy", ""),
     SPIRIT_FORM(5, "Undying Will", "");
-
-    private final String name;
-    private int tier;
-    private final String[] description;
     private static final Map<Integer, Set<Perk>> tiers;
     private static final List<String> perkNames;
+    private final String name;
+    private final String[] description;
+    private int tier;
 
     private Perk(int tier, String name, String... description) {
         this.name = name;

@@ -1,3 +1,7 @@
+# Version of plugin when this config was generated -
+# Used for automatically updating all configs when updating
+# plugin version. DO NOT EDIT THIS VALUE
+configversion: '2.0'
 # Enables debug messages to be shown in console
 Debug: false
 # How far away a normal roll is broadcasted
@@ -15,6 +19,6 @@ PreventMobsDroppingExp: false
 # If players should be prevented from crafting diamond armor
 PreventCraftingDiamondArmor: false
 colors:
-  primary: YELLOW
+  primary: AQUA
   secondary: GRAY
-  highlights: RED
+  highlights: DARK_GRAY

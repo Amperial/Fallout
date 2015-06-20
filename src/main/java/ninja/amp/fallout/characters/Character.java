@@ -63,7 +63,7 @@ public class Character {
         this.weight = builder.weight;
         this.gender = builder.gender;
         this.alignment = builder.alignment;
-        this.special = race.getMinSpecial();
+        this.special = new Special(race.getMinSpecial());
         // All skill levels start at 1
         for (Skill skill : Skill.class.getEnumConstants()) {
             skills.put(skill, 1);

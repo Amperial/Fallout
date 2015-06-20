@@ -55,18 +55,14 @@ public class SpecialAddItem extends StaticMenuItem {
     @Override
     @SuppressWarnings("deprecation")
     public ItemStack getFinalIcon(Player player) {
-        ItemStack finalIcon = super.getFinalIcon(player);
-
         Character character = characterManager.getCharacterByOwner(player.getUniqueId());
         Special special = menu.getPendingSpecial(character.getOwnerId());
 
         special.set(trait, special.get(trait) + 1);
-        if (!character.getRace().isValid(special)) {
-            finalIcon = disabledIcon;
-        }
+        boolean valid = character.getRace().isValid(special);
         special.set(trait, special.get(trait) - 1);
 
-        return finalIcon;
+        return valid ? super.getFinalIcon(player) : disabledIcon;
     }
 
     @Override

@@ -22,7 +22,7 @@ package ninja.amp.fallout.message;
  * Messages in Fallout.
  */
 public enum FOMessage {
-    PREFIX("Prefix", "&c[&eFallout&c] &e"),
+    PREFIX("Prefix", "&8[&bFallout&8] &b"),
     RELOAD("Reload", "Reloaded Fallout."),
 
     COMMAND_NOTAPLAYER("Command.NotAPlayer", "&4You must be a player to use this command."),
@@ -74,10 +74,9 @@ public enum FOMessage {
     ROLL_CANTROLL("Roll.CantRoll", "&4%s is not a Skill or SPECIAL trait."),
     ROLL_DICEAMOUNT("Roll.DiceAmount", "&4Cannot roll this many dice at once!"),
     ROLL_DICESIDES("Roll.DiceSides", "&4Dice cannot have this many sides!");
-
-    private String message;
     private final String path;
     private final String defaultMessage;
+    private String message;
 
     private FOMessage(String path, String defaultMessage) {
         this.message = defaultMessage;

@@ -52,8 +52,6 @@ public class SkillPointsItem extends StaticMenuItem {
 
     @Override
     public ItemStack getFinalIcon(Player player) {
-        ItemStack finalIcon = super.getFinalIcon(player);
-
         Character character = characterManager.getCharacterByOwner(player.getUniqueId());
         Map<Skill, Integer> skills = menu.getPendingSkills(character.getOwnerId());
 
@@ -64,12 +62,13 @@ public class SkillPointsItem extends StaticMenuItem {
         }
 
         if (totalPoints > allocatedPoints) {
+            ItemStack finalIcon = super.getFinalIcon(player).clone();
             finalIcon.setAmount(totalPoints - allocatedPoints);
-        } else {
-            finalIcon = noPoints;
-        }
 
-        return finalIcon;
+            return finalIcon;
+        } else {
+            return noPoints;
+        }
     }
 
 }
