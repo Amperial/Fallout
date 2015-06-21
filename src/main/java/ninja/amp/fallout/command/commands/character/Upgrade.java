@@ -34,6 +34,8 @@ import java.util.List;
 
 /**
  * A command that upgrades the level of a fallout character.
+ *
+ * @author Austin Payne
  */
 public class Upgrade extends Command {
 
@@ -94,4 +96,5 @@ public class Upgrade extends Command {
             return CommandController.EMPTY_LIST;
         }
     }
+
 }

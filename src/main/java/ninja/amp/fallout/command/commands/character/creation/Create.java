@@ -31,8 +31,11 @@ import org.bukkit.permissions.PermissionDefault;
 
 /**
  * A command that creates a fallout character.
+ *
+ * @author Austin Payne
  */
 public class Create extends Command {
+
     private CreateMenu createMenu;
 
     public Create(Fallout plugin, SpecialMenu specialMenu) {
@@ -56,13 +59,15 @@ public class Create extends Command {
             String characterName = args[0];
             if (characterManager.isCharacter(characterName)) {
                 plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_NAMETAKEN);
+            } else if (characterName.length() < 3 || characterName.length() > 20 || !characterName.matches("[a-zA-Z]*")) {
+                plugin.getMessenger().sendMessage(player, FOMessage.ERROR_NAMEFORMAT);
             } else {
                 Character.CharacterBuilder builder = new Character.CharacterBuilder(player);
                 builder.name(characterName);
                 try {
-                    builder.age(Integer.parseInt(args[1]));
-                    builder.height(Integer.parseInt(args[2]));
-                    builder.weight(Integer.parseInt(args[3]));
+                    builder.age(Math.max(6, Integer.parseInt(args[1])));
+                    builder.height(Math.max(36, Integer.parseInt(args[2])));
+                    builder.weight(Math.max(72, Integer.parseInt(args[3])));
                 } catch (NumberFormatException e) {
                     plugin.getMessenger().sendMessage(player, FOMessage.ERROR_NUMBERFORMAT);
                     return;
@@ -72,4 +77,5 @@ public class Create extends Command {
             }
         }
     }
+
 }

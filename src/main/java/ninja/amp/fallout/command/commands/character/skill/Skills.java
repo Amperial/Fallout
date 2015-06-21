@@ -30,9 +30,12 @@ import org.bukkit.permissions.PermissionDefault;
 import java.util.UUID;
 
 /**
- * A command that lets the sender view and level up their character's skills.
+ * A command that opens the skill allocation menu, letting the sender view and level up their character's skills.
+ *
+ * @author Austin Payne
  */
 public class Skills extends Command {
+
     private ItemMenu menu;
 
     public Skills(Fallout plugin) {
@@ -54,4 +57,5 @@ public class Skills extends Command {
             plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_NOTOWNER);
         }
     }
+
 }

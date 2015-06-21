@@ -21,9 +21,12 @@ package ninja.amp.fallout.utils;
 import java.util.Random;
 
 /**
- * Fallout utilities.
+ * Fallout utility methods.
+ *
+ * @author Austin Payne
  */
 public final class FOUtils {
+
     private static final Random RANDOM = new Random();
 
     private FOUtils() {
@@ -32,10 +35,10 @@ public final class FOUtils {
     /**
      * Clamps a value between a minimum and maximum value.
      *
-     * @param value The value.
-     * @param min   The minimum value.
-     * @param max   The maximum value.
-     * @return The clamped value.
+     * @param value The value
+     * @param min   The minimum value
+     * @param max   The maximum value
+     * @return The clamped value
      */
     public static int clamp(int value, int min, int max) {
         return Math.max(min, Math.min(max, value));
@@ -44,11 +47,12 @@ public final class FOUtils {
     /**
      * Returns a random int between min and max, inclusive.
      *
-     * @param min The minimum value.
-     * @param max The maximum value.
-     * @return The random int.
+     * @param min The minimum value
+     * @param max The maximum value
+     * @return The random int
      */
     public static int random(int min, int max) {
         return RANDOM.nextInt((max - min) + 1) + min;
     }
+
 }

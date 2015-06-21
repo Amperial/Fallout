@@ -31,6 +31,8 @@ import java.util.List;
 
 /**
  * A command that lists all plugin commands.
+ *
+ * @author Austin Payne
  */
 public class HelpCommand extends Command {
 
@@ -75,4 +77,5 @@ public class HelpCommand extends Command {
             return CommandController.EMPTY_LIST;
         }
     }
+
 }

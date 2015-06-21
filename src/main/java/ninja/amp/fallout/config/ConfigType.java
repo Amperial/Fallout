@@ -19,7 +19,9 @@
 package ninja.amp.fallout.config;
 
 /**
- * An enumeration of the fallout custom config types.
+ * Custom configuration file types used in the fallout plugin.
+ *
+ * @author Austin Payne
  */
 public enum ConfigType {
     MESSAGE("Messages.yml"),
@@ -35,4 +37,5 @@ public enum ConfigType {
     public String getFileName() {
         return fileName;
     }
+
 }

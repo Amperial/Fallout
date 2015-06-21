@@ -26,20 +26,23 @@ import java.util.List;
 
 /**
  * Organizes a list of strings into multiple pages.
+ *
+ * @author Austin Payne
  */
 public class PageList {
+
     private final Fallout plugin;
     private final String name;
     private final int messagesPerPage;
     private List<String> strings;
 
     /**
-     * Creates a new PageList.
+     * Creates a new page list.
      *
-     * @param plugin          The {@link ninja.amp.fallout.Fallout} instance.
-     * @param name            The name of the PageList.
-     * @param strings         The list of strings in the PageList.
-     * @param messagesPerPage The strings that should be displayed per page.
+     * @param plugin          The fallout plugin instance
+     * @param name            The name of the page list
+     * @param strings         The list of strings in the page list
+     * @param messagesPerPage The number of strings that should be displayed per page
      */
     public PageList(Fallout plugin, String name, List<String> strings, int messagesPerPage) {
         this.plugin = plugin;
@@ -49,11 +52,11 @@ public class PageList {
     }
 
     /**
-     * Creates a new PageList.
+     * Creates a new page list.
      *
-     * @param plugin          The {@link ninja.amp.fallout.Fallout} instance.
-     * @param name            The name of the PageList.
-     * @param messagesPerPage The strings that should be displayed per page.
+     * @param plugin          The fallout plugin instance
+     * @param name            The name of the page list
+     * @param messagesPerPage The number of strings that should be displayed per page
      */
     public PageList(Fallout plugin, String name, int messagesPerPage) {
         this.plugin = plugin;
@@ -63,19 +66,19 @@ public class PageList {
     }
 
     /**
-     * Gets the amount of pages in the PageList.
+     * Gets the amount of pages in the page list.
      *
-     * @return The amount of pages.
+     * @return The amount of pages
      */
     public int getPageAmount() {
         return (strings.size() + messagesPerPage - 1) / messagesPerPage;
     }
 
     /**
-     * Sends a page of the PageList to a recipient.
+     * Sends a page of the page list to a recipient.
      *
-     * @param pageNumber The page number.
-     * @param recipient  The recipient.
+     * @param pageNumber The page number
+     * @param recipient  The recipient
      */
     public void sendPage(int pageNumber, Object recipient) {
         int pageAmount = getPageAmount();
@@ -91,7 +94,7 @@ public class PageList {
     /**
      * Sets the strings of a page list.
      *
-     * @param strings The strings.
+     * @param strings The strings
      */
     public void setStrings(List<String> strings) {
         this.strings = strings;
@@ -100,8 +103,8 @@ public class PageList {
     /**
      * Gets the int page number from a string, 1 if not an int.
      *
-     * @param pageNumber The string.
-     * @return The page number.
+     * @param pageNumber The string
+     * @return The page number
      */
     public static int getPageNumber(String pageNumber) {
         int page;
@@ -112,4 +115,5 @@ public class PageList {
         }
         return page;
     }
+
 }

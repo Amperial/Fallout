@@ -20,6 +20,8 @@ package ninja.amp.fallout.utils;
 
 /**
  * The types of armor in fallout.
+ *
+ * @author Austin Payne
  */
 public enum FOArmor {
     NONE,
@@ -30,13 +32,14 @@ public enum FOArmor {
     POWER;
 
     /**
-     * Checks if the FOArmor type is able to defend against a roll of a certain damage type.
+     * Checks if the fallout armor type is able to defend against a roll of a certain damage type.
      *
-     * @param damageType The damage type.
-     * @param roll       The roll.
-     * @return If the armor is able to block the damage.
+     * @param damageType The damage type
+     * @param roll       The roll
+     * @return {@code true} if the armor is able to block the damage
      */
     public boolean canBlock(DamageType damageType, int roll) {
         return damageType.getDefenseValue(this) >= 0 && roll >= damageType.getDefenseValue(this);
     }
+
 }

@@ -27,14 +27,17 @@ import java.util.Map;
 
 /**
  * Contains plugin configs.
+ *
+ * @author Austin Payne
  */
 public class ConfigManager {
+
     private Map<ConfigType, ConfigAccessor> configs = new HashMap<>();
 
     /**
      * Creates a new config manager.
      *
-     * @param plugin The {@link ninja.amp.fallout.Fallout} instance.
+     * @param plugin The fallout plugin instance
      */
     public ConfigManager(Fallout plugin) {
         // Save main config
@@ -48,31 +51,32 @@ public class ConfigManager {
     }
 
     /**
-     * Adds a {@link ninja.amp.fallout.config.ConfigAccessor} to the config manager.
+     * Adds a config accessor to the config manager.
      *
-     * @param configAccessor The {@link ninja.amp.fallout.config.ConfigAccessor}.
+     * @param configAccessor The config accessor
      */
     public void addConfigAccessor(ConfigAccessor configAccessor) {
         configs.put(configAccessor.getConfigType(), configAccessor);
     }
 
     /**
-     * Gets a certain {@link ninja.amp.fallout.config.ConfigAccessor}.
+     * Gets a certain config accessor.
      *
-     * @param configType The {@link ConfigType} of the config.
-     * @return The {@link ninja.amp.fallout.config.ConfigAccessor}.
+     * @param configType The type of the configuration file
+     * @return The config accessor
      */
     public ConfigAccessor getConfigAccessor(ConfigType configType) {
         return configs.get(configType);
     }
 
     /**
-     * Gets a certain FileConfiguration.
+     * Gets a certain configuration file.
      *
-     * @param configType The {@link ConfigType} of the config.
-     * @return The FileConfiguration.
+     * @param configType The type of the configuration file
+     * @return The configuration file
      */
     public FileConfiguration getConfig(ConfigType configType) {
         return configs.get(configType).getConfig();
     }
+
 }

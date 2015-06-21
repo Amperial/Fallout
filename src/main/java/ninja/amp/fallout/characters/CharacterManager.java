@@ -21,6 +21,7 @@ package ninja.amp.fallout.characters;
 import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.config.ConfigManager;
 import ninja.amp.fallout.config.ConfigType;
+import ninja.amp.fallout.message.FOMessage;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -32,18 +33,22 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Manages all of the fallout Characters.
+ * Manages all of the fallout characters.
+ *
+ * @author Austin Payne
  */
 public class CharacterManager {
+
     private Fallout plugin;
     private Map<UUID, Character> charactersByOwner = new HashMap<>();
     private Map<String, Character> charactersByName = new HashMap<>();
     private Map<UUID, Character.CharacterBuilder> characterBuilders = new HashMap<>();
 
     /**
-     * Creates a new {@link ninja.amp.fallout.characters.CharacterManager}.
+     * Creates a new character manager.<br>
+     * Must be created after the {@link ninja.amp.fallout.config.ConfigManager} and {@link ninja.amp.fallout.message.Messenger}!
      *
-     * @param plugin The {@link ninja.amp.fallout.Fallout} instance.
+     * @param plugin The fallout plugin instance
      */
     public CharacterManager(Fallout plugin) {
         this.plugin = plugin;
@@ -57,8 +62,8 @@ public class CharacterManager {
     /**
      * Loads a player's character if currently owning one.
      *
-     * @param owner The player.
-     * @return The player's character.
+     * @param owner The player whose character to load
+     * @return The player's character
      */
     public Character loadCharacter(Player owner) {
         ConfigManager configManager = plugin.getConfigManager();
@@ -71,7 +76,16 @@ public class CharacterManager {
 
             // Load character from character config
             FileConfiguration characterConfig = configManager.getConfig(ConfigType.CHARACTER);
-            Character character = new Character(characterConfig.getConfigurationSection(characterName.toLowerCase()));
+
+            Character character;
+            try {
+                character = new Character(characterConfig.getConfigurationSection(characterName.toLowerCase()));
+            } catch (Exception e) {
+                plugin.getMessenger().sendMessage(owner, FOMessage.ERROR_CHARACTERLOAD, e.getMessage());
+                plugin.getMessenger().debug("Failed to load character " + characterName + ". " + e.getMessage());
+                return null;
+            }
+            plugin.getMessenger().debug("Loaded character " + characterName);
 
             // Save loaded character to update any information
             saveCharacter(character);
@@ -86,7 +100,7 @@ public class CharacterManager {
     /**
      * Unloads a player's character if currently owning one.
      *
-     * @param owner The player.
+     * @param owner The player whose character to unload
      */
     public void unloadCharacter(Player owner) {
         UUID ownerId = owner.getUniqueId();
@@ -95,48 +109,53 @@ public class CharacterManager {
         }
         if (characterBuilders.containsKey(ownerId)) {
             characterBuilders.remove(ownerId);
+            plugin.getMessenger().debug("Removed character builder for player " + owner.getName());
         }
     }
 
     /**
-     * Saves a character to the correct location in the character config.
+     * Saves a character to the character config.<br>
+     * The character is saved to the path of the character's name in lowercase.
      *
-     * @param character The character.
+     * @param character The character to save
      */
     public void saveCharacter(Character character) {
         FileConfiguration characterConfig = plugin.getConfigManager().getConfig(ConfigType.CHARACTER);
         character.save(characterConfig.getConfigurationSection(character.getCharacterName().toLowerCase()));
         plugin.getConfigManager().getConfigAccessor(ConfigType.CHARACTER).saveConfig();
+        plugin.getMessenger().debug("Saved character " + character.getCharacterName());
     }
 
     /**
      * Adds a character to the manager.
      *
-     * @param character The character.
+     * @param character The character to add to the manager
      */
     private Character addToManager(Character character) {
         charactersByOwner.put(character.getOwnerId(), character);
         charactersByName.put(character.getCharacterName().toLowerCase(), character);
+        plugin.getMessenger().debug("Added character " + character.getCharacterName() + " to character manager");
         return character;
     }
 
     /**
      * Removes a character from the manager.
      *
-     * @param character The character.
+     * @param character The character to remove from the manager
      */
     private void removeFromManager(Character character) {
         charactersByOwner.remove(character.getOwnerId());
         charactersByName.remove(character.getCharacterName().toLowerCase());
+        plugin.getMessenger().debug("Removed character " + character.getCharacterName() + " from character manager");
     }
 
     /**
-     * Creates a character and adds it to the manager.
-     * Player must not already own a character.
-     * Player must have a valid builder in the manager.
+     * Creates a character and adds it to the manager.<br>
+     * Player must not already own a character.<br>
+     * Player must have a valid builder in the manager, added with {@link CharacterManager#addCharacterBuilder}.
      *
-     * @param owner The character's owner.
-     * @return The Character.
+     * @param owner The character's owner
+     * @return The character created
      */
     public Character createCharacter(Player owner) {
         ConfigManager configManager = plugin.getConfigManager();
@@ -145,7 +164,7 @@ public class CharacterManager {
         UUID ownerId = owner.getUniqueId();
         Character character = new Character(characterBuilders.get(ownerId));
         characterBuilders.remove(ownerId);
-        addToManager(character);
+        plugin.getMessenger().debug("Created character " + character.getCharacterName());
 
         // Add owning player to players config
         FileConfiguration playerConfig = configManager.getConfig(ConfigType.PLAYER);
@@ -155,6 +174,9 @@ public class CharacterManager {
         // Add character to character config
         configManager.getConfig(ConfigType.CHARACTER).createSection(character.getCharacterName().toLowerCase());
         saveCharacter(character);
+
+        // Add character to manager
+        addToManager(character);
 
         // Nickname player
         if (plugin.getConfig().getBoolean("NicknamePlayers", true)) {
@@ -167,21 +189,22 @@ public class CharacterManager {
     /**
      * Deletes a character
      *
-     * @param character The character.
+     * @param character The character to delete
      */
     public void deleteCharacter(Character character) {
+        // Remove character from manager
+        removeFromManager(character);
+
         ConfigManager configManager = plugin.getConfigManager();
 
         // Remove character from character config
         configManager.getConfig(ConfigType.CHARACTER).set(character.getCharacterName().toLowerCase(), null);
         configManager.getConfigAccessor(ConfigType.CHARACTER).saveConfig();
+        plugin.getMessenger().debug("Deleted character " + character.getCharacterName());
 
         // Remove owning player from players config
         configManager.getConfig(ConfigType.PLAYER).set(character.getOwnerId().toString(), null);
         configManager.getConfigAccessor(ConfigType.PLAYER).saveConfig();
-
-        // Remove character from manager
-        removeFromManager(character);
 
         // Remove nickname from player if set
         if (plugin.getConfig().getBoolean("NicknamePlayers", true)) {
@@ -190,23 +213,30 @@ public class CharacterManager {
     }
 
     /**
-     * Possesses a currently unowned character.
-     * Character must exist in character config.
-     * Player must not already be an owner.
+     * Possesses a currently unowned character.<br>
+     * In order to be possessed, the character must exist and have no current owner.
      *
-     * @param owner         The character's new owner.
-     * @param characterName The character's name.
-     * @return The character.
+     * @param owner         The character's new owner
+     * @param characterName The character's name
+     * @return The character possessed
      */
     public Character possessCharacter(Player owner, String characterName) {
         ConfigManager configManager = plugin.getConfigManager();
 
         // Load character from character config
         FileConfiguration characterConfig = configManager.getConfig(ConfigType.CHARACTER);
-        Character character = new Character(characterConfig.getConfigurationSection(characterName.toLowerCase()));
+        Character character;
+        try {
+            character = new Character(characterConfig.getConfigurationSection(characterName.toLowerCase()));
+        } catch (Exception e) {
+            plugin.getMessenger().sendMessage(owner, FOMessage.ERROR_CHARACTERLOAD, e.getMessage());
+            plugin.getMessenger().debug("Failed to load character " + characterName + ". " + e.getMessage());
+            return null;
+        }
         if (character.getOwnerName() == null) {
             // Possess character
             character.possess(owner);
+            plugin.getMessenger().debug("Possessed character " + character.getCharacterName());
 
             // Save loaded character to update owner information
             saveCharacter(character);
@@ -229,10 +259,10 @@ public class CharacterManager {
     }
 
     /**
-     * Separates a character from its owner.
+     * Separates a character from its owner.<br>
      * Player must be the owner of the character.
      *
-     * @param owner The character's owner.
+     * @param owner The character's owner
      */
     public void abandonCharacter(Player owner) {
         ConfigManager configManager = plugin.getConfigManager();
@@ -245,6 +275,7 @@ public class CharacterManager {
 
         // Abandon character
         character.abandon();
+        plugin.getMessenger().debug("Abandoned character " + character.getCharacterName());
 
         // Save character to update owner information
         saveCharacter(character);
@@ -262,18 +293,19 @@ public class CharacterManager {
     /**
      * Adds a character builder to the manager for creation.
      *
-     * @param player  The character's owner.
-     * @param builder The character builder.
+     * @param player  The character's owner
+     * @param builder The character builder
      */
     public void addCharacterBuilder(Player player, Character.CharacterBuilder builder) {
         characterBuilders.put(player.getUniqueId(), builder);
+        plugin.getMessenger().debug("Added character builder for player " + player.getName());
     }
 
     /**
-     * Gets the character builder of a player.
+     * Gets a player's character builder.
      *
-     * @param player The character's owner.
-     * @return The character builder.
+     * @param player The character's owner
+     * @return The character builder, or {@code null} if the player has not begun to create a character
      */
     public Character.CharacterBuilder getCharacterBuilder(Player player) {
         return characterBuilders.get(player.getUniqueId());
@@ -282,28 +314,28 @@ public class CharacterManager {
     /**
      * Checks if a player owns a character.
      *
-     * @param playerId The player's UUID.
-     * @return True if the player is an owner, else false.
+     * @param playerId The player's uuid
+     * @return {@code true} if the player is an owner
      */
     public boolean isOwner(UUID playerId) {
         return charactersByOwner.containsKey(playerId);
     }
 
     /**
-     * Checks if the character of a certain name exists.
+     * Checks if the character of a certain name exists in the character config.
      *
-     * @param characterName The character's name.
-     * @return True if the character exists, else false.
+     * @param characterName The character's name
+     * @return {@code true} if the character exists
      */
     public boolean isCharacter(String characterName) {
         return plugin.getConfigManager().getConfig(ConfigType.CHARACTER).contains(characterName.toLowerCase());
     }
 
     /**
-     * Checks if the character of a certain name is loaded.
+     * Checks if the character of a certain name is loaded in the character manager.
      *
-     * @param characterName The character's name.
-     * @return True if the character is loaded, else false.
+     * @param characterName The character's name
+     * @return {@code true} if the character is loaded
      */
     public boolean isLoaded(String characterName) {
         return charactersByName.containsKey(characterName.toLowerCase());
@@ -312,8 +344,8 @@ public class CharacterManager {
     /**
      * Checks if the character of a certain name can be possessed.
      *
-     * @param characterName The character's name.
-     * @return True if the character can be possessed, else false.
+     * @param characterName The character's name
+     * @return {@code true} if the character exists and has no current owner
      */
     public boolean canPossess(String characterName) {
         FileConfiguration characterConfig = plugin.getConfigManager().getConfig(ConfigType.CHARACTER);
@@ -321,10 +353,11 @@ public class CharacterManager {
     }
 
     /**
-     * Gets the character owned by a player.
+     * Gets the character currently owned by a player.<br>
+     * The
      *
-     * @param ownerId The owner's UUID.
-     * @return The character owned by the player.
+     * @param ownerId The owner's UUID
+     * @return The character owned by the player
      */
     public Character getCharacterByOwner(UUID ownerId) {
         return charactersByOwner.containsKey(ownerId) ? charactersByOwner.get(ownerId) : null;
@@ -333,46 +366,47 @@ public class CharacterManager {
     /**
      * Gets the character of a given name. Character must have an online owner.
      *
-     * @param characterName The character's name.
-     * @return The character with the given name.
+     * @param characterName The character's name
+     * @return The character with the given name
      */
     public Character getCharacterByName(String characterName) {
         return charactersByName.containsKey(characterName.toLowerCase()) ? charactersByName.get(characterName.toLowerCase()) : null;
     }
 
     /**
-     * Gets the characters in the manager.
+     * Gets the characters loaded in the manager.
      *
-     * @return The characters in the manager.
+     * @return The characters in the manager
      */
     public Collection<Character> getCharacters() {
         return charactersByOwner.values();
     }
 
     /**
-     * Gets the map of owners and characters.
+     * Gets the characters loaded in the manager and their owners.
      *
-     * @return The map of owners and characters.
+     * @return The map of owners and characters
      */
     public Map<UUID, Character> getCharactersByOwner() {
         return charactersByOwner;
     }
 
     /**
-     * Gets the map of character names and characters.
+     * Gets the characters loaded in the manager and their names.
      *
-     * @return The map of character names and characters.
+     * @return The map of character names and characters
      */
     public Map<String, Character> getCharactersByName() {
         return charactersByName;
     }
 
     /**
-     * Gets a string list of the Characters in the manager.
+     * Gets a list of the characters loaded in the manager.
      *
-     * @return A string list of all of the manager's Characters.
+     * @return A list of the names of the manager's characters
      */
     public List<String> getCharacterList() {
         return new ArrayList<>(charactersByName.keySet());
     }
+
 }

@@ -16,32 +16,42 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.command.commands.character.special;
+package ninja.amp.fallout.menus;
 
-import ninja.amp.fallout.characters.Special;
-import ninja.amp.fallout.characters.Trait;
-import ninja.amp.fallout.menus.items.StaticMenuItem;
+import ninja.amp.fallout.characters.Character;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
-public class SpecialItem extends StaticMenuItem {
-    private SpecialMenu menu;
-    private Trait trait;
+/**
+ * Represents a fallout character and the player that currently owns it.
+ *
+ * @author Austin Payne
+ */
+public class Owner {
 
-    public SpecialItem(SpecialMenu menu, Trait trait, ItemStack icon, String... lore) {
-        super(trait.getName(), icon, lore);
+    private final Player player;
+    private final Character character;
 
-        this.menu = menu;
-        this.trait = trait;
+    public Owner(Player player, Character character) {
+        this.player = player;
+        this.character = character;
     }
 
-    @Override
-    public ItemStack getFinalIcon(Player player) {
-        ItemStack finalIcon = getIcon().clone();
-
-        Special special = menu.getPendingSpecial(player.getUniqueId());
-        finalIcon.setAmount(special.get(trait));
-
-        return finalIcon;
+    /**
+     * Gets the player of the owner.
+     *
+     * @return The player.
+     */
+    public Player getPlayer() {
+        return player;
     }
+
+    /**
+     * Gets the character owned by the player.
+     *
+     * @return The character.
+     */
+    public Character getCharacter() {
+        return character;
+    }
+
 }

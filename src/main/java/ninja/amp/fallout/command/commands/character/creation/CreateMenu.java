@@ -20,23 +20,33 @@ package ninja.amp.fallout.command.commands.character.creation;
 
 import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.characters.Character;
+import ninja.amp.fallout.characters.CharacterManager;
 import ninja.amp.fallout.characters.Race;
 import ninja.amp.fallout.command.commands.character.special.SpecialMenu;
 import ninja.amp.fallout.menus.ItemMenu;
 import ninja.amp.fallout.menus.events.ItemClickEvent;
+import ninja.amp.fallout.menus.items.StaticMenuItem;
+import ninja.amp.fallout.menus.items.SubMenuItem;
 import ninja.amp.fallout.menus.items.groups.EnumOption;
 import ninja.amp.fallout.menus.items.groups.EnumOptionItem;
 import ninja.amp.fallout.menus.items.groups.Option;
 import ninja.amp.fallout.menus.items.groups.OptionItem;
+import ninja.amp.fallout.message.FOMessage;
+import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.UUID;
+
 /**
- * Inventory menu used for creating a character.
+ * An inventory menu used for creating a character.
+ *
+ * @author Austin Payne
  */
 public class CreateMenu extends ItemMenu {
+
     private EnumOption<Character.Gender> gender;
     private EnumOption<Race> race;
     private Option conformity;
@@ -46,7 +56,7 @@ public class CreateMenu extends ItemMenu {
     public CreateMenu(Fallout plugin, SpecialMenu specialMenu) {
         super("Character Options", ItemMenu.Size.FIVE_LINE, plugin);
 
-        setItem(41, new CreateConfirmItem(plugin, this, specialMenu));
+        setItem(41, new CreateConfirmItem(plugin, specialMenu));
         setItem(39, new CreateCancelItem(plugin));
 
         ItemStack selected = new ItemStack(Material.WOOL, 1, DyeColor.LIME.getWoolData());
@@ -94,11 +104,18 @@ public class CreateMenu extends ItemMenu {
         fillEmptySlots();
     }
 
+    @Override
+    public void open(Player player) {
+        resetOptions(player);
+
+        super.open(player);
+    }
+
     /**
      * Gets the currently selected gender of a player.
      *
-     * @param player The player.
-     * @return The selected gender option.
+     * @param player The player
+     * @return The selected gender option
      */
     public Character.Gender getGender(Player player) {
         return gender.getSelected(player).getEnum();
@@ -107,8 +124,8 @@ public class CreateMenu extends ItemMenu {
     /**
      * Gets the currently selected race of a player.
      *
-     * @param player The player.
-     * @return The selected race option.
+     * @param player The player
+     * @return The selected race option
      */
     public Race getRace(Player player) {
         return race.getSelected(player).getEnum();
@@ -117,8 +134,8 @@ public class CreateMenu extends ItemMenu {
     /**
      * Gets the currently selected alignment of a player.
      *
-     * @param player The player.
-     * @return The selected alignment option.
+     * @param player The player
+     * @return The selected alignment option
      */
     public Character.Alignment getAlignment(Player player) {
         OptionItem conformity = this.conformity.getSelected(player);
@@ -139,7 +156,7 @@ public class CreateMenu extends ItemMenu {
     /**
      * Resets a player's selected options.
      *
-     * @param player The player.
+     * @param player The player
      */
     public void resetOptions(Player player) {
         gender.removeSelected(player);
@@ -147,4 +164,71 @@ public class CreateMenu extends ItemMenu {
         conformity.removeSelected(player);
         morality.removeSelected(player);
     }
+
+    /**
+     * A menu item used in the character creation menu to confirm character creation.
+     */
+    private class CreateConfirmItem extends SubMenuItem {
+
+        private Fallout plugin;
+
+        public CreateConfirmItem(Fallout plugin, SpecialMenu specialMenu) {
+            super(plugin, ChatColor.GREEN + "Confirm Character Options",
+                    new ItemStack(Material.EMERALD_BLOCK), specialMenu);
+
+            this.plugin = plugin;
+        }
+
+        @Override
+        public void onItemClick(ItemClickEvent event) {
+            Player player = event.getPlayer();
+            UUID playerId = player.getUniqueId();
+
+            Character.Gender gender = getGender(player);
+            Race race = getRace(player);
+            Character.Alignment alignment = getAlignment(player);
+            if (gender == null || race == null || alignment == null) {
+                plugin.getMessenger().sendMessage(player, FOMessage.ERROR_ALLOPTIONS);
+                return;
+            }
+            resetOptions(player);
+
+            Character.CharacterBuilder builder = plugin.getCharacterManager().getCharacterBuilder(player);
+            builder.gender(gender);
+            builder.race(race);
+            builder.alignment(alignment);
+            plugin.getCharacterManager().createCharacter(player);
+            plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_CREATE, builder.getName());
+
+            super.onItemClick(event);
+        }
+
+    }
+
+    /**
+     * A menu item used in the character creation menu to cancel character creation.
+     */
+    private class CreateCancelItem extends StaticMenuItem {
+
+        private CharacterManager characterManager;
+
+        public CreateCancelItem(Fallout plugin) {
+            super(ChatColor.DARK_RED + "Cancel Character Creation",
+                    new ItemStack(Material.REDSTONE_BLOCK),
+                    "Cancels character",
+                    "creation and exits",
+                    "the menu.");
+
+            this.characterManager = plugin.getCharacterManager();
+        }
+
+        @Override
+        public void onItemClick(ItemClickEvent event) {
+            characterManager.unloadCharacter(event.getPlayer());
+
+            event.setWillClose(true);
+        }
+
+    }
+
 }

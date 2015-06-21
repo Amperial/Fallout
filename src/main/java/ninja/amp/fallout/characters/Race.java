@@ -23,7 +23,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Character races used in fallout.
+ * Races a fallout character can select.
+ *
+ * @author Austin Payne
  */
 public enum Race {
     WASTELANDER("Human", new Special(1, 1, 1, 1, 1, 1, 1), new Special(10, 10, 10, 10, 10, 10, 10)),
@@ -46,35 +48,37 @@ public enum Race {
     /**
      * Gets the display name of the race.
      *
-     * @return The race's display name.
+     * @return The race's display name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Gets the minimum Special of the race.
+     * Gets the minimum SPECIAL of the race.
      *
-     * @return The race's minimum Special.
+     * @return The race's minimum SPECIAL
      */
     public Special getMinSpecial() {
         return min;
     }
 
     /**
-     * Gets the maximum Special of the race.
+     * Gets the maximum SPECIAL of the race.
      *
-     * @return The race's maximum Special.
+     * @return The race's maximum SPECIAL
      */
     public Special getMaxSpecial() {
         return max;
     }
 
     /**
-     * Checks if a Special is valid for the race.
+     * Checks if a certain SPECIAL is valid for the race.<br>
+     * The traits in a valid SPECIAL add up to 40, with no more than two traits at their maximum value.<br>
+     * SPECIALs of the race {@code DEITY} are only restricted by the minimum value of 1 for each trait.
      *
-     * @param special The Special.
-     * @return True if the Special is valid.
+     * @param special The SPECIAL
+     * @return {@code true} if the SPECIAL is valid
      */
     public boolean isValid(Special special) {
         int total = 0;
@@ -117,8 +121,8 @@ public enum Race {
     /**
      * Gets a race from its name.
      *
-     * @param name The name.
-     * @return The race.
+     * @param name The name of the race
+     * @return The race
      */
     public static Race fromName(String name) {
         for (Race race : Race.class.getEnumConstants()) {
@@ -130,9 +134,9 @@ public enum Race {
     }
 
     /**
-     * Gets the list of race names.
+     * Gets a list of race names.
      *
-     * @return The list of race names.
+     * @return The list of race names
      */
     public static List<String> getRaceNames() {
         return raceNames;
@@ -144,4 +148,5 @@ public enum Race {
             raceNames.add(race.getName());
         }
     }
+
 }

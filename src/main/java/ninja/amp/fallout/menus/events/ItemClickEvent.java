@@ -18,34 +18,54 @@
  */
 package ninja.amp.fallout.menus.events;
 
+import ninja.amp.fallout.characters.Character;
 import org.bukkit.entity.Player;
 
 /**
- * An event called when an Item in the {@link ninja.amp.fallout.menus.ItemMenu} is clicked.
+ * An event called when an item in the item menu is clicked.
+ *
+ * @author Austin Payne
  */
 public class ItemClickEvent {
+
     private Player player;
+    private Character character;
     private boolean goBack = false;
     private boolean close = false;
     private boolean update = false;
 
+    public ItemClickEvent(Player player, Character character) {
+        this.player = player;
+        this.character = character;
+    }
+
     public ItemClickEvent(Player player) {
         this.player = player;
+        this.character = null;
     }
 
     /**
      * Gets the player who clicked.
      *
-     * @return The player who clicked.
+     * @return The player who clicked
      */
     public Player getPlayer() {
         return player;
     }
 
     /**
+     * Gets the character of the player who clicked.
+     *
+     * @return The character, if the player is an owner
+     */
+    public Character getCharacter() {
+        return character;
+    }
+
+    /**
      * Checks if the {@link ninja.amp.fallout.menus.ItemMenu} will go back to the parent menu.
      *
-     * @return True if the {@link ninja.amp.fallout.menus.ItemMenu} will go back to the parent menu, else false.
+     * @return {@code true} if the item menu will go back to the parent menu
      */
     public boolean willGoBack() {
         return goBack;
@@ -54,7 +74,7 @@ public class ItemClickEvent {
     /**
      * Sets if the {@link ninja.amp.fallout.menus.ItemMenu} will go back to the parent menu.
      *
-     * @param goBack If the {@link ninja.amp.fallout.menus.ItemMenu} will go back to the parent menu.
+     * @param goBack If the item menu will go back to the parent menu.
      */
     public void setWillGoBack(boolean goBack) {
         this.goBack = goBack;
@@ -65,18 +85,18 @@ public class ItemClickEvent {
     }
 
     /**
-     * Checks if the {@link ninja.amp.fallout.menus.ItemMenu} will close.
+     * Checks if the item menu will close.
      *
-     * @return True if the {@link ninja.amp.fallout.menus.ItemMenu} will close, else false.
+     * @return {@code true} if the item menu will close
      */
     public boolean willClose() {
         return close;
     }
 
     /**
-     * Sets if the {@link ninja.amp.fallout.menus.ItemMenu} will close.
+     * Sets if the item menu will close.
      *
-     * @param close If the {@link ninja.amp.fallout.menus.ItemMenu} will close.
+     * @param close If the item menu will close
      */
     public void setWillClose(boolean close) {
         this.close = close;
@@ -87,18 +107,18 @@ public class ItemClickEvent {
     }
 
     /**
-     * Checks if the {@link ninja.amp.fallout.menus.ItemMenu} will update.
+     * Checks if the item menu will update.
      *
-     * @return True if the {@link ninja.amp.fallout.menus.ItemMenu} will update, else false.
+     * @return {@code true} if the item menu will update
      */
     public boolean willUpdate() {
         return update;
     }
 
     /**
-     * Sets if the {@link ninja.amp.fallout.menus.ItemMenu} will update.
+     * Sets if the item menu will update.
      *
-     * @param update If the {@link ninja.amp.fallout.menus.ItemMenu} will update.
+     * @param update If the item menu will update
      */
     public void setWillUpdate(boolean update) {
         this.update = update;
@@ -107,4 +127,5 @@ public class ItemClickEvent {
             close = false;
         }
     }
+
 }

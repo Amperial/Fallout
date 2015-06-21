@@ -22,9 +22,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
 /**
- * Allows you to set the {@link ninja.amp.fallout.menus.ItemMenu} that created the Inventory as the Inventory's holder.
+ * Allows you to set the item menu that created the inventory as the inventory's holder.
+ *
+ * @author Austin Payne
  */
 public class MenuHolder implements InventoryHolder {
+
     private ItemMenu menu;
     private Inventory inventory;
 
@@ -33,9 +36,9 @@ public class MenuHolder implements InventoryHolder {
     }
 
     /**
-     * Gets the {@link ninja.amp.fallout.menus.ItemMenu} holding the Inventory.
+     * Gets the item menu holding the inventory.
      *
-     * @return The {@link ninja.amp.fallout.menus.ItemMenu} holding the Inventory.
+     * @return The item menu holding the inventory
      */
     public ItemMenu getMenu() {
         return menu;
@@ -49,4 +52,5 @@ public class MenuHolder implements InventoryHolder {
     public void setInventory(Inventory inventory) {
         this.inventory = inventory;
     }
+
 }

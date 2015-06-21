@@ -24,8 +24,11 @@ import ninja.amp.fallout.characters.CharacterManager;
 import ninja.amp.fallout.characters.Perk;
 import ninja.amp.fallout.menus.ItemMenu;
 import ninja.amp.fallout.menus.events.ItemClickEvent;
+import ninja.amp.fallout.menus.items.StaticMenuItem;
 import ninja.amp.fallout.menus.items.groups.EnumOption;
 import ninja.amp.fallout.menus.items.groups.EnumOptionItem;
+import ninja.amp.fallout.message.FOMessage;
+import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -38,9 +41,12 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Inventory menu used for creating a character.
+ * An inventory menu used for selecting your character's perks.
+ *
+ * @author Austin Payne
  */
 public class PerksMenu extends ItemMenu {
+
     private CharacterManager characterManager;
     private Map<Integer, EnumOption<Perk>> tiers = new HashMap<>();
 
@@ -50,8 +56,8 @@ public class PerksMenu extends ItemMenu {
 
         this.characterManager = plugin.getCharacterManager();
 
-        setItem(50, new PerksConfirmItem(plugin, this));
-        setItem(48, new PerksCancelItem(this));
+        setItem(50, new PerksConfirmItem(plugin));
+        setItem(48, new PerksCancelItem());
 
         ItemStack selected = new ItemStack(Material.WOOL, 1, DyeColor.LIME.getWoolData());
         ItemStack unselected = new ItemStack(Material.WOOL, 1, DyeColor.GRAY.getWoolData());
@@ -115,8 +121,8 @@ public class PerksMenu extends ItemMenu {
     /**
      * Gets a player's currently selected perks.
      *
-     * @param player The player.
-     * @return The selected perks.
+     * @param player The player
+     * @return The selected perks
      */
     public List<Perk> getPerks(Player player) {
         List<Perk> perks = new ArrayList<>();
@@ -133,7 +139,7 @@ public class PerksMenu extends ItemMenu {
     /**
      * Resets a player's selected options.
      *
-     * @param player The player.
+     * @param player The player
      */
     public void resetOptions(Player player) {
         for (EnumOption<Perk> tier : tiers.values()) {
@@ -142,9 +148,10 @@ public class PerksMenu extends ItemMenu {
     }
 
     /**
-     * A {@link ninja.amp.fallout.menus.items.groups.EnumOptionItem} used exclusively for the PerksMenu.
+     * A special enum option item that checks if the character's level should allow selection of that perk.
      */
     private class PerkOptionItem extends EnumOptionItem<Perk> {
+
         private CharacterManager characterManager;
 
         public PerkOptionItem(Fallout plugin, EnumOption<Perk> group, Perk perk, ItemStack selected, ItemStack unselected) {
@@ -157,7 +164,7 @@ public class PerksMenu extends ItemMenu {
         public void onItemClick(ItemClickEvent event) {
             Player player = event.getPlayer();
             UUID playerId = player.getUniqueId();
-            Character character = characterManager.getCharacterByOwner(playerId);
+            Character character = event.getCharacter();
 
             int tier = getEnum().getTier();
             boolean tierSelected = false;
@@ -172,5 +179,66 @@ public class PerksMenu extends ItemMenu {
                 super.onItemClick(event);
             }
         }
+
     }
+
+    /**
+     * A menu item used in the perk selection menu to confirm perk selection.
+     */
+    private class PerksConfirmItem extends StaticMenuItem {
+
+        private Fallout plugin;
+
+        public PerksConfirmItem(Fallout plugin) {
+            super(ChatColor.GREEN + "Confirm Perk Selection",
+                    new ItemStack(Material.EMERALD_BLOCK),
+                    "THIS IS PERMANENT");
+
+            this.plugin = plugin;
+        }
+
+        @Override
+        public void onItemClick(ItemClickEvent event) {
+            Player player = event.getPlayer();
+            UUID playerId = player.getUniqueId();
+            Character character = event.getCharacter();
+
+            List<Perk> perks = getPerks(player);
+            for (Perk perk : perks) {
+                if (!character.hasPerk(perk)) {
+                    character.addPerk(perk);
+                }
+            }
+            plugin.getCharacterManager().saveCharacter(character);
+            plugin.getMessenger().sendMessage(player, FOMessage.PERKS_CONFIRM);
+
+            resetOptions(player);
+
+            event.setWillClose(true);
+        }
+
+    }
+
+    /**
+     * A menu item used in the perk selection menu to cancel perk selection.
+     */
+    private class PerksCancelItem extends StaticMenuItem {
+
+        public PerksCancelItem() {
+            super(ChatColor.DARK_RED + "Cancel Perk Selection",
+                    new ItemStack(Material.REDSTONE_BLOCK),
+                    "Cancels the current",
+                    "selection and exits",
+                    "the menu.");
+        }
+
+        @Override
+        public void onItemClick(ItemClickEvent event) {
+            resetOptions(event.getPlayer());
+
+            event.setWillClose(true);
+        }
+
+    }
+
 }

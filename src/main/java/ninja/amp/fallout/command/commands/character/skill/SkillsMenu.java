@@ -23,19 +23,28 @@ import ninja.amp.fallout.characters.Character;
 import ninja.amp.fallout.characters.CharacterManager;
 import ninja.amp.fallout.characters.Skill;
 import ninja.amp.fallout.menus.ItemMenu;
+import ninja.amp.fallout.menus.Owner;
+import ninja.amp.fallout.menus.events.ItemClickEvent;
+import ninja.amp.fallout.menus.items.StaticMenuItem;
+import ninja.amp.fallout.message.FOMessage;
+import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 /**
- * Inventory menu used for viewing and increasing a player's skill levels.
+ * An inventory menu used for viewing and increasing a player's skill levels.
+ *
+ * @author Austin Payne
  */
 public class SkillsMenu extends ItemMenu {
+
     private CharacterManager characterManager;
     private Map<UUID, Map<Skill, Integer>> pendingSkills = new HashMap<>();
 
@@ -45,30 +54,30 @@ public class SkillsMenu extends ItemMenu {
 
         this.characterManager = plugin.getCharacterManager();
 
-        setItem(41, new SkillsConfirmItem(plugin, this));
-        setItem(40, new SkillPointsItem(plugin, this));
-        setItem(39, new SkillsCancelItem(this));
+        setItem(41, new SkillsConfirmItem(plugin));
+        setItem(40, new SkillPointsItem(plugin));
+        setItem(39, new SkillsCancelItem());
 
         ItemStack icon = new ItemStack(Material.WOOL, 1, DyeColor.LIME.getWoolData());
-        setItem(0, new SkillItem(plugin, this, Skill.BIG_GUNS, "Big Guns", icon));
-        setItem(1, new SkillItem(plugin, this, Skill.CONVENTIONAL_GUNS, "Conventional Guns", icon));
-        setItem(2, new SkillItem(plugin, this, Skill.ENERGY_WEAPONS, "Energy Weapons", icon));
-        setItem(3, new SkillItem(plugin, this, Skill.MELEE_WEAPONS, "Melee Weapons", icon));
+        setItem(0, new SkillItem(plugin, Skill.BIG_GUNS, "Big Guns", icon));
+        setItem(1, new SkillItem(plugin, Skill.CONVENTIONAL_GUNS, "Conventional Guns", icon));
+        setItem(2, new SkillItem(plugin, Skill.ENERGY_WEAPONS, "Energy Weapons", icon));
+        setItem(3, new SkillItem(plugin, Skill.MELEE_WEAPONS, "Melee Weapons", icon));
 
-        setItem(5, new SkillItem(plugin, this, Skill.LOCKPICKING, "Lockpicking", icon));
-        setItem(6, new SkillItem(plugin, this, Skill.SNEAK, "Sneak", icon));
+        setItem(5, new SkillItem(plugin, Skill.LOCKPICKING, "Lockpicking", icon));
+        setItem(6, new SkillItem(plugin, Skill.SNEAK, "Sneak", icon));
 
-        setItem(8, new SkillItem(plugin, this, Skill.SPEECH, "Speech", icon));
+        setItem(8, new SkillItem(plugin, Skill.SPEECH, "Speech", icon));
 
-        setItem(18, new SkillItem(plugin, this, Skill.EXPLOSIVES, "Explosives", icon));
-        setItem(19, new SkillItem(plugin, this, Skill.UNARMED, "Unarmed", icon));
+        setItem(18, new SkillItem(plugin, Skill.EXPLOSIVES, "Explosives", icon));
+        setItem(19, new SkillItem(plugin, Skill.UNARMED, "Unarmed", icon));
 
-        setItem(21, new SkillItem(plugin, this, Skill.FIRST_AID, "First Aid", icon));
-        setItem(22, new SkillItem(plugin, this, Skill.SURGERY, "Surgery", icon));
-        setItem(23, new SkillItem(plugin, this, Skill.REPAIR, "Repair", icon));
+        setItem(21, new SkillItem(plugin, Skill.FIRST_AID, "First Aid", icon));
+        setItem(22, new SkillItem(plugin, Skill.SURGERY, "Surgery", icon));
+        setItem(23, new SkillItem(plugin, Skill.REPAIR, "Repair", icon));
 
-        setItem(25, new SkillItem(plugin, this, Skill.SCIENCE, "Science", icon));
-        setItem(26, new SkillItem(plugin, this, Skill.LOGICAL_THINKING, "Logical Thinking", icon));
+        setItem(25, new SkillItem(plugin, Skill.SCIENCE, "Science", icon));
+        setItem(26, new SkillItem(plugin, Skill.LOGICAL_THINKING, "Logical Thinking", icon));
 
         fillEmptySlots();
     }
@@ -76,7 +85,7 @@ public class SkillsMenu extends ItemMenu {
     @Override
     public void open(Player player) {
         Character character = characterManager.getCharacterByOwner(player.getUniqueId());
-        pendingSkills.put(character.getOwnerId(), new HashMap<>(character.getSkills()));
+        pendingSkills.put(character.getOwnerId(), new HashMap<>(character.getSkillLevels()));
 
         super.open(player);
     }
@@ -84,8 +93,8 @@ public class SkillsMenu extends ItemMenu {
     /**
      * Gets the pending skill levels of a character.
      *
-     * @param ownerId The character's owner's id.
-     * @return The character's modified skill levels.
+     * @param ownerId The uuid of the character's owner
+     * @return The character's modified skill levels
      */
     public Map<Skill, Integer> getPendingSkills(UUID ownerId) {
         return pendingSkills.get(ownerId);
@@ -94,9 +103,151 @@ public class SkillsMenu extends ItemMenu {
     /**
      * Resets a character's pending skill levels.
      *
-     * @param ownerId The character's owner's id.
+     * @param ownerId The uuid of the character's owner
      */
     public void resetPendingSkills(UUID ownerId) {
         pendingSkills.remove(ownerId);
     }
+
+    /**
+     * A menu item used in the skill allocation menu to indicate the current skill level.
+     */
+    private class SkillItem extends StaticMenuItem {
+
+        private Skill skill;
+
+        public SkillItem(Fallout plugin, Skill skill, String displayName, ItemStack icon, String... lore) {
+            super(displayName, icon, lore);
+
+            this.skill = skill;
+        }
+
+        @Override
+        public ItemStack getFinalIcon(Player player) {
+            ItemStack finalIcon = super.getFinalIcon(player).clone();
+
+            Map<Skill, Integer> skills = getPendingSkills(player.getUniqueId());
+            finalIcon.setAmount(skills.get(skill));
+
+            return finalIcon;
+        }
+
+        @Override
+        public void onItemClick(ItemClickEvent event) {
+            Character character = event.getCharacter();
+            Map<Skill, Integer> skills = getPendingSkills(character.getOwnerId());
+
+            int totalPoints = character.getLevel() * 5;
+            int allocatedPoints = 0;
+            for (int i : skills.values()) {
+                allocatedPoints += i - 1;
+            }
+
+            if (totalPoints > allocatedPoints && skills.get(skill) < 6) {
+                skills.put(skill, skills.get(skill) + 1);
+            }
+
+            event.setWillUpdate(true);
+        }
+
+    }
+
+    /**
+     * A menu item used in the skill allocation menu to indicate available allocation points.
+     */
+    private class SkillPointsItem extends StaticMenuItem {
+
+        private ItemStack noPoints;
+
+        public SkillPointsItem(Fallout plugin) {
+            super(ChatColor.AQUA + "Allocation Points",
+                    new ItemStack(Material.DIAMOND),
+                    "The skill points",
+                    "currently available",
+                    "for allocation");
+
+            noPoints = new ItemStack(Material.STONE_BUTTON);
+            setNameAndLore(noPoints, "No Allocation Points", new ArrayList<String>());
+        }
+
+        @Override
+        public ItemStack getFinalIcon(Owner owner) {
+            Character character = owner.getCharacter();
+            Map<Skill, Integer> skills = getPendingSkills(character.getOwnerId());
+
+            int totalPoints = character.getLevel() * 5;
+            int allocatedPoints = 0;
+            for (int i : skills.values()) {
+                allocatedPoints += i - 1;
+            }
+
+            if (totalPoints > allocatedPoints) {
+                ItemStack finalIcon = super.getFinalIcon(owner).clone();
+                finalIcon.setAmount(totalPoints - allocatedPoints);
+
+                return finalIcon;
+            } else {
+                return noPoints;
+            }
+        }
+
+    }
+
+    /**
+     * A menu item used in the skill allocation menu to confirm skill allocation.
+     */
+    private class SkillsConfirmItem extends StaticMenuItem {
+
+        private Fallout plugin;
+
+        public SkillsConfirmItem(Fallout plugin) {
+            super(ChatColor.GREEN + "Confirm Skill Allocation",
+                    new ItemStack(Material.EMERALD_BLOCK),
+                    "THIS IS PERMANENT");
+
+            this.plugin = plugin;
+        }
+
+        @Override
+        public void onItemClick(ItemClickEvent event) {
+            Player player = event.getPlayer();
+            UUID playerId = player.getUniqueId();
+            Character character = event.getCharacter();
+            Map<Skill, Integer> skills = getPendingSkills(playerId);
+
+            for (Map.Entry<Skill, Integer> skill : skills.entrySet()) {
+                character.setSkillLevel(skill.getKey(), skill.getValue());
+            }
+            plugin.getCharacterManager().saveCharacter(character);
+            plugin.getMessenger().sendMessage(player, FOMessage.SKILLS_CONFIRM);
+
+            resetPendingSkills(playerId);
+
+            event.setWillClose(true);
+        }
+
+    }
+
+    /**
+     * A menu item used in the skill allocation menu to cancel skill allocation.
+     */
+    private class SkillsCancelItem extends StaticMenuItem {
+
+        public SkillsCancelItem() {
+            super(ChatColor.DARK_RED + "Cancel Skill Allocation",
+                    new ItemStack(Material.REDSTONE_BLOCK),
+                    "Cancels the current",
+                    "selection and exits",
+                    "the menu.");
+        }
+
+        @Override
+        public void onItemClick(ItemClickEvent event) {
+            resetPendingSkills(event.getPlayer().getUniqueId());
+
+            event.setWillClose(true);
+        }
+
+    }
+
 }

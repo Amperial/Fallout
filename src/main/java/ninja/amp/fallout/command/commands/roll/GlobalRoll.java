@@ -35,8 +35,11 @@ import java.util.List;
 
 /**
  * A command that lets you roll a trait or skill globally.
+ *
+ * @author Austin Payne
  */
 public class GlobalRoll extends Command {
+
     private final List<String> tabCompleteList = new ArrayList<>();
 
     public GlobalRoll(Fallout plugin) {
@@ -112,4 +115,5 @@ public class GlobalRoll extends Command {
             return CommandController.EMPTY_LIST;
         }
     }
+
 }

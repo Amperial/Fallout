@@ -49,8 +49,11 @@ import java.util.UUID;
 
 /**
  * Handles various fallout events.
+ *
+ * @author Austin Payne
  */
 public class FOListener implements Listener {
+
     private Fallout plugin;
     private boolean preventCraftingDiamondArmor;
     private boolean preventMobsDroppingExp;
@@ -94,7 +97,8 @@ public class FOListener implements Listener {
 
             CharacterManager characterManager = plugin.getCharacterManager();
             if (characterManager.isOwner(clickedId)) {
-                event.getPlayer().performCommand("fo character listspecial " + characterManager.getCharacterByOwner(clickedId).getCharacterName());
+                Character character = characterManager.getCharacterByOwner(clickedId);
+                plugin.getMessenger().sendMessage(event.getPlayer(), FOMessage.SPECIAL_LIST, character.getCharacterName(), character.getSpecial());
             }
         }
     }
@@ -235,9 +239,10 @@ public class FOListener implements Listener {
     }
 
     /**
-     * Destroys the {@link ninja.amp.fallout.FOListener}.
+     * Destroys the fallout listener.
      */
     public void destroy() {
         HandlerList.unregisterAll(this);
     }
+
 }

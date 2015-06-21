@@ -24,9 +24,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * A {@link ninja.amp.fallout.menus.items.MenuItem} that is part of an {@link EnumOption}.
+ * A menu item that is part of an {@link EnumOption}.
+ *
+ * @author Austin Payne
  */
 public class EnumOptionItem<E extends Enum<E>> extends StaticMenuItem {
+
     private E e;
     private EnumOption<E> group;
     private ItemStack unselected;
@@ -58,11 +61,12 @@ public class EnumOptionItem<E extends Enum<E>> extends StaticMenuItem {
     }
 
     /**
-     * Gets the Enum constant represented by the EnumOptionItem.
+     * Gets the enum constant represented by the enum option item.
      *
-     * @return The Enum constant.
+     * @return The enum constant
      */
     public E getEnum() {
         return e;
     }
+
 }

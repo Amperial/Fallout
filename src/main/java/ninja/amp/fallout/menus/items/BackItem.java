@@ -24,7 +24,9 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * A {@link ninja.amp.fallout.menus.items.StaticMenuItem} that opens the {@link ninja.amp.fallout.menus.ItemMenu}'s parent menu if it exists.
+ * A menu item that opens the item menu's parent menu if one exists.
+ *
+ * @author Austin Payne
  */
 public class BackItem extends StaticMenuItem {
 
@@ -36,4 +38,5 @@ public class BackItem extends StaticMenuItem {
     public void onItemClick(ItemClickEvent event) {
         event.setWillGoBack(true);
     }
+
 }

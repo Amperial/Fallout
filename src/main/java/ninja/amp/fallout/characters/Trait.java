@@ -22,7 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An enum of character traits used in fallout.
+ * An enum of character traits used in fallout.<br>
+ * A fallout character's trait levels are referred to as their SPECIAL.
+ *
+ * @author Austin Payne
  */
 public enum Trait {
     STRENGTH("Strength"),
@@ -43,7 +46,7 @@ public enum Trait {
     /**
      * Gets the display name of the trait.
      *
-     * @return The trait's display name.
+     * @return The trait's display name
      */
     public String getName() {
         return name;
@@ -52,8 +55,8 @@ public enum Trait {
     /**
      * Gets a trait from its name.
      *
-     * @param name The name.
-     * @return The trait.
+     * @param name The name
+     * @return The trait
      */
     public static Trait fromName(String name) {
         for (Trait special : Trait.class.getEnumConstants()) {
@@ -65,9 +68,9 @@ public enum Trait {
     }
 
     /**
-     * Gets the list of trait names.
+     * Gets a list of trait names.
      *
-     * @return The list of trait names.
+     * @return The list of trait names
      */
     public static List<String> getTraitNames() {
         return traitNames;
@@ -79,4 +82,5 @@ public enum Trait {
             traitNames.add(special.getName());
         }
     }
+
 }

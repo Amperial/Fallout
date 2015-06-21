@@ -30,13 +30,15 @@ import org.bukkit.inventory.Inventory;
 
 /**
  * Passes inventory click events to their menus for handling.
+ *
+ * @author Austin Payne
  */
 public class MenuListener implements Listener {
 
     /**
-     * Creates a new MenuListener.
+     * Creates a new menu listener.
      *
-     * @param plugin The {@link ninja.amp.fallout.Fallout} instance.
+     * @param plugin The fallout plugin instance
      */
     public MenuListener(Fallout plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
@@ -51,7 +53,7 @@ public class MenuListener implements Listener {
     }
 
     /**
-     * Destroys the {@link ninja.amp.fallout.menus.MenuListener}.
+     * Destroys the menu listener.
      */
     public void destroy() {
         closeOpenMenus();
@@ -60,7 +62,7 @@ public class MenuListener implements Listener {
     }
 
     /**
-     * Closes all {@link ninja.amp.fallout.menus.ItemMenu}s currently open.
+     * Closes all item menus currently open.
      */
     public static void closeOpenMenus() {
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -72,4 +74,5 @@ public class MenuListener implements Listener {
             }
         }
     }
+
 }

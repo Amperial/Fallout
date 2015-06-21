@@ -26,9 +26,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
- * A {@link ninja.amp.fallout.menus.items.MenuItem} that opens a sub {@link ninja.amp.fallout.menus.ItemMenu}.
+ * A menu item that opens a nested item menu.
+ *
+ * @author Austin Payne
  */
 public class SubMenuItem extends StaticMenuItem {
+
     private final JavaPlugin plugin;
     private final ItemMenu menu;
 
@@ -53,4 +56,5 @@ public class SubMenuItem extends StaticMenuItem {
             }
         }, 3);
     }
+
 }

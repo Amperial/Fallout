@@ -19,7 +19,9 @@
 package ninja.amp.fallout.message;
 
 /**
- * Messages in Fallout.
+ * Messages sent by the fallout plugin.
+ *
+ * @author Austin Payne
  */
 public enum FOMessage {
     PREFIX("Prefix", "&8[&bFallout&8] &b"),
@@ -33,6 +35,8 @@ public enum FOMessage {
     ERROR_NUMBERFORMAT("Error.NumberFormat", "&4Value must be a positive integer."),
     ERROR_BOOLEANFORMAT("Error.BooleanFormat", "&4Value must be true or false."),
     ERROR_MODIFIERSYNTAX("Error.ModifierSyntax", "&4Modifier must be appended with +integer or -integer."),
+    ERROR_NAMEFORMAT("Error.NameFormat", "&4Character names must be comprised of between 3 and 20 letters."),
+    ERROR_CHARACTERLOAD("Error.CharacterLoad", "&4Failed to load character. %s"),
     ERROR_ALLOPTIONS("Error.AllOptions", "&4All options must be selected."),
     ERROR_POWERARMOR("Error.PowerArmor", "&4You do not have permission to wear this armor."),
 
@@ -74,6 +78,7 @@ public enum FOMessage {
     ROLL_CANTROLL("Roll.CantRoll", "&4%s is not a Skill or SPECIAL trait."),
     ROLL_DICEAMOUNT("Roll.DiceAmount", "&4Cannot roll this many dice at once!"),
     ROLL_DICESIDES("Roll.DiceSides", "&4Dice cannot have this many sides!");
+
     private final String path;
     private final String defaultMessage;
     private String message;
@@ -103,4 +108,5 @@ public enum FOMessage {
     public String toString() {
         return message;
     }
+
 }

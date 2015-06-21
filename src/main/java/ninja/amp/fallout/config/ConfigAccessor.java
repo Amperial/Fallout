@@ -29,19 +29,22 @@ import java.util.logging.Level;
 
 /**
  * Used to access a YamlConfiguration file.
+ *
+ * @author Austin Payne
  */
 public class ConfigAccessor {
+
     private Fallout plugin;
     private ConfigType configType;
     private File configFile;
     private FileConfiguration fileConfiguration;
 
     /**
-     * Creates a new ConfigAccessor.
+     * Creates a new config accessor.
      *
-     * @param plugin     The {@link ninja.amp.fallout.Fallout} instance.
-     * @param configType The {@link ConfigType} of the configuration file.
-     * @param parent     The parent file.
+     * @param plugin     The fallout plugin instance
+     * @param configType The type of the configuration file
+     * @param parent     The parent file
      */
     public ConfigAccessor(Fallout plugin, ConfigType configType, File parent) {
         this.plugin = plugin;
@@ -52,7 +55,7 @@ public class ConfigAccessor {
     /**
      * Reloads the configuration file from disk.
      *
-     * @return The ConfigAccessor instance.
+     * @return The config accessor
      */
     @SuppressWarnings("deprecation")
     public ConfigAccessor reloadConfig() {
@@ -69,7 +72,7 @@ public class ConfigAccessor {
     /**
      * Gets the config.
      *
-     * @return The FileConfiguration.
+     * @return The configuration file
      */
     public FileConfiguration getConfig() {
         if (fileConfiguration == null) {
@@ -81,7 +84,7 @@ public class ConfigAccessor {
     /**
      * Saves the config to disk.
      *
-     * @return The ConfigAccessor instance.
+     * @return The config accessor
      */
     public ConfigAccessor saveConfig() {
         if (fileConfiguration != null) {
@@ -97,7 +100,7 @@ public class ConfigAccessor {
     /**
      * Generates the default config if it hasn't already been generated.
      *
-     * @return The ConfigAccessor instance.
+     * @return The config accessor
      */
     public ConfigAccessor saveDefaultConfig() {
         if (!configFile.exists()) {
@@ -109,9 +112,10 @@ public class ConfigAccessor {
     /**
      * Gets the {@link ConfigType}.
      *
-     * @return The ConfigAccessor's {@link ConfigType}.
+     * @return The type of the configuration file
      */
     public ConfigType getConfigType() {
         return configType;
     }
+
 }

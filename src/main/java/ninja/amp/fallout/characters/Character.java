@@ -18,6 +18,7 @@
  */
 package ninja.amp.fallout.characters;
 
+import ninja.amp.fallout.utils.FOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -32,8 +33,11 @@ import java.util.UUID;
 
 /**
  * Stores the information about a fallout character.
+ *
+ * @author Austin Payne
  */
 public class Character {
+
     private String ownerName;
     private UUID ownerId;
     private String characterName;
@@ -49,9 +53,9 @@ public class Character {
     private int level;
 
     /**
-     * Creates a Character from default settings.
+     * Creates a Character from a character builder.
      *
-     * @param builder The {@link ninja.amp.fallout.characters.Character.CharacterBuilder}.
+     * @param builder The character builder
      */
     public Character(CharacterBuilder builder) {
         this.ownerName = builder.ownerName;
@@ -72,14 +76,19 @@ public class Character {
     }
 
     /**
-     * Loads a Character from a ConfigurationSection.
+     * Creates a Character, loading it from a configuration section.
      *
-     * @param section The ConfigurationSection.
+     * @param section The configuration section
+     * @throws Exception If section is formatted incorrectly or does not represent a complete character
      */
-    public Character(ConfigurationSection section) {
-        if (section.contains("ownerName")) {
+    public Character(ConfigurationSection section) throws Exception {
+        if (section.isString("ownerName")) {
             String lastOwnerName = section.getString("ownerName");
-            this.ownerId = UUID.fromString(section.getString("ownerId"));
+            try {
+                this.ownerId = UUID.fromString(section.getString("ownerId"));
+            } catch (IllegalArgumentException e) {
+                throw new Exception("Missing or invalid owner ID");
+            }
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (ownerId.equals(player.getUniqueId())) {
                     lastOwnerName = player.getName();
@@ -91,43 +100,100 @@ public class Character {
             this.ownerName = null;
             this.ownerId = null;
         }
-        this.characterName = section.getString("name");
+        if (section.isString("name")) {
+            this.characterName = section.getString("name");
+            if (characterName.length() < 3 || characterName.length() > 20 || !characterName.matches("[a-zA-Z]*")) {
+                throw new Exception("Character names must be comprised of between 3 and 20 letters");
+            }
+        } else {
+            throw new Exception("Missing or invalid character name");
+        }
         this.race = Race.fromName(section.getString("race"));
-        this.age = section.getInt("age");
-        this.height = section.getInt("height");
-        this.weight = section.getInt("weight");
-        this.gender = Gender.valueOf(section.getString("gender"));
-        this.alignment = Alignment.valueOf(section.getString("alignment"));
-        ConfigurationSection specialSection = section.getConfigurationSection("special");
-        Map<Trait, Integer> traits = new HashMap<>();
-        for (Trait trait : Trait.class.getEnumConstants()) {
-            traits.put(trait, specialSection.getInt(trait.getName()));
+        if (race == null) {
+            throw new Exception("Missing or invalid race");
         }
-        special = new Special(traits);
-        ConfigurationSection skillLevels = section.getConfigurationSection("skills");
-        for (Skill skill : Skill.class.getEnumConstants()) {
-            skills.put(skill, skillLevels.getInt(skill.name()));
+        if (section.isInt("age")) {
+            this.age = Math.max(6, section.getInt("age"));
+        } else {
+            throw new Exception("Missing or invalid age");
         }
-        List<String> perkNames = section.getStringList("perks");
-        for (String perkName : perkNames) {
-            perks.add(Perk.fromName(perkName));
+        if (section.isInt("height")) {
+            this.height = Math.max(36, section.getInt("height"));
+        } else {
+            throw new Exception("Missing or invalid height");
         }
-        this.level = section.getInt("level");
+        if (section.isInt("weight")) {
+            this.weight = Math.max(72, section.getInt("weight"));
+        } else {
+            throw new Exception("Missing or invalid weight");
+        }
+        try {
+            this.gender = Gender.valueOf(section.getString("gender"));
+        } catch (IllegalArgumentException e) {
+            throw new Exception("Missing or invalid gender");
+        }
+        try {
+            this.alignment = Alignment.valueOf(section.getString("alignment"));
+        } catch (IllegalArgumentException e) {
+            throw new Exception("Missing or invalid alignment");
+        }
+        if (section.isConfigurationSection("special")) {
+            ConfigurationSection specialSection = section.getConfigurationSection("special");
+            Map<Trait, Integer> traits = new HashMap<>();
+            for (Trait trait : Trait.class.getEnumConstants()) {
+                if (specialSection.isInt(trait.getName())) {
+                    traits.put(trait, FOUtils.clamp(specialSection.getInt(trait.getName()), race.getMinSpecial().get(trait), race.getMaxSpecial().get(trait)));
+                } else {
+                    throw new Exception("Missing or invalid trait: " + trait.getName());
+                }
+            }
+            special = new Special(traits);
+        } else {
+            throw new Exception("Missing or invalid special");
+        }
+        if (section.isConfigurationSection("skills")) {
+            ConfigurationSection skillLevels = section.getConfigurationSection("skills");
+            for (Skill skill : Skill.class.getEnumConstants()) {
+                if (skillLevels.isInt(skill.getName())) {
+                    skills.put(skill, FOUtils.clamp(skillLevels.getInt(skill.getName()), 1, 6));
+                } else {
+                    throw new Exception("Missing or invalid skill: " + skill.getName());
+                }
+            }
+        } else {
+            throw new Exception("Missing or invalid skills");
+        }
+        if (section.isList("perks")) {
+            List<String> perkNames = section.getStringList("perks");
+            for (String perkName : perkNames) {
+                Perk perk = Perk.fromName(perkName);
+                if (perk != null) {
+                    perks.add(perk);
+                }
+            }
+        } else {
+            throw new Exception("Missing or invalid perks");
+        }
+        if (section.isInt("level")) {
+            this.level = FOUtils.clamp(section.getInt("level"), 0, 5);
+        } else {
+            throw new Exception("Missing or invalid level");
+        }
     }
 
     /**
      * Gets the owner's name.
      *
-     * @return The owner's name.
+     * @return The owner's name
      */
     public String getOwnerName() {
         return ownerName;
     }
 
     /**
-     * Gets the owner's id.
+     * Gets the owner's uuid.
      *
-     * @return The owner's id.
+     * @return The owner's uuid
      */
     public UUID getOwnerId() {
         return ownerId;
@@ -136,7 +202,7 @@ public class Character {
     /**
      * Gets the character's name.
      *
-     * @return The character's name.
+     * @return The character's name
      */
     public String getCharacterName() {
         return characterName;
@@ -145,34 +211,34 @@ public class Character {
     /**
      * Gets the character's race.
      *
-     * @return The character's race.
+     * @return The character's race
      */
     public Race getRace() {
         return race;
     }
 
     /**
-     * Gets the character's age.
+     * Gets the character's age in years.
      *
-     * @return The character's age.
+     * @return The character's age
      */
     public int getAge() {
         return age;
     }
 
     /**
-     * Gets the character's height.
+     * Gets the character's height in inches.
      *
-     * @return The character's height.
+     * @return The character's height
      */
     public int getHeight() {
         return height;
     }
 
     /**
-     * Gets the character's weight.
+     * Gets the character's weight in pounds.
      *
-     * @return The character's weight.
+     * @return The character's weight
      */
     public int getWeight() {
         return weight;
@@ -181,7 +247,7 @@ public class Character {
     /**
      * Gets the character's gender.
      *
-     * @return The character's gender.
+     * @return The character's gender
      */
     public Gender getGender() {
         return gender;
@@ -190,16 +256,16 @@ public class Character {
     /**
      * Gets the character's alignment.
      *
-     * @return The character's alignment.
+     * @return The character's alignment
      */
     public Alignment getAlignment() {
         return alignment;
     }
 
     /**
-     * Gets the character's Special.
+     * Gets the character's SPECIAL.
      *
-     * @return The character's Special.
+     * @return The character's SPECIAL
      */
     public Special getSpecial() {
         return special;
@@ -208,8 +274,8 @@ public class Character {
     /**
      * Checks if the character has a certain perk.
      *
-     * @param perk The perk.
-     * @return True if the character has the perk, else false.
+     * @param perk The perk
+     * @return {@code true} if the character has the perk
      */
     public boolean hasPerk(Perk perk) {
         return perks.contains(perk);
@@ -218,7 +284,7 @@ public class Character {
     /**
      * Adds a perk to the character.
      *
-     * @param perk The perk to add.
+     * @param perk The perk to add
      */
     public void addPerk(Perk perk) {
         perks.add(perk);
@@ -227,7 +293,7 @@ public class Character {
     /**
      * Removes a perk from the character.
      *
-     * @param perk The perk to remove.
+     * @param perk The perk to remove
      */
     public void removePerk(Perk perk) {
         perks.remove(perk);
@@ -236,16 +302,16 @@ public class Character {
     /**
      * Gets the character's perks.
      *
-     * @return The perks.
+     * @return An unmodifiable view of the character's perks
      */
     public List<Perk> getPerks() {
         return Collections.unmodifiableList(perks);
     }
 
     /**
-     * Gets the character's perks in a string.
+     * Gets a formatted string containing the character's perks.
      *
-     * @return The perks.
+     * @return The perks, in regular expression format "perk[, perk]*"
      */
     public String getPerkList() {
         List<String> perkNames = new ArrayList<>();
@@ -256,38 +322,38 @@ public class Character {
     }
 
     /**
-     * Checks the level of the character's skill.
+     * Checks the character's level of a certain skill.
      *
-     * @param skill The skill.
-     * @return The level.
+     * @param skill The skill
+     * @return The level
      */
     public int skillLevel(Skill skill) {
         return skills.containsKey(skill) ? skills.get(skill) : 0;
     }
 
     /**
-     * Sets the level of the character's skill.
+     * Sets the character's level of a certain skill.
      *
-     * @param skill The skill.
-     * @param level The level.
+     * @param skill The skill
+     * @param level The level
      */
     public void setSkillLevel(Skill skill, int level) {
         skills.put(skill, level);
     }
 
     /**
-     * Gets the character's skill levels.
+     * Gets the character's skills and their levels.
      *
-     * @return The skill levels.
+     * @return An unmodifiable view of the character's skill levels
      */
-    public Map<Skill, Integer> getSkills() {
+    public Map<Skill, Integer> getSkillLevels() {
         return Collections.unmodifiableMap(skills);
     }
 
     /**
-     * Gets the character's skills and levels in a string.
+     * Gets a formatted string containing the character's skills and their levels.
      *
-     * @return The skills and levels.
+     * @return The skill levels, in regular expression format "skill - level[, skill - level]*"
      */
     public String getSkillList() {
         List<String> skillLevels = new ArrayList<>();
@@ -300,7 +366,7 @@ public class Character {
     /**
      * Gets the character's level.
      *
-     * @return The level.
+     * @return The character's level
      */
     public int getLevel() {
         return level;
@@ -316,7 +382,7 @@ public class Character {
     /**
      * Possesses the character by a player.
      *
-     * @param owner The character's new owner.
+     * @param owner The character's new owner
      */
     public void possess(Player owner) {
         this.ownerName = owner.getName();
@@ -332,9 +398,9 @@ public class Character {
     }
 
     /**
-     * Saves the Character to a ConfigurationSection.
+     * Saves the character to a configuration section.
      *
-     * @param section The ConfigurationSection to save the Character to.
+     * @param section The configuration section
      */
     public void save(ConfigurationSection section) {
         if (ownerName == null) {
@@ -357,7 +423,7 @@ public class Character {
         }
         ConfigurationSection skillLevels = section.createSection("skills");
         for (Map.Entry<Skill, Integer> skill : skills.entrySet()) {
-            skillLevels.set(skill.getKey().name(), skill.getValue());
+            skillLevels.set(skill.getKey().getName(), skill.getValue());
         }
         List<String> perkNames = new ArrayList<>();
         for (Perk perk : perks) {
@@ -368,7 +434,7 @@ public class Character {
     }
 
     /**
-     * Gender of a fallout character.
+     * Genders a fallout character can have.
      */
     public enum Gender {
         MALE,
@@ -376,18 +442,33 @@ public class Character {
     }
 
     /**
-     * DnD Alignment of a fallout character.
+     * DnD Alignments a fallout character can have.
      */
     public enum Alignment {
-        LAWFUL_GOOD,
-        LAWFUL_NEUTRAL,
-        LAWFUL_EVIL,
-        GOOD,
-        NEUTRAL,
-        EVIL,
-        CHAOTIC_GOOD,
-        CHAOTIC_NEUTRAL,
-        CHAOTIC_EVIL
+        LAWFUL_GOOD("Lawful Good"),
+        LAWFUL_NEUTRAL("Lawful Neutral"),
+        LAWFUL_EVIL("Lawful Evil"),
+        GOOD("Good"),
+        NEUTRAL("Neutral"),
+        EVIL("Evil"),
+        CHAOTIC_GOOD("Chaotic Good"),
+        CHAOTIC_NEUTRAL("Chaotic Neutral"),
+        CHAOTIC_EVIL("Chaotic Evil");
+
+        private final String name;
+
+        private Alignment(String name) {
+            this.name = name;
+        }
+
+        /**
+         * Gets the display name of the alignment.
+         *
+         * @return The alignment's display name
+         */
+        public String getName() {
+            return name;
+        }
     }
 
     /**
@@ -452,4 +533,5 @@ public class Character {
             return new Character(this);
         }
     }
+
 }

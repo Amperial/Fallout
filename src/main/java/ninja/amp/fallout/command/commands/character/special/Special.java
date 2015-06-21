@@ -30,16 +30,19 @@ import org.bukkit.permissions.PermissionDefault;
 import java.util.UUID;
 
 /**
- * A command that lets the sender view and set their character's SPECIAL traits.
+ * A command that opens the SPECIAL modification menu, letting the sender view and set their character's SPECIAL traits.
+ *
+ * @author Austin Payne
  */
-public class SetSpecial extends Command {
+public class Special extends Command {
+
     private ItemMenu menu;
 
-    public SetSpecial(Fallout plugin, SpecialMenu menu) {
-        super(plugin, "setspecial");
-        setDescription("Sets your fallout character's traits.");
-        setCommandUsage("/fo character setspecial");
-        setPermission(new Permission("fallout.character.setspecial", PermissionDefault.TRUE));
+    public Special(Fallout plugin, SpecialMenu menu) {
+        super(plugin, "special");
+        setDescription("View and set your fallout character's traits.");
+        setCommandUsage("/fo character special");
+        setPermission(new Permission("fallout.character.special", PermissionDefault.TRUE));
 
         this.menu = menu;
     }
@@ -54,4 +57,5 @@ public class SetSpecial extends Command {
             plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_NOTOWNER);
         }
     }
+
 }

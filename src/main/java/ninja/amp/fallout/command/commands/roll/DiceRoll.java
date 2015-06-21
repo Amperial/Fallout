@@ -24,6 +24,8 @@ import org.bukkit.command.CommandSender;
 
 /**
  * A command that lets you manually roll the dice with an optional modifier.
+ *
+ * @author Austin Payne
  */
 public class DiceRoll extends Command {
 
@@ -38,4 +40,5 @@ public class DiceRoll extends Command {
         // Command is only here to be shown in help.
         // Rolling is handled in GlobalRoll/LocalRoll/PrivateRoll commands
     }
+
 }

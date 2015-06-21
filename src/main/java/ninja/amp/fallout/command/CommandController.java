@@ -30,18 +30,24 @@ import java.util.Set;
 
 /**
  * Contains and controls commands.
+ *
+ * @author Austin Payne
  */
 public class CommandController implements TabExecutor {
+
     private Fallout plugin;
     private Set<CommandGroup> commands = new HashSet<>();
     private CommandPageList pageList = null;
 
+    /**
+     * An empty list of strings for use in command tab completion.
+     */
     public static final List<String> EMPTY_LIST = new ArrayList<>();
 
     /**
      * Creates a new command controller.
      *
-     * @param plugin The {@link ninja.amp.fallout.Fallout} instance.
+     * @param plugin The fallout plugin instance
      */
     public CommandController(Fallout plugin) {
         this.plugin = plugin;
@@ -107,18 +113,18 @@ public class CommandController implements TabExecutor {
     }
 
     /**
-     * Gets the commands in the CommandController.
+     * Gets the commands in the command controller.
      *
-     * @return The commands.
+     * @return The commands
      */
     public Set<CommandGroup> getCommands() {
         return commands;
     }
 
     /**
-     * Adds a command to the CommandController.
+     * Adds a command to the command controller.
      *
-     * @param command The command to add.
+     * @param command The command to add
      */
     public void addCommand(CommandGroup command) {
         commands.add(command);
@@ -127,20 +133,21 @@ public class CommandController implements TabExecutor {
     }
 
     /**
-     * Gets the PageList of commands in the CommandController.
+     * Gets the page list of commands in the command controller.
      *
-     * @return The PageList of commands.
+     * @return The command page list
      */
     public CommandPageList getPageList() {
         return pageList;
     }
 
     /**
-     * Destroys the CommandController.
+     * Destroys the command controller.
      */
     public void destroy() {
         for (CommandGroup command : commands) {
             plugin.getCommand(command.getName()).setExecutor(null);
         }
     }
+
 }

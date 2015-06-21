@@ -23,17 +23,20 @@ import org.bukkit.command.CommandSender;
 
 /**
  * A command that can contain child commands and be executed.
+ *
+ * @author Austin Payne
  */
 public abstract class Command extends CommandGroup {
+
     private String commandUsage;
     private String description;
     private boolean visible = true;
 
     /**
-     * Creates a new Command.
+     * Creates a new command.
      *
-     * @param plugin The {@link ninja.amp.fallout.Fallout} instance.
-     * @param name   The name of the command.
+     * @param plugin The fallout plugin instance
+     * @param name   The name of the command
      */
     public Command(Fallout plugin, String name) {
         super(plugin, name);
@@ -42,7 +45,7 @@ public abstract class Command extends CommandGroup {
     /**
      * Gets the command's command usage.
      *
-     * @return The command usage.
+     * @return The command's command usage
      */
     public String getCommandUsage() {
         return commandUsage;
@@ -51,7 +54,7 @@ public abstract class Command extends CommandGroup {
     /**
      * Sets the command's command usage.
      *
-     * @param commandUsage The command usage.
+     * @param commandUsage The command usage
      */
     public void setCommandUsage(String commandUsage) {
         this.commandUsage = commandUsage;
@@ -60,7 +63,7 @@ public abstract class Command extends CommandGroup {
     /**
      * Gets the command's description.
      *
-     * @return The description.
+     * @return The command's description
      */
     public String getDescription() {
         return description;
@@ -69,7 +72,7 @@ public abstract class Command extends CommandGroup {
     /**
      * Sets the command's description.
      *
-     * @param description The description.
+     * @param description The description
      */
     public void setDescription(String description) {
         this.description = description;
@@ -78,7 +81,7 @@ public abstract class Command extends CommandGroup {
     /**
      * Gets the command's visibility.
      *
-     * @return The visibility.
+     * @return The command's visibility
      */
     public boolean getVisible() {
         return visible;
@@ -87,7 +90,7 @@ public abstract class Command extends CommandGroup {
     /**
      * Sets the command's visibility.
      *
-     * @param visible The visibility.
+     * @param visible The visibility
      */
     public void setVisible(boolean visible) {
         this.visible = visible;
@@ -95,4 +98,5 @@ public abstract class Command extends CommandGroup {
 
     @Override
     public abstract void execute(String command, CommandSender sender, String[] args);
+
 }

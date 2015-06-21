@@ -36,22 +36,27 @@ import java.util.logging.Logger;
 
 /**
  * Manages message sending, logging, and debugging.
+ *
+ * @author Austin Payne
  */
 public class Messenger {
+
     private boolean debug;
     private Logger log;
     private Map<Class<?>, RecipientHandler> recipientHandlers = new HashMap<>();
 
+    /**
+     * Basic color scheme in the fallout plugin.
+     */
     public static ChatColor PRIMARY_COLOR = ChatColor.YELLOW;
     public static ChatColor SECONDARY_COLOR = ChatColor.GRAY;
     public static ChatColor HIGHLIGHT_COLOR = ChatColor.RED;
 
     /**
-     * Creates a new message manager.
-     * <br>
+     * Creates a new message manager.<br>
      * Must be created after the {@link ninja.amp.fallout.config.ConfigManager}!
      *
-     * @param plugin The {@link ninja.amp.fallout.Fallout} instance.
+     * @param plugin The fallout plugin instance
      */
     public Messenger(Fallout plugin) {
         this.debug = plugin.getConfig().getBoolean("Debug", false);
@@ -111,11 +116,11 @@ public class Messenger {
     }
 
     /**
-     * Registers a recipient with a RecipientHandler.
+     * Registers a recipient with a recipient handler.
      *
-     * @param recipientClass   The recipient's class.
-     * @param recipientHandler The RecipientHandler.
-     * @return The Messenger instance.
+     * @param recipientClass   The recipient's class
+     * @param recipientHandler The recipient handler
+     * @return The messenger
      */
     public Messenger registerRecipient(Class recipientClass, RecipientHandler recipientHandler) {
         recipientHandlers.put(recipientClass, recipientHandler);
@@ -123,11 +128,11 @@ public class Messenger {
     }
 
     /**
-     * Sends a {@link ninja.amp.fallout.message.FOMessage} to a recipient.
+     * Sends a message to a recipient.
      *
-     * @param recipient The recipient of the message.
-     * @param message   The {@link ninja.amp.fallout.message.FOMessage}.
-     * @param replace   Strings to replace any occurences of %s in the message with.
+     * @param recipient The recipient of the message. Type of recipient must be registered
+     * @param message   The message
+     * @param replace   Strings to replace any occurences of %s in the message with
      */
     public void sendMessage(Object recipient, FOMessage message, Object... replace) {
         for (String s : (replace == null ? message.getMessage() : String.format(message.getMessage(), (Object[]) replace)).split("\\\\n")) {
@@ -136,10 +141,10 @@ public class Messenger {
     }
 
     /**
-     * Sends a raw message to a recipient.
+     * Sends a raw message string to a recipient.
      *
-     * @param recipient The recipient of the message. Type of recipient must be registered.
-     * @param message   The message.
+     * @param recipient The recipient of the message. Type of recipient must be registered
+     * @param message   The message
      */
     public void sendRawMessage(Object recipient, Object message) {
         if (recipient != null && message != null) {
@@ -155,8 +160,8 @@ public class Messenger {
     /**
      * Logs one or more messages to the console.
      *
-     * @param level    the level to log the message at.
-     * @param messages the message(s) to log.
+     * @param level    The level to log the message at
+     * @param messages The message(s) to log
      */
     public void log(Level level, Object... messages) {
         for (Object message : messages) {
@@ -167,7 +172,7 @@ public class Messenger {
     /**
      * Decides whether or not to print the stack trace of an exception.
      *
-     * @param e the exception to debug.
+     * @param e The exception to debug
      */
     public void debug(Exception e) {
         if (debug) {
@@ -178,7 +183,7 @@ public class Messenger {
     /**
      * Decides whether or not to print a debug message.
      *
-     * @param message The message to debug.
+     * @param message The message to debug
      */
     public void debug(Object message) {
         if (debug) {
@@ -189,7 +194,7 @@ public class Messenger {
     /**
      * Gets the logger.
      *
-     * @return The logger.
+     * @return The logger
      */
     public Logger getLogger() {
         return log;
@@ -203,9 +208,11 @@ public class Messenger {
         /**
          * Sends a message to the recipient.
          *
-         * @param recipient The recipient.
-         * @param message   The message.
+         * @param recipient The recipient
+         * @param message   The message
          */
         public abstract void sendMessage(Object recipient, String message);
+
     }
+
 }

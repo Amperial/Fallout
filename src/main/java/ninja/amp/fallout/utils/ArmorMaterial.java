@@ -22,7 +22,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 /**
- * Materials of armor.
+ * Minecraft armor materials and their corresponding fallout versions.
+ *
+ * @author Austin Payne
  */
 public enum ArmorMaterial {
     LEATHER(FOArmor.LEATHER),
@@ -40,17 +42,17 @@ public enum ArmorMaterial {
     /**
      * Gets the fallout version of an armor material.
      *
-     * @return The FOArmor.
+     * @return The fallout armor
      */
     public FOArmor getFOVersion() {
         return foArmor;
     }
 
     /**
-     * Gets the ArmorMaterial of a piece of armor.
+     * Gets the armor material of a piece of armor.
      *
-     * @param material The piece of armor.
-     * @return The ArmorMaterial.
+     * @param material The piece of armor
+     * @return The armor material
      */
     public static ArmorMaterial getArmorMaterial(Material material) {
         for (ArmorMaterial armorMaterial : ArmorMaterial.class.getEnumConstants()) {
@@ -64,8 +66,8 @@ public enum ArmorMaterial {
     /**
      * Checks if a player is wearing a full set of armor of the same type.
      *
-     * @param player The player.
-     * @return True if the player is wearing a full set of armor of the same type, else false.
+     * @param player The player
+     * @return {@code true} if the player is wearing a full set of armor of the same type
      */
     public static boolean isWearingFullSet(Player player) {
         if (ArmorType.HELMET.canEquip(player) || ArmorType.CHESTPLATE.canEquip(player) || ArmorType.LEGGINGS.canEquip(player) || ArmorType.BOOTS.canEquip(player)) {
@@ -81,4 +83,5 @@ public enum ArmorMaterial {
         }
         return true;
     }
+
 }

@@ -33,6 +33,8 @@ import java.util.List;
 
 /**
  * A command that tells you the name of the owner of a given character.
+ *
+ * @author Austin Payne
  */
 public class Whois extends Command {
 
@@ -80,4 +82,5 @@ public class Whois extends Command {
             return CommandController.EMPTY_LIST;
         }
     }
+
 }

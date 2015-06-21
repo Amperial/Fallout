@@ -25,57 +25,61 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Tracks which OptionItem is selected
+ * Tracks option items selected by players.
+ *
+ * @author Austin Payne
  */
 public class Option {
+
     private Map<UUID, OptionItem> selected = new HashMap<>();
     private Map<String, OptionItem> options = new HashMap<>();
 
     /**
-     * Gets the OptionItem selected by a player.
+     * Gets the option item selected by a player.
      *
-     * @param player The player.
-     * @return The player's currently selected OptionItem.
+     * @param player The player
+     * @return The player's currently selected option item
      */
     public OptionItem getSelected(Player player) {
         return selected.get(player.getUniqueId());
     }
 
     /**
-     * Sets the OptionItem selected by a player.
+     * Sets the option item selected by a player.
      *
-     * @param player The player.
-     * @param item   The OptionItem.
+     * @param player The player
+     * @param item   The option item
      */
     public void setSelected(Player player, OptionItem item) {
         selected.put(player.getUniqueId(), item);
     }
 
     /**
-     * Removes a player's current OptionItem selection.
+     * Removes a player's current option item selection.
      *
-     * @param player The player.
+     * @param player The player
      */
     public void removeSelected(Player player) {
         selected.remove(player.getUniqueId());
     }
 
     /**
-     * Gets the OptionItem represented by its display name.
+     * Gets the option item represented by its display name.
      *
-     * @param name The name.
-     * @return The OptionItem.
+     * @param name The name
+     * @return The option item
      */
     public OptionItem getOption(String name) {
         return options.get(name);
     }
 
     /**
-     * Adds an OptionItem to the group of possible options.
+     * Adds an option item to the group of possible options.
      *
-     * @param option The OptionItem.
+     * @param option The option item
      */
     public void addOption(OptionItem option) {
         options.put(option.getDisplayName(), option);
     }
+
 }

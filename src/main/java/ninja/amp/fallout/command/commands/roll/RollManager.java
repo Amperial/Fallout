@@ -35,14 +35,22 @@ import org.bukkit.entity.Player;
 import java.util.UUID;
 
 /**
- * Manages all rolling in fallout.
+ * Manages all dice, armor, skill, and trait rolling in fallout.
+ *
+ * @author Austin Payne
  */
 public class RollManager {
+
     private Fallout plugin;
     private int publicDiceLimit;
     private int privateDiceLimit;
     private int diceSidesLimit;
 
+    /**
+     * Creates a new roll manager.
+     *
+     * @param plugin The fallout plugin instance
+     */
     public RollManager(Fallout plugin) {
         this.plugin = plugin;
 
@@ -55,9 +63,9 @@ public class RollManager {
     /**
      * Rolls a skill or trait with an optional modifier.
      *
-     * @param player   The player rolling.
-     * @param value    The roll parameters: <trait/skill>[+/-modifier].
-     * @param distance The broadcast distance of the roll.
+     * @param player   The player rolling
+     * @param value    The roll parameters: <trait/skill>[+/-modifier]
+     * @param distance The broadcast distance of the roll
      */
     public void rollDefault(Player player, String value, Distance distance) {
         UUID playerId = player.getUniqueId();
@@ -135,9 +143,9 @@ public class RollManager {
     /**
      * Rolls to see if a player's armor can absorb a hit with an optional modifier.
      *
-     * @param player   The player rolling.
-     * @param value    T roll parameters: <damage type>[+/-modifier].
-     * @param distance The broadcast distance of the roll.
+     * @param player   The player rolling
+     * @param value    The roll parameters: <damage type>[+/-modifier]
+     * @param distance The broadcast distance of the roll
      */
     public void rollArmor(Player player, String value, Distance distance) {
         UUID playerId = player.getUniqueId();
@@ -212,9 +220,9 @@ public class RollManager {
     /**
      * Manually rolls the dice with an optional modifier.
      *
-     * @param player   The player rolling.
-     * @param value    The roll parameters: <amount>d<sides>[+/-modifier].
-     * @param distance The broadcast distance of the roll.
+     * @param player   The player rolling
+     * @param value    The roll parameters: <amount>d<sides>[+/-modifier]
+     * @param distance The broadcast distance of the roll
      */
     public void rollDice(Player player, String value, Distance distance) {
         UUID playerId = player.getUniqueId();
@@ -286,36 +294,53 @@ public class RollManager {
     }
 
     /**
-     * Gets the modifier of a SPECIAL roll.
+     * Gets the final modifier of a SPECIAL roll.<br>
+     * {@code modifier = trait level + initial modifier}
      *
-     * @param character The character rolling.
-     * @param trait     The trait being rolled.
-     * @param modifier  The optional extra modifier.
-     * @return The final modifier of the SPECIAL roll.
+     * @param character The character rolling
+     * @param trait     The trait being rolled
+     * @param modifier  The optional initial modifier
+     * @return The final modifier of the SPECIAL roll
      */
-    public int specialModifier(ninja.amp.fallout.characters.Character character, Trait trait, int modifier) {
+    public int specialModifier(Character character, Trait trait, int modifier) {
         return character.getSpecial().get(trait) + modifier;
     }
 
     /**
-     * Gets the modifier of a skill roll.
+     * Gets the modifier of a skill roll.<br>
+     * {@code modifier = skill level - 1 + average level of traits affected rounded up + initial modifier}
      *
-     * @param character The character rolling.
-     * @param skill     The skill being rolled.
-     * @param modifier  The optional extra modifier.
-     * @return The final modifier of the skill roll.
+     * @param character The character rolling
+     * @param skill     The skill being rolled
+     * @param modifier  The optional initial modifier
+     * @return The final modifier of the skill roll
      */
     public int skillModifier(Character character, Skill skill, int modifier) {
         return character.skillLevel(skill) - 1 + skill.getRollModifier(character.getSpecial()) + modifier;
     }
 
     /**
-     * Gets the result of a SPECIAL or skill roll.
+     * Gets the result of a SPECIAL or skill roll.<br>
+     * A roll of 1 or 20 always results in critical failure or success.<br>
+     * Otherwise the algorithm to determine the result is as follows:
+     * <pre>{@code
+     *     near success = 18 - modifier
+     *     if roll > near success
+     *         criticals = max(1, min(4, luck - 5))
+     *         if roll + criticals > 20 result is critical success
+     *         else result is success
+     *     else if roll >= near success
+     *         result is near success
+     *     else
+     *         criticals = max(1, 5 - luck)
+     *         if roll - criticals < 1 result is critical failure
+     *         else result is failure
+     * }</pre>
      *
-     * @param roll     The roll value.
-     * @param modifier The roll modifier.
-     * @param luck     The luck value.
-     * @return The final result of the SPECIAL or skill roll.
+     * @param roll     The roll value
+     * @param modifier The roll modifier
+     * @param luck     The luck value
+     * @return The final result of the SPECIAL or skill roll
      */
     public Result getResult(int roll, int modifier, int luck) {
         // 1 or 20 is always critical
@@ -348,7 +373,7 @@ public class RollManager {
     }
 
     /**
-     * Results of a roll.
+     * Possible results of a roll.
      */
     public enum Result {
         CRITICAL_FAILURE("Critical Failure"),
@@ -366,6 +391,7 @@ public class RollManager {
         public String getName() {
             return name;
         }
+
     }
 
     /**
@@ -376,4 +402,5 @@ public class RollManager {
         LOCAL,
         PRIVATE
     }
+
 }

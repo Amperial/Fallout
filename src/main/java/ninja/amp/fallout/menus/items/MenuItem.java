@@ -18,6 +18,7 @@
  */
 package ninja.amp.fallout.menus.items;
 
+import ninja.amp.fallout.menus.Owner;
 import ninja.amp.fallout.menus.events.ItemClickEvent;
 import ninja.amp.fallout.menus.events.ItemClickEventHandler;
 import org.bukkit.entity.Player;
@@ -28,9 +29,12 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * An Item inside an {@link ninja.amp.fallout.menus.ItemMenu}.
+ * An item inside an {@link ninja.amp.fallout.menus.ItemMenu}.
+ *
+ * @author Austin Payne
  */
 public class MenuItem implements ItemClickEventHandler {
+
     private final String displayName;
     private final ItemStack icon;
     private final List<String> lore;
@@ -42,40 +46,50 @@ public class MenuItem implements ItemClickEventHandler {
     }
 
     /**
-     * Gets the display name of the MenuItem.
+     * Gets the display name of the menu item.
      *
-     * @return The display name.
+     * @return The menu item's display name
      */
     public String getDisplayName() {
         return displayName;
     }
 
     /**
-     * Gets the icon of the MenuItem.
+     * Gets the icon of the menu item.
      *
-     * @return The icon.
+     * @return The menu item's icon
      */
     public ItemStack getIcon() {
         return icon;
     }
 
     /**
-     * Gets the lore of the MenuItem.
+     * Gets the lore of the menu item.
      *
-     * @return The lore.
+     * @return The menu item's lore
      */
     public List<String> getLore() {
         return lore;
     }
 
     /**
-     * Gets the ItemStack to be shown to the player.
+     * Gets the item stack for a certain player.
      *
-     * @param player The player.
-     * @return The final icon.
+     * @param player The player
+     * @return The final icon
      */
     public ItemStack getFinalIcon(Player player) {
         return setNameAndLore(getIcon().clone(), getDisplayName(), getLore());
+    }
+
+    /**
+     * Gets the item stack for a certain owner.
+     *
+     * @param owner The owner of a character
+     * @return The final icon
+     */
+    public ItemStack getFinalIcon(Owner owner) {
+        return getFinalIcon(owner.getPlayer());
     }
 
     @Override
@@ -86,10 +100,10 @@ public class MenuItem implements ItemClickEventHandler {
     /**
      * Sets the display name and lore of an ItemStack.
      *
-     * @param itemStack   The ItemStack.
-     * @param displayName The display name.
-     * @param lore        The lore.
-     * @return The ItemStack.
+     * @param itemStack   The item stack
+     * @param displayName The display name
+     * @param lore        The lore
+     * @return The item stack
      */
     public static ItemStack setNameAndLore(ItemStack itemStack, String displayName, List<String> lore) {
         ItemMeta meta = itemStack.getItemMeta();
@@ -98,4 +112,5 @@ public class MenuItem implements ItemClickEventHandler {
         itemStack.setItemMeta(meta);
         return itemStack;
     }
+
 }

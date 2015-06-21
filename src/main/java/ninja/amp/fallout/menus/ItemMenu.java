@@ -19,6 +19,7 @@
 package ninja.amp.fallout.menus;
 
 import ninja.amp.fallout.Fallout;
+import ninja.amp.fallout.characters.CharacterManager;
 import ninja.amp.fallout.menus.events.ItemClickEvent;
 import ninja.amp.fallout.menus.items.MenuItem;
 import ninja.amp.fallout.menus.items.StaticMenuItem;
@@ -32,9 +33,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * A Menu controlled by ItemStacks in an Inventory.
+ * A dynamic and interactive menu made up of an inventory and item stacks.
+ *
+ * @author Austin Payne
  */
 public class ItemMenu {
+
     private Fallout plugin;
     private String name;
     private Size size;
@@ -42,18 +46,18 @@ public class ItemMenu {
     private ItemMenu parent;
 
     /**
-     * The {@link ninja.amp.fallout.menus.items.StaticMenuItem} that appears in empty slots if {@link ninja.amp.fallout.menus.ItemMenu#fillEmptySlots()} is called.
+     * The menu item that appears in empty slots if {@link ItemMenu#fillEmptySlots()} is called.
      */
     @SuppressWarnings("deprecation")
     private static final MenuItem EMPTY_SLOT_ITEM = new StaticMenuItem(" ", new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.GRAY.getData()));
 
     /**
-     * Creates an {@link ninja.amp.fallout.menus.ItemMenu}.
+     * Creates an item menu.
      *
-     * @param name   The name of the inventory.
-     * @param size   The {@link ninja.amp.fallout.menus.ItemMenu.Size} of the inventory.
-     * @param plugin The {@link ninja.amp.fallout.Fallout} instance.
-     * @param parent The ItemMenu's parent.
+     * @param name   The name of the inventory
+     * @param size   The item menu of the inventory
+     * @param plugin The fallout plugin instance
+     * @param parent The item menu's parent
      */
     public ItemMenu(String name, Size size, Fallout plugin, ItemMenu parent) {
         this.plugin = plugin;
@@ -64,67 +68,67 @@ public class ItemMenu {
     }
 
     /**
-     * Creates an {@link ninja.amp.fallout.menus.ItemMenu} with no parent.
+     * Creates an item menu with no parent.
      *
-     * @param name   The name of the inventory.
-     * @param size   The {@link ninja.amp.fallout.menus.ItemMenu.Size} of the inventory.
-     * @param plugin The {@link ninja.amp.fallout.Fallout} instance.
+     * @param name   The name of the inventory
+     * @param size   The size of the inventory
+     * @param plugin The fallout plugin instance
      */
     public ItemMenu(String name, Size size, Fallout plugin) {
         this(name, size, plugin, null);
     }
 
     /**
-     * Gets the name of the {@link ninja.amp.fallout.menus.ItemMenu}.
+     * Gets the name of the item menu.
      *
-     * @return The {@link ninja.amp.fallout.menus.ItemMenu}'s name.
+     * @return The item menu's name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Gets the {@link ninja.amp.fallout.menus.ItemMenu.Size} of the {@link ninja.amp.fallout.menus.ItemMenu}.
+     * Gets the size of the item menu.
      *
-     * @return The {@link ninja.amp.fallout.menus.ItemMenu}'s {@link ninja.amp.fallout.menus.ItemMenu.Size}.
+     * @return The item menu's size
      */
     public Size getSize() {
         return size;
     }
 
     /**
-     * Checks if the {@link ninja.amp.fallout.menus.ItemMenu} has a parent.
+     * Checks if the item menu has a parent.
      *
-     * @return True if the {@link ninja.amp.fallout.menus.ItemMenu} has a parent, else false.
+     * @return {@code true} if the item menu has a parent
      */
     public boolean hasParent() {
         return parent != null;
     }
 
     /**
-     * Gets the parent of the {@link ninja.amp.fallout.menus.ItemMenu}.
+     * Gets the parent of the item menu.
      *
-     * @return The {@link ninja.amp.fallout.menus.ItemMenu}'s parent.
+     * @return The item menu's parent
      */
     public ItemMenu getParent() {
         return parent;
     }
 
     /**
-     * Sets the parent of the {@link ninja.amp.fallout.menus.ItemMenu}.
+     * Sets the parent of the item menu.
      *
-     * @param parent The {@link ninja.amp.fallout.menus.ItemMenu}'s parent.
+     * @param parent The item menu to set as parent
      */
     public void setParent(ItemMenu parent) {
         this.parent = parent;
     }
 
     /**
-     * Sets the {@link ninja.amp.fallout.menus.items.MenuItem} of a slot.
+     * Sets the menu item of a slot.
      *
-     * @param position The slot position.
-     * @param menuItem The {@link ninja.amp.fallout.menus.items.MenuItem}.
-     * @return The {@link ninja.amp.fallout.menus.ItemMenu}.
+     * @param position The slot position
+     * @param menuItem The menu item
+     * @return The item menu
      */
     public ItemMenu setItem(int position, MenuItem menuItem) {
         items[position] = menuItem;
@@ -132,10 +136,10 @@ public class ItemMenu {
     }
 
     /**
-     * Fills all empty slots in the {@link ninja.amp.fallout.menus.ItemMenu} with a certain {@link ninja.amp.fallout.menus.items.MenuItem}.
+     * Fills all empty slots in the item menu with a certain menu item.
      *
-     * @param menuItem The {@link ninja.amp.fallout.menus.items.MenuItem}.
-     * @return The {@link ninja.amp.fallout.menus.ItemMenu}.
+     * @param menuItem The menu item to fill empty slots with
+     * @return The item menu
      */
     public ItemMenu fillEmptySlots(MenuItem menuItem) {
         for (int i = 0; i < items.length; i++) {
@@ -147,18 +151,18 @@ public class ItemMenu {
     }
 
     /**
-     * Fills all empty slots in the {@link ninja.amp.fallout.menus.ItemMenu} with the default empty slot item.
+     * Fills all empty slots in the item menu with the default empty slot item.
      *
-     * @return The {@link ninja.amp.fallout.menus.ItemMenu}.
+     * @return The item menu
      */
     public ItemMenu fillEmptySlots() {
         return fillEmptySlots(EMPTY_SLOT_ITEM);
     }
 
     /**
-     * Opens the {@link ninja.amp.fallout.menus.ItemMenu} for a player.
+     * Opens the item menu for a player.
      *
-     * @param player The player.
+     * @param player The player
      */
     public void open(Player player) {
         MenuHolder owner = new MenuHolder(this);
@@ -169,9 +173,9 @@ public class ItemMenu {
     }
 
     /**
-     * Updates the {@link ninja.amp.fallout.menus.ItemMenu} for a player.
+     * Updates the item menu for a player.
      *
-     * @param player The player to update the {@link ninja.amp.fallout.menus.ItemMenu} for.
+     * @param player The player to update the item menu for
      */
     @SuppressWarnings("deprecation")
     public void update(Player player) {
@@ -185,21 +189,32 @@ public class ItemMenu {
     }
 
     /**
-     * Applies the {@link ninja.amp.fallout.menus.ItemMenu} for a player to an Inventory.
+     * Applies the item menu for a player to an inventory.<br>
+     * This overrides the existing contents of the inventory.
      *
-     * @param inventory The Inventory.
-     * @param player    The Player.
+     * @param inventory The inventory to apply the item menu to
+     * @param player    The player
      */
     public void apply(Inventory inventory, Player player) {
-        for (int i = 0; i < items.length; i++) {
-            if (items[i] != null) {
-                inventory.setItem(i, items[i].getFinalIcon(player));
+        CharacterManager characterManager = plugin.getCharacterManager();
+        if (characterManager.isOwner(player.getUniqueId())) {
+            Owner owner = new Owner(player, characterManager.getCharacterByOwner(player.getUniqueId()));
+            for (int i = 0; i < items.length; i++) {
+                if (items[i] != null) {
+                    inventory.setItem(i, items[i].getFinalIcon(owner));
+                }
+            }
+        } else {
+            for (int i = 0; i < items.length; i++) {
+                if (items[i] != null) {
+                    inventory.setItem(i, items[i].getFinalIcon(player));
+                }
             }
         }
     }
 
     /**
-     * Handles InventoryClickEvents for the {@link ninja.amp.fallout.menus.ItemMenu}.
+     * Handles inventory click events for the item menu.
      */
     @SuppressWarnings("deprecation")
     public void onInventoryClick(InventoryClickEvent event) {
@@ -207,7 +222,13 @@ public class ItemMenu {
             int slot = event.getRawSlot();
             if (slot >= 0 && slot < size.getSize() && items[slot] != null) {
                 Player player = (Player) event.getWhoClicked();
-                ItemClickEvent itemClickEvent = new ItemClickEvent(player);
+                ItemClickEvent itemClickEvent;
+                CharacterManager characterManager = plugin.getCharacterManager();
+                if (characterManager.isOwner(player.getUniqueId())) {
+                    itemClickEvent = new ItemClickEvent(player, characterManager.getCharacterByOwner(player.getUniqueId()));
+                } else {
+                    itemClickEvent = new ItemClickEvent(player);
+                }
                 items[slot].onItemClick(itemClickEvent);
                 if (itemClickEvent.willUpdate()) {
                     update(player);
@@ -241,7 +262,7 @@ public class ItemMenu {
     }
 
     /**
-     * Possible sizes of an {@link ninja.amp.fallout.menus.ItemMenu}.
+     * Possible inventory sizes of an item menu.
      */
     public enum Size {
         ONE_LINE(9),
@@ -258,19 +279,19 @@ public class ItemMenu {
         }
 
         /**
-         * Gets the {@link ninja.amp.fallout.menus.ItemMenu.Size}'s amount of slots.
+         * Gets the size's amount of slots.
          *
-         * @return The amount of slots.
+         * @return The amount of slots
          */
         public int getSize() {
             return size;
         }
 
         /**
-         * Gets the required {@link ninja.amp.fallout.menus.ItemMenu.Size} for an amount of slots.
+         * Gets the required size for an amount of slots.
          *
-         * @param slots The amount of slots.
-         * @return The required {@link ninja.amp.fallout.menus.ItemMenu.Size}.
+         * @param slots The amount of slots
+         * @return The required size
          */
         public static Size fit(int slots) {
             if (slots < 10) {
@@ -287,5 +308,7 @@ public class ItemMenu {
                 return SIX_LINE;
             }
         }
+
     }
+
 }

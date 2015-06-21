@@ -20,13 +20,16 @@ package ninja.amp.fallout.menus.events;
 
 /**
  * Handles {@link ninja.amp.fallout.menus.events.ItemClickEvent}s.
+ *
+ * @author Austin Payne
  */
 public interface ItemClickEventHandler {
 
     /**
-     * Called when an Item in the {@link ninja.amp.fallout.menus.ItemMenu} is clicked.
+     * Called when an item in the item menu is clicked.
      *
-     * @param event The ItemClickEvent.
+     * @param event The item click event.
      */
     void onItemClick(ItemClickEvent event);
+
 }

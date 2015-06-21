@@ -31,8 +31,11 @@ import java.util.Map;
 
 /**
  * A command that only contains child commands.
+ *
+ * @author Austin Payne
  */
 public class CommandGroup {
+
     protected final Fallout plugin;
     private final String name;
     private final Map<String, CommandGroup> children = new LinkedHashMap<>();
@@ -43,10 +46,10 @@ public class CommandGroup {
     private boolean playerOnly = true;
 
     /**
-     * Creates a new CommandGroup.
+     * Creates a new command group.
      *
-     * @param plugin The {@link ninja.amp.fallout.Fallout} instance.
-     * @param name   The name of the command.
+     * @param plugin The fallout plugin instance
+     * @param name   The name of the command
      */
     public CommandGroup(Fallout plugin, String name) {
         this.plugin = plugin;
@@ -54,27 +57,27 @@ public class CommandGroup {
     }
 
     /**
-     * Gets the command's name.
+     * Gets the command group's name.
      *
-     * @return The command's name.
+     * @return The command group's name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Gets the command's permission.
+     * Gets the command group's permission node.
      *
-     * @return The command's permission.
+     * @return The command group's permission node
      */
     public Permission getPermission() {
         return permission;
     }
 
     /**
-     * Sets the command's permission.
+     * Sets the command group's permission node.
      *
-     * @param permission The CommandGroup's permission.
+     * @param permission The command group's permission node
      */
     public void setPermission(Permission permission) {
         this.permission = permission;
@@ -84,28 +87,28 @@ public class CommandGroup {
     }
 
     /**
-     * Gets the minimum required args length of the command.
+     * Gets the minimum required args length of the command group.
      *
-     * @return The minimum required args length.
+     * @return The minimum required args length
      */
     public int getMinArgsLength() {
         return minArgsLength;
     }
 
     /**
-     * Gets the maximum required args length of the command.
+     * Gets the maximum required args length of the command group.
      *
-     * @return The maximum required args length.
+     * @return The maximum required args length
      */
     public int getMaxArgsLength() {
         return maxArgsLength;
     }
 
     /**
-     * Sets the argument range of the command.
+     * Sets the argument range of the command group.
      *
-     * @param minArgsLength The minimum required args length.
-     * @param maxArgsLength The maximum required args length. -1 for no max.
+     * @param minArgsLength The minimum required args length
+     * @param maxArgsLength The maximum required args length. -1 for no max
      */
     public void setArgumentRange(int minArgsLength, int maxArgsLength) {
         this.minArgsLength = minArgsLength;
@@ -113,48 +116,48 @@ public class CommandGroup {
     }
 
     /**
-     * Checks to see if the command can only be run by a player.
+     * Checks to see if the command group can only be run by a player.
      *
-     * @return True if the command is player only, else false.
+     * @return {@code true} if the command group is player only
      */
     public boolean isPlayerOnly() {
         return playerOnly;
     }
 
     /**
-     * Sets if the command can only be run by a player.
+     * Sets if the command group can only be run by a player.
      *
-     * @param playerOnly If the command can only be run by a player.
+     * @param playerOnly If the command group can only be run by a player
      */
     public void setPlayerOnly(boolean playerOnly) {
         this.playerOnly = playerOnly;
     }
 
     /**
-     * Checks to see if the command has the child command.
+     * Checks to see if the command group has the child command.
      *
-     * @param name The name of the child command.
-     * @return True if the command has the child command, else false.
+     * @param name The name of the child command
+     * @return {@code true} if the command group has the child command
      */
     public boolean hasChildCommand(String name) {
         return children.containsKey(name.toLowerCase());
     }
 
     /**
-     * Gets a child command of the command.
+     * Gets a child command of the command group.
      *
-     * @param name The name of the child command.
-     * @return The child command.
+     * @param name The name of the child command
+     * @return The child command
      */
     public CommandGroup getChildCommand(String name) {
         return children.get(name.toLowerCase());
     }
 
     /**
-     * Adds a child command to the command.
+     * Adds a child command to the command group.
      *
-     * @param command The child command.
-     * @return The command the child command was added to.
+     * @param command The child command
+     * @return The command group the child command was added to
      */
     public CommandGroup addChildCommand(CommandGroup command) {
         children.put(command.getName().toLowerCase(), command);
@@ -168,10 +171,10 @@ public class CommandGroup {
     }
 
     /**
-     * Gets the command's children.
+     * Gets the command group's children.
      *
-     * @param deep If the method should return all children, or only the command's immediate children.
-     * @return The command's children.
+     * @param deep If the method should return all children, or only the command group's immediate children
+     * @return The command group's children
      */
     public List<CommandGroup> getChildren(boolean deep) {
         if (deep) {
@@ -193,10 +196,10 @@ public class CommandGroup {
     }
 
     /**
-     * Gets the tab completion list of the command.
+     * Gets the tab completion list of the command group.
      *
-     * @param args The args already entered.
-     * @return The tab completion list of the command.
+     * @param args The args already entered
+     * @return The tab completion list of the command group
      */
     public List<String> getTabCompleteList(String[] args) {
         if (args.length == 1) {
@@ -224,9 +227,9 @@ public class CommandGroup {
     /**
      * The command executor
      *
-     * @param command The command label.
-     * @param sender  The sender of the command.
-     * @param args    The arguments sent with the command.
+     * @param command The command label
+     * @param sender  The sender of the command
+     * @param args    The arguments sent with the command
      */
     public void execute(String command, CommandSender sender, String[] args) {
         CommandGroup entry = children.get(command.toLowerCase());
@@ -260,4 +263,5 @@ public class CommandGroup {
             }
         }
     }
+
 }

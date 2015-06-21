@@ -31,8 +31,11 @@ import java.util.UUID;
 
 /**
  * A command that lets the sender view and select their character's perks.
+ *
+ * @author Austin Payne
  */
 public class Perks extends Command {
+
     private ItemMenu menu;
 
     public Perks(Fallout plugin) {
@@ -54,4 +57,5 @@ public class Perks extends Command {
             plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_NOTOWNER);
         }
     }
+
 }

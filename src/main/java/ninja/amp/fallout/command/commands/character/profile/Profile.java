@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.command.commands.character.special;
+package ninja.amp.fallout.command.commands.character.profile;
 
 import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.characters.Character;
@@ -33,16 +33,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A command that lists a character's SPECIAL traits.
+ * A command that lets the sender view their or another character's information.
+ *
+ * @author Austin Payne
  */
-public class ListSpecial extends Command {
+public class Profile extends Command {
 
-    public ListSpecial(Fallout plugin) {
-        super(plugin, "listspecial");
-        setDescription("Lists your or another fallout character's traits.");
-        setCommandUsage("/fo character listspecial [character]");
-        setPermission(new Permission("fallout.character.listspecial", PermissionDefault.TRUE));
+    private ProfileMenu menu;
+
+    public Profile(Fallout plugin) {
+        super(plugin, "profile");
+        setDescription("Views your or another fallout character's information.");
+        setCommandUsage("/fo character profile [character]");
+        setPermission(new Permission("fallout.character.profile", PermissionDefault.TRUE));
         setArgumentRange(0, 1);
+
+        this.menu = new ProfileMenu(plugin);
     }
 
     @Override
@@ -65,7 +71,7 @@ public class ListSpecial extends Command {
                 return;
             }
         }
-        plugin.getMessenger().sendMessage(player, FOMessage.SPECIAL_LIST, character.getCharacterName(), character.getSpecial());
+        menu.open(player, character);
     }
 
     @Override
@@ -91,4 +97,5 @@ public class ListSpecial extends Command {
             return CommandController.EMPTY_LIST;
         }
     }
+
 }

@@ -35,8 +35,11 @@ import java.util.List;
 
 /**
  * A command that lets you roll a trait or skill privately.
+ *
+ * @author Austin Payne
  */
 public class PrivateRoll extends Command {
+
     private final List<String> tabCompleteList = new ArrayList<>();
 
     public PrivateRoll(Fallout plugin) {
@@ -112,4 +115,5 @@ public class PrivateRoll extends Command {
             return CommandController.EMPTY_LIST;
         }
     }
+
 }

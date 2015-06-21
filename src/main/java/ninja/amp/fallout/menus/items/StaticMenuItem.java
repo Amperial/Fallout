@@ -22,7 +22,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * A {@link ninja.amp.fallout.menus.items.MenuItem} whose icon never changes.
+ * A menu item whose icon is not dynamically modified.<br>
+ * Should be used when an item will always appear the same to every player.
+ *
+ * @author Austin Payne
  */
 public class StaticMenuItem extends MenuItem {
 
@@ -36,4 +39,5 @@ public class StaticMenuItem extends MenuItem {
     public ItemStack getFinalIcon(Player player) {
         return getIcon();
     }
+
 }

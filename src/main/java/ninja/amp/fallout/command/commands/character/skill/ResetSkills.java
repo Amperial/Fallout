@@ -34,6 +34,8 @@ import java.util.List;
 
 /**
  * A command that resets a character's skill levels.
+ *
+ * @author Austin Payne
  */
 public class ResetSkills extends Command {
 
@@ -98,4 +100,5 @@ public class ResetSkills extends Command {
             return CommandController.EMPTY_LIST;
         }
     }
+
 }

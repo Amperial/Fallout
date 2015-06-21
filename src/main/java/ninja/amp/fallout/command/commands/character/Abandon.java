@@ -29,6 +29,8 @@ import org.bukkit.permissions.PermissionDefault;
 
 /**
  * A command that abandons the senders fallout character.
+ *
+ * @author Austin Payne
  */
 public class Abandon extends Command {
 
@@ -50,4 +52,5 @@ public class Abandon extends Command {
             plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_NOTOWNER);
         }
     }
+
 }

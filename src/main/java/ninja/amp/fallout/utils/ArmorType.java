@@ -22,7 +22,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 /**
- * Types of armor.
+ * Minecraft armor types (where armor can be equipped).
+ *
+ * @author Austin Payne
  */
 public enum ArmorType {
     HELMET,
@@ -31,10 +33,10 @@ public enum ArmorType {
     BOOTS;
 
     /**
-     * Checks if the slot of the ArmorType is empty.
+     * Checks if the slot of the armor type is empty.
      *
-     * @param player The player.
-     * @return True if the slot is empty, else false.
+     * @param player The player
+     * @return {@code true} if the slot is empty
      */
     public boolean canEquip(Player player) {
         switch (this) {
@@ -54,8 +56,8 @@ public enum ArmorType {
     /**
      * Checks if a material is a piece of armor.
      *
-     * @param material The material.
-     * @return True if the material is a piece of armor, else false.
+     * @param material The material
+     * @return {@code true} if the material is a piece of armor
      */
     public static boolean isArmor(Material material) {
         for (ArmorType armorType : ArmorType.class.getEnumConstants()) {
@@ -67,10 +69,10 @@ public enum ArmorType {
     }
 
     /**
-     * Gets the ArmorType of a piece of armor.
+     * Gets the type of a piece of armor.
      *
-     * @param material The piece of armor.
-     * @return The ArmorType.
+     * @param material The piece of armor
+     * @return The type of the piece of armor
      */
     public static ArmorType getArmorType(Material material) {
         for (ArmorType armorType : ArmorType.class.getEnumConstants()) {
@@ -80,4 +82,5 @@ public enum ArmorType {
         }
         return null;
     }
+
 }

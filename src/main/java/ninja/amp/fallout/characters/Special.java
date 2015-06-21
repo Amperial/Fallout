@@ -22,39 +22,43 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A container for traits and their values.
+ * A container for traits and their values.<br>
+ * Referred to as a SPECIAL, an acronym for the traits contained.
+ *
+ * @author Austin Payne
  */
 public class Special {
+
     private Map<Trait, Integer> traits = new HashMap<>();
 
     /**
-     * Creates a new Special container with a map of traits and values.
+     * Creates a new SPECIAL from a map of traits and values.
      *
-     * @param traits The map of traits and values.
+     * @param traits The map of traits and values
      */
     public Special(Map<Trait, Integer> traits) {
         this.traits.putAll(traits);
     }
 
     /**
-     * Creates a new Special container from an existing Special container.
+     * Creates a new SPECIAL from an existing SPECIAL.
      *
-     * @param special The existing Special.
+     * @param special The existing SPECIAL
      */
     public Special(Special special) {
         this(special.getTraits());
     }
 
     /**
-     * Creates a new Special with specific values.
+     * Creates a new SPECIAL with specific values.
      *
-     * @param strength     The Strength value.
-     * @param perception   The Perception value.
-     * @param endurance    The Endurance value.
-     * @param charisma     The Charisma value.
-     * @param intelligence The intelligence value.
-     * @param agility      The agility value.
-     * @param luck         The luck value.
+     * @param strength     The Strength value
+     * @param perception   The Perception value
+     * @param endurance    The Endurance value
+     * @param charisma     The Charisma value
+     * @param intelligence The intelligence value
+     * @param agility      The agility value
+     * @param luck         The luck value
      */
     public Special(int strength, int perception, int endurance, int charisma, int intelligence, int agility, int luck) {
         traits.put(Trait.STRENGTH, strength);
@@ -69,8 +73,8 @@ public class Special {
     /**
      * Gets a trait's value.
      *
-     * @param trait The trait.
-     * @return The trait's value.
+     * @param trait The trait
+     * @return The trait's value
      */
     public int get(Trait trait) {
         return traits.get(trait);
@@ -79,17 +83,17 @@ public class Special {
     /**
      * Sets a trait's value.
      *
-     * @param trait The trait.
-     * @param value The value.
+     * @param trait The trait
+     * @param value The value
      */
     public void set(Trait trait, int value) {
         traits.put(trait, value);
     }
 
     /**
-     * Copies the values of another special.
+     * Copies the values of another SPECIAL.
      *
-     * @param special The special.
+     * @param special The SPECIAL whose values to copy
      */
     public void set(Special special) {
         for (Trait trait : special.getTraits().keySet()) {
@@ -98,18 +102,18 @@ public class Special {
     }
 
     /**
-     * Gets the special's traits and values.
+     * Gets the SPECIAL's traits and values.
      *
-     * @return The traits and values.
+     * @return The traits and their values
      */
     public Map<Trait, Integer> getTraits() {
         return traits;
     }
 
     /**
-     * Gets the total value of all the special's traits.
+     * Gets the total value of all the SPECIAL's traits.
      *
-     * @return The total value of the special.
+     * @return The total value of the SPECIAL
      */
     public int getTotal() {
         int total = 0;
@@ -122,12 +126,13 @@ public class Special {
     @Override
     public String toString() {
         return new StringBuilder()
-                .append("S:").append(traits.get(Trait.STRENGTH)).append(" ")
-                .append("P:").append(traits.get(Trait.PERCEPTION)).append(" ")
-                .append("E:").append(traits.get(Trait.ENDURANCE)).append(" ")
-                .append("C:").append(traits.get(Trait.CHARISMA)).append(" ")
-                .append("I:").append(traits.get(Trait.INTELLIGENCE)).append(" ")
-                .append("A:").append(traits.get(Trait.AGILITY)).append(" ")
-                .append("L:").append(traits.get(Trait.LUCK)).toString();
+                .append("S:").append(traits.get(Trait.STRENGTH))
+                .append(" P:").append(traits.get(Trait.PERCEPTION))
+                .append(" E:").append(traits.get(Trait.ENDURANCE))
+                .append(" C:").append(traits.get(Trait.CHARISMA))
+                .append(" I:").append(traits.get(Trait.INTELLIGENCE))
+                .append(" A:").append(traits.get(Trait.AGILITY))
+                .append(" L:").append(traits.get(Trait.LUCK)).toString();
     }
+
 }

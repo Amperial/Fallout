@@ -27,7 +27,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * An enum of character perks used in fallout.
+ * Perks a fallout character can select, one per tier.
+ *
+ * @author Austin Payne
  */
 public enum Perk {
     SIGHT_ADAPT(1, "Adaptive Eyes", "Eyes adapt to changes in light quickly"),
@@ -60,6 +62,7 @@ public enum Perk {
     TELEKINESIS(5, "The Master's Legacy", ""),
     TELEPATHY(5, "The Master's Legacy", ""),
     SPIRIT_FORM(5, "Undying Will", "");
+
     private static final Map<Integer, Set<Perk>> tiers;
     private static final List<String> perkNames;
     private final String name;
@@ -75,7 +78,7 @@ public enum Perk {
     /**
      * Gets the display name of the perk.
      *
-     * @return The perk's display name.
+     * @return The perk's display name
      */
     public String getName() {
         return name;
@@ -84,7 +87,7 @@ public enum Perk {
     /**
      * Gets the tier of the perk.
      *
-     * @return The perk's tier.
+     * @return The perk's tier
      */
     public int getTier() {
         return tier;
@@ -93,7 +96,7 @@ public enum Perk {
     /**
      * Gets the description of the perk.
      *
-     * @return The perk's description.
+     * @return The perk's description
      */
     public String[] getDescription() {
         return description;
@@ -102,8 +105,8 @@ public enum Perk {
     /**
      * Gets a perk from its name.
      *
-     * @param name The name.
-     * @return The perk.
+     * @param name The name of the perk
+     * @return The perk
      */
     public static Perk fromName(String name) {
         for (Perk perk : Perk.class.getEnumConstants()) {
@@ -115,19 +118,19 @@ public enum Perk {
     }
 
     /**
-     * Gets the perks in a tier.
+     * Gets the perks of a certain tier.
      *
-     * @param tier The tier.
-     * @return The perks in the tier.
+     * @param tier The tier
+     * @return The perks in the tier
      */
     public static Set<Perk> getPerks(int tier) {
         return Collections.unmodifiableSet(tiers.get(tier));
     }
 
     /**
-     * Gets the list of perk names.
+     * Gets a list of perk names.
      *
-     * @return The list of perk names.
+     * @return The list of perk names
      */
     public static List<String> getPerkNames() {
         return perkNames;
@@ -144,4 +147,5 @@ public enum Perk {
             perkNames.add(perk.getName());
         }
     }
+
 }

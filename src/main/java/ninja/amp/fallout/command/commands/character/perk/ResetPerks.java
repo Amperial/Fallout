@@ -34,6 +34,8 @@ import java.util.List;
 
 /**
  * A command that resets a character's perks.
+ *
+ * @author Austin Payne
  */
 public class ResetPerks extends Command {
 
@@ -98,4 +100,5 @@ public class ResetPerks extends Command {
             return CommandController.EMPTY_LIST;
         }
     }
+
 }

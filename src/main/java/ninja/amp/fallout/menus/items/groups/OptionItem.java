@@ -24,9 +24,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * A {@link ninja.amp.fallout.menus.items.MenuItem} that is part of an {@link Option}.
+ * A menu item that is part of an {@link Option}.
+ *
+ * @author Austin Payne
  */
 public class OptionItem extends StaticMenuItem {
+
     private Option group;
     private ItemStack unselected;
 
@@ -54,4 +57,5 @@ public class OptionItem extends StaticMenuItem {
 
         event.setWillUpdate(true);
     }
+
 }

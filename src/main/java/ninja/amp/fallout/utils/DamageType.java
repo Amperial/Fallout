@@ -25,6 +25,8 @@ import java.util.Map;
 
 /**
  * The types of damage in fallout.
+ *
+ * @author Austin Payne
  */
 public enum DamageType {
     BULLET("Bullet", 6, 5, 3, 2, 1),
@@ -54,7 +56,7 @@ public enum DamageType {
     /**
      * Gets the display name of the damage type.
      *
-     * @return The damage type's display name.
+     * @return The damage type's display name
      */
     public String getName() {
         return name;
@@ -63,8 +65,8 @@ public enum DamageType {
     /**
      * Gets the defense value of an armor type against the damage type.
      *
-     * @param armorType The FOArmor type.
-     * @return The defense value.
+     * @param armorType The fallout armor type
+     * @return The defense value
      */
     public int getDefenseValue(FOArmor armorType) {
         return defenseValues.get(armorType);
@@ -73,8 +75,8 @@ public enum DamageType {
     /**
      * Gets a damage type from its name.
      *
-     * @param name The name.
-     * @return The damage type.
+     * @param name The name
+     * @return The damage type
      */
     public static DamageType fromName(String name) {
         for (DamageType damageType : DamageType.class.getEnumConstants()) {
@@ -86,9 +88,9 @@ public enum DamageType {
     }
 
     /**
-     * Gets the list of damage type names.
+     * Gets a list of damage type names.
      *
-     * @return The list of damage type names.
+     * @return The list of damage type names
      */
     public static List<String> getDamageTypeNames() {
         return damageTypeNames;
@@ -100,4 +102,5 @@ public enum DamageType {
             damageTypeNames.add(damageType.getName());
         }
     }
+
 }

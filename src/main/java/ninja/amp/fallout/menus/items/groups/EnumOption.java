@@ -25,57 +25,61 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Tracks which EnumOptionItem is selected
+ * Tracks enum option items selected by players.
+ *
+ * @author Austin Payne
  */
 public class EnumOption<E extends Enum<E>> {
+
     private Map<UUID, EnumOptionItem<E>> selected = new HashMap<>();
     private Map<E, EnumOptionItem<E>> options = new HashMap<>();
 
     /**
-     * Gets the EnumOptionItem selected by a player.
+     * Gets the enum option item selected by a player.
      *
-     * @param player The player.
-     * @return The player's currently selected EnumOptionItem.
+     * @param player The player
+     * @return The player's currently selected enum option item
      */
     public EnumOptionItem<E> getSelected(Player player) {
         return selected.get(player.getUniqueId());
     }
 
     /**
-     * Sets the EnumOptionItem selected by a player.
+     * Sets the enum option item selected by a player.
      *
-     * @param player The player.
-     * @param item   The EnumOptionItem.
+     * @param player The player
+     * @param item   The enum option item
      */
     public void setSelected(Player player, EnumOptionItem<E> item) {
         selected.put(player.getUniqueId(), item);
     }
 
     /**
-     * Removes a player's current EnumOptionItem selection.
+     * Removes a player's current enum option item selection.
      *
-     * @param player The player.
+     * @param player The player
      */
     public void removeSelected(Player player) {
         selected.remove(player.getUniqueId());
     }
 
     /**
-     * Gets the EnumOptionItem represented by a certain Enum constant.
+     * Gets the enum option item represented by a certain enum constant.
      *
-     * @param e The Enum constant.
-     * @return The EnumOptionItem.
+     * @param e The enum constant
+     * @return The enum option item
      */
     public EnumOptionItem<E> getOption(E e) {
         return options.get(e);
     }
 
     /**
-     * Adds an EnumOptionItem to the group of possible options.
+     * Adds an enum option item to the group of possible options.
      *
-     * @param option The EnumOptionItem.
+     * @param option The enum option item
      */
     public void addOption(EnumOptionItem<E> option) {
         options.put(option.getEnum(), option);
     }
+
 }

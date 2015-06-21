@@ -33,10 +33,10 @@ import ninja.amp.fallout.command.commands.character.Upgrade;
 import ninja.amp.fallout.command.commands.character.creation.Create;
 import ninja.amp.fallout.command.commands.character.perk.Perks;
 import ninja.amp.fallout.command.commands.character.perk.ResetPerks;
+import ninja.amp.fallout.command.commands.character.profile.Profile;
 import ninja.amp.fallout.command.commands.character.skill.ResetSkills;
 import ninja.amp.fallout.command.commands.character.skill.Skills;
-import ninja.amp.fallout.command.commands.character.special.ListSpecial;
-import ninja.amp.fallout.command.commands.character.special.SetSpecial;
+import ninja.amp.fallout.command.commands.character.special.Special;
 import ninja.amp.fallout.command.commands.character.special.SpecialMenu;
 import ninja.amp.fallout.command.commands.roll.ArmorRoll;
 import ninja.amp.fallout.command.commands.roll.DiceRoll;
@@ -53,8 +53,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * The main class of the Fallout plugin.
+ *
+ * @author Austin Payne
  */
 public class Fallout extends JavaPlugin {
+
     private ConfigManager configManager;
     private Messenger messenger;
     private CommandController commandController;
@@ -80,11 +83,11 @@ public class Fallout extends JavaPlugin {
         SpecialMenu specialMenu = new SpecialMenu(this);
         Command create = new Create(this, specialMenu);
         Command delete = new Delete(this);
+        Command profile = new Profile(this);
         Command possess = new Possess(this);
         Command abandon = new Abandon(this);
         Command upgrade = new Upgrade(this);
-        Command listSpecial = new ListSpecial(this);
-        Command setSpecial = new SetSpecial(this, specialMenu);
+        Command special = new Special(this, specialMenu);
         Command skills = new Skills(this);
         Command resetSkills = new ResetSkills(this);
         Command perks = new Perks(this);
@@ -92,11 +95,11 @@ public class Fallout extends JavaPlugin {
         CommandGroup character = new CommandGroup(this, "character")
                 .addChildCommand(create)
                 .addChildCommand(delete)
+                .addChildCommand(profile)
                 .addChildCommand(possess)
                 .addChildCommand(abandon)
                 .addChildCommand(upgrade)
-                .addChildCommand(listSpecial)
-                .addChildCommand(setSpecial)
+                .addChildCommand(special)
                 .addChildCommand(skills)
                 .addChildCommand(resetSkills)
                 .addChildCommand(perks)
@@ -116,11 +119,11 @@ public class Fallout extends JavaPlugin {
                 .addChildCommand(new Whois(this))
                 .addChildCommand(create)
                 .addChildCommand(delete)
+                .addChildCommand(profile)
                 .addChildCommand(possess)
                 .addChildCommand(abandon)
                 .addChildCommand(upgrade)
-                .addChildCommand(listSpecial)
-                .addChildCommand(setSpecial)
+                .addChildCommand(special)
                 .addChildCommand(skills)
                 .addChildCommand(resetSkills)
                 .addChildCommand(perks)
@@ -148,56 +151,57 @@ public class Fallout extends JavaPlugin {
     }
 
     /**
-     * Gets the {@link ninja.amp.fallout.config.ConfigManager}.
+     * Gets the fallout config manager.
      *
-     * @return The {@link ninja.amp.fallout.config.ConfigManager} instance.
+     * @return The config manager
      */
     public ConfigManager getConfigManager() {
         return configManager;
     }
 
     /**
-     * Gets the {@link ninja.amp.fallout.message.Messenger}.
+     * Gets the fallout messenger.
      *
-     * @return The {@link ninja.amp.fallout.message.Messenger} instance.
+     * @return The messenger
      */
     public Messenger getMessenger() {
         return messenger;
     }
 
     /**
-     * Gets the {@link ninja.amp.fallout.command.CommandController}.
+     * Gets the fallout command controller
      *
-     * @return The {@link ninja.amp.fallout.command.CommandController} instance.
+     * @return The command controller
      */
     public CommandController getCommandController() {
         return commandController;
     }
 
     /**
-     * Gets the {@link ninja.amp.fallout.characters.CharacterManager}.
+     * Gets the fallout character manager
      *
-     * @return The {@link ninja.amp.fallout.characters.CharacterManager} instance.
+     * @return The character manager
      */
     public CharacterManager getCharacterManager() {
         return characterManager;
     }
 
     /**
-     * Gets the {@link ninja.amp.fallout.command.commands.roll.RollManager}.
+     * Gets the fallout roll manager.
      *
-     * @return The {@link ninja.amp.fallout.command.commands.roll.RollManager} instance.
+     * @return The roll manager
      */
     public RollManager getRollManager() {
         return rollManager;
     }
 
     /**
-     * Gets the {@link ninja.amp.fallout.FOListener}.
+     * Gets the fallout listener.
      *
-     * @return The {@link ninja.amp.fallout.FOListener} instance.
+     * @return The fallout listener
      */
     public FOListener getFoListener() {
         return foListener;
     }
+
 }

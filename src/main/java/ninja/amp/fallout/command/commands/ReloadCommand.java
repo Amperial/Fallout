@@ -27,6 +27,8 @@ import org.bukkit.permissions.PermissionDefault;
 
 /**
  * A command that reloads the plugin.
+ *
+ * @author Austin Payne
  */
 public class ReloadCommand extends Command {
 
@@ -44,4 +46,5 @@ public class ReloadCommand extends Command {
         plugin.onEnable();
         plugin.getMessenger().sendMessage(sender, FOMessage.RELOAD);
     }
+
 }

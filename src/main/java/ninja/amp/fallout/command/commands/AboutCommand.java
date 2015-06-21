@@ -31,8 +31,11 @@ import java.util.List;
 
 /**
  * A command that lists some information about the plugin.
+ *
+ * @author Austin Payne
  */
 public class AboutCommand extends Command {
+
     private final String header;
     private final List<String> info = new ArrayList<>();
 
@@ -59,9 +62,10 @@ public class AboutCommand extends Command {
     /**
      * Adds more info to the about command.
      *
-     * @param message The info message to add.
+     * @param message The info message to add
      */
     public void addInfo(String message) {
         info.add(message);
     }
+
 }

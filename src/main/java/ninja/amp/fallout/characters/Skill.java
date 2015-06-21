@@ -22,7 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An enum of character skills used in fallout.
+ * Skills each fallout character has and may level up over time.
+ *
+ * @author Austin Payne
  */
 public enum Skill {
     BIG_GUNS("BigGuns", Trait.STRENGTH),
@@ -53,17 +55,17 @@ public enum Skill {
     /**
      * Gets the display name of the skill.
      *
-     * @return The skill's display name.
+     * @return The skill's display name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Gets the roll modifier of the Skill for a given Special.
+     * Gets the roll modifier of the skill for a given SPECIAL.
      *
-     * @param special The Special.
-     * @return The Skill's roll modifier for the given Special.
+     * @param special The SPECIAL
+     * @return The skill's roll modifier for the given SPECIAL
      */
     public int getRollModifier(Special special) {
         int average = 0;
@@ -77,8 +79,8 @@ public enum Skill {
     /**
      * Gets a skill from its name.
      *
-     * @param name The name.
-     * @return The skill.
+     * @param name The name of the skill
+     * @return The skill
      */
     public static Skill fromName(String name) {
         for (Skill skill : Skill.class.getEnumConstants()) {
@@ -90,9 +92,9 @@ public enum Skill {
     }
 
     /**
-     * Gets the list of skill names.
+     * Gets a list of skill names.
      *
-     * @return The list of skill names.
+     * @return The list of skill names
      */
     public static List<String> getSkillNames() {
         return skillNames;
@@ -104,4 +106,5 @@ public enum Skill {
             skillNames.add(skill.getName());
         }
     }
+
 }

@@ -24,7 +24,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * A {@link ninja.amp.fallout.menus.items.StaticMenuItem} that closes the {@link ninja.amp.fallout.menus.ItemMenu}.
+ * A menu item that closes the item menu.
  */
 public class CloseItem extends StaticMenuItem {
 
@@ -36,4 +36,5 @@ public class CloseItem extends StaticMenuItem {
     public void onItemClick(ItemClickEvent event) {
         event.setWillClose(true);
     }
+
 }

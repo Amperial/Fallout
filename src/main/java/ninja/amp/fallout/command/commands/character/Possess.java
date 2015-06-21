@@ -28,7 +28,9 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
 /**
- * A command that possesses a fallout character.
+ * A command that possesses an unowned fallout character.
+ *
+ * @author Austin Payne
  */
 public class Possess extends Command {
 
@@ -59,4 +61,5 @@ public class Possess extends Command {
             plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_DOESNTEXIST);
         }
     }
+
 }

@@ -34,8 +34,11 @@ import java.util.List;
 
 /**
  * A command that lets you roll a trait or skill locally.
+ *
+ * @author Austin Payne
  */
 public class LocalRoll extends Command {
+
     private final List<String> tabCompleteList = new ArrayList<>();
 
     public LocalRoll(Fallout plugin) {
@@ -95,4 +98,5 @@ public class LocalRoll extends Command {
             return CommandController.EMPTY_LIST;
         }
     }
+
 }

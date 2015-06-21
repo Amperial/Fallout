@@ -29,6 +29,8 @@ import java.util.List;
 
 /**
  * A command that lets you roll to see if your armor can absorb a hit.
+ *
+ * @author Austin Payne
  */
 public class ArmorRoll extends Command {
 
@@ -68,4 +70,5 @@ public class ArmorRoll extends Command {
             return CommandController.EMPTY_LIST;
         }
     }
+
 }
