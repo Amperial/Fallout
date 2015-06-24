@@ -35,19 +35,16 @@ public class CommandPageList extends PageList {
     private final List<String> pageNumbersList = new ArrayList<>();
 
     public CommandPageList(Fallout plugin) {
-        super(plugin, "Commands", 8);
-        List<String> strings = new ArrayList<>();
+        super("Commands", 8);
         for (CommandGroup command : plugin.getCommandController().getCommands()) {
             for (CommandGroup child : command.getChildren(true)) {
                 if (((Command) child).getVisible()) {
-                    strings.add(Messenger.PRIMARY_COLOR + ((Command) child).getCommandUsage());
-                    strings.add(Messenger.SECONDARY_COLOR + "-" + ((Command) child).getDescription());
+                    add(Messenger.PRIMARY_COLOR + ((Command) child).getCommandUsage(), Messenger.SECONDARY_COLOR + "-" + ((Command) child).getDescription());
                 }
             }
         }
-        setStrings(strings);
 
-        int pageAmount = getPageAmount();
+        int pageAmount = getTotalPages();
         for (int i = 1; i <= pageAmount; i++) {
             pageNumbersList.add(String.valueOf(i));
         }

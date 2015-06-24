@@ -18,7 +18,6 @@
  */
 package ninja.amp.fallout.message;
 
-import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.utils.FOUtils;
 
 import java.util.ArrayList;
@@ -31,38 +30,25 @@ import java.util.List;
  */
 public class PageList {
 
-    private final Fallout plugin;
     private final String name;
-    private final int messagesPerPage;
-    private List<String> strings;
+    private final int pageSize;
+    private List<List<String>> pages;
 
     /**
      * Creates a new page list.
      *
-     * @param plugin          The fallout plugin instance
-     * @param name            The name of the page list
-     * @param strings         The list of strings in the page list
-     * @param messagesPerPage The number of strings that should be displayed per page
+     * @param name     The name of the page list
+     * @param pageSize The number of strings that should be displayed per page
+     * @param lines    The lines to be initially added to the page list
      */
-    public PageList(Fallout plugin, String name, List<String> strings, int messagesPerPage) {
-        this.plugin = plugin;
+    public PageList(String name, int pageSize, String... lines) {
         this.name = name;
-        this.messagesPerPage = messagesPerPage;
-        this.strings = strings;
-    }
+        this.pageSize = pageSize;
+        this.pages = new ArrayList<>();
 
-    /**
-     * Creates a new page list.
-     *
-     * @param plugin          The fallout plugin instance
-     * @param name            The name of the page list
-     * @param messagesPerPage The number of strings that should be displayed per page
-     */
-    public PageList(Fallout plugin, String name, int messagesPerPage) {
-        this.plugin = plugin;
-        this.name = name;
-        this.messagesPerPage = messagesPerPage;
-        this.strings = new ArrayList<>();
+        pages.add(new ArrayList<String>());
+        pages.get(0).add(getHeader(1));
+        add(lines);
     }
 
     /**
@@ -70,34 +56,63 @@ public class PageList {
      *
      * @return The amount of pages
      */
-    public int getPageAmount() {
-        return (strings.size() + messagesPerPage - 1) / messagesPerPage;
+    public int getTotalPages() {
+        return pages.size();
     }
 
     /**
-     * Sends a page of the page list to a recipient.
+     * Gets the lines of a specified page in the page list.
      *
-     * @param pageNumber The page number
-     * @param recipient  The recipient
+     * @param pageNumber The page number of the lines
+     * @return The lines of the specified page
      */
-    public void sendPage(int pageNumber, Object recipient) {
-        int pageAmount = getPageAmount();
-        pageNumber = FOUtils.clamp(pageNumber, 1, pageAmount);
-        Messenger messenger = plugin.getMessenger();
-        messenger.sendRawMessage(recipient, Messenger.HIGHLIGHT_COLOR + "<-------<| " + Messenger.PRIMARY_COLOR + name + ": Page " + pageNumber + "/" + pageAmount + " " + Messenger.HIGHLIGHT_COLOR + "|>------->");
-        int startIndex = messagesPerPage * (pageNumber - 1);
-        for (String string : strings.subList(startIndex, Math.min(startIndex + messagesPerPage, strings.size()))) {
-            messenger.sendRawMessage(recipient, string);
+    public List<String> getPage(int pageNumber) {
+        pageNumber = FOUtils.clamp(pageNumber, 1, pages.size());
+        return pages.get(pageNumber - 1);
+    }
+
+    /**
+     * Gets the lines of the last page in the page list.
+     *
+     * @return The lines of the last page
+     */
+    public List<String> getLastPage() {
+        return pages.get(pages.size() - 1);
+    }
+
+    /**
+     * Gets the line at the specified location in the page list.
+     *
+     * @param pageNumber The page number of the line
+     * @param lineNumber The line number of the line
+     * @return The line at the specified location
+     */
+    public String getLine(int pageNumber, int lineNumber) {
+        List<String> page = getPage(pageNumber);
+        lineNumber = FOUtils.clamp(lineNumber, 1, page.size() - 1);
+        return page.get(lineNumber);
+    }
+
+    /**
+     * Adds one or more lines to the page list.
+     *
+     * @param lines The lines to add
+     */
+    public void add(String... lines) {
+        for (String line : lines) {
+            if (getLastPage().size() > pageSize) {
+                pages.add(new ArrayList<String>());
+                getLastPage().add(getHeader(pages.size()));
+                for (int i = 1; i < pages.size(); i++) {
+                    pages.get(i - 1).set(0, getHeader(i));
+                }
+            }
+            getLastPage().add(line);
         }
     }
 
-    /**
-     * Sets the strings of a page list.
-     *
-     * @param strings The strings
-     */
-    public void setStrings(List<String> strings) {
-        this.strings = strings;
+    private String getHeader(int pageNumber) {
+        return Messenger.HIGHLIGHT_COLOR + "<-------<| " + Messenger.PRIMARY_COLOR + name + ": Page " + pageNumber + "/" + pages.size() + " " + Messenger.HIGHLIGHT_COLOR + "|>------->";
     }
 
     /**

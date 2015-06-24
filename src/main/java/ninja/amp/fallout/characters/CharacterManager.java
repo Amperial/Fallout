@@ -162,7 +162,7 @@ public class CharacterManager {
 
         // Create character from character builder and add to manager
         UUID ownerId = owner.getUniqueId();
-        Character character = new Character(characterBuilders.get(ownerId));
+        Character character = characterBuilders.get(ownerId).build();
         characterBuilders.remove(ownerId);
         plugin.getMessenger().debug("Created character " + character.getCharacterName());
 

@@ -21,6 +21,7 @@ package ninja.amp.fallout.command.commands;
 import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.command.Command;
 import ninja.amp.fallout.command.CommandController;
+import ninja.amp.fallout.message.Messenger;
 import ninja.amp.fallout.message.PageList;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
@@ -51,7 +52,10 @@ public class HelpCommand extends Command {
         if (args.length == 1) {
             pageNumber = PageList.getPageNumber(args[0]);
         }
-        plugin.getCommandController().getPageList().sendPage(pageNumber, sender);
+        Messenger messenger = plugin.getMessenger();
+        for (String line : plugin.getCommandController().getPageList().getPage(pageNumber)) {
+            messenger.sendRawMessage(sender, line);
+        }
     }
 
     @Override

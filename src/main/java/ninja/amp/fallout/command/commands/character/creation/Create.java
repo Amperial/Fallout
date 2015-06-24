@@ -65,9 +65,9 @@ public class Create extends Command {
                 Character.CharacterBuilder builder = new Character.CharacterBuilder(player);
                 builder.name(characterName);
                 try {
-                    builder.age(Math.max(6, Integer.parseInt(args[1])));
-                    builder.height(Math.max(36, Integer.parseInt(args[2])));
-                    builder.weight(Math.max(72, Integer.parseInt(args[3])));
+                    builder.age(Math.max(6, Integer.parseInt(args[1])))
+                            .height(Math.max(36, Integer.parseInt(args[2])))
+                            .weight(Math.max(72, Integer.parseInt(args[3])));
                 } catch (NumberFormatException e) {
                     plugin.getMessenger().sendMessage(player, FOMessage.ERROR_NUMBERFORMAT);
                     return;

@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * An inventory menu used for selecting your character's perks.
@@ -162,8 +161,6 @@ public class PerksMenu extends ItemMenu {
 
         @Override
         public void onItemClick(ItemClickEvent event) {
-            Player player = event.getPlayer();
-            UUID playerId = player.getUniqueId();
             Character character = event.getCharacter();
 
             int tier = getEnum().getTier();
@@ -200,7 +197,6 @@ public class PerksMenu extends ItemMenu {
         @Override
         public void onItemClick(ItemClickEvent event) {
             Player player = event.getPlayer();
-            UUID playerId = player.getUniqueId();
             Character character = event.getCharacter();
 
             List<Perk> perks = getPerks(player);

@@ -55,29 +55,29 @@ public class SkillsMenu extends ItemMenu {
         this.characterManager = plugin.getCharacterManager();
 
         setItem(41, new SkillsConfirmItem(plugin));
-        setItem(40, new SkillPointsItem(plugin));
+        setItem(40, new SkillPointsItem());
         setItem(39, new SkillsCancelItem());
 
         ItemStack icon = new ItemStack(Material.WOOL, 1, DyeColor.LIME.getWoolData());
-        setItem(0, new SkillItem(plugin, Skill.BIG_GUNS, "Big Guns", icon));
-        setItem(1, new SkillItem(plugin, Skill.CONVENTIONAL_GUNS, "Conventional Guns", icon));
-        setItem(2, new SkillItem(plugin, Skill.ENERGY_WEAPONS, "Energy Weapons", icon));
-        setItem(3, new SkillItem(plugin, Skill.MELEE_WEAPONS, "Melee Weapons", icon));
+        setItem(0, new SkillItem(Skill.BIG_GUNS, "Big Guns", icon));
+        setItem(1, new SkillItem(Skill.CONVENTIONAL_GUNS, "Conventional Guns", icon));
+        setItem(2, new SkillItem(Skill.ENERGY_WEAPONS, "Energy Weapons", icon));
+        setItem(3, new SkillItem(Skill.MELEE_WEAPONS, "Melee Weapons", icon));
 
-        setItem(5, new SkillItem(plugin, Skill.LOCKPICKING, "Lockpicking", icon));
-        setItem(6, new SkillItem(plugin, Skill.SNEAK, "Sneak", icon));
+        setItem(5, new SkillItem(Skill.LOCKPICKING, "Lockpicking", icon));
+        setItem(6, new SkillItem(Skill.SNEAK, "Sneak", icon));
 
-        setItem(8, new SkillItem(plugin, Skill.SPEECH, "Speech", icon));
+        setItem(8, new SkillItem(Skill.SPEECH, "Speech", icon));
 
-        setItem(18, new SkillItem(plugin, Skill.EXPLOSIVES, "Explosives", icon));
-        setItem(19, new SkillItem(plugin, Skill.UNARMED, "Unarmed", icon));
+        setItem(18, new SkillItem(Skill.EXPLOSIVES, "Explosives", icon));
+        setItem(19, new SkillItem(Skill.UNARMED, "Unarmed", icon));
 
-        setItem(21, new SkillItem(plugin, Skill.FIRST_AID, "First Aid", icon));
-        setItem(22, new SkillItem(plugin, Skill.SURGERY, "Surgery", icon));
-        setItem(23, new SkillItem(plugin, Skill.REPAIR, "Repair", icon));
+        setItem(21, new SkillItem(Skill.FIRST_AID, "First Aid", icon));
+        setItem(22, new SkillItem(Skill.SURGERY, "Surgery", icon));
+        setItem(23, new SkillItem(Skill.REPAIR, "Repair", icon));
 
-        setItem(25, new SkillItem(plugin, Skill.SCIENCE, "Science", icon));
-        setItem(26, new SkillItem(plugin, Skill.LOGICAL_THINKING, "Logical Thinking", icon));
+        setItem(25, new SkillItem(Skill.SCIENCE, "Science", icon));
+        setItem(26, new SkillItem(Skill.LOGICAL_THINKING, "Logical Thinking", icon));
 
         fillEmptySlots();
     }
@@ -116,7 +116,7 @@ public class SkillsMenu extends ItemMenu {
 
         private Skill skill;
 
-        public SkillItem(Fallout plugin, Skill skill, String displayName, ItemStack icon, String... lore) {
+        public SkillItem(Skill skill, String displayName, ItemStack icon, String... lore) {
             super(displayName, icon, lore);
 
             this.skill = skill;
@@ -159,7 +159,7 @@ public class SkillsMenu extends ItemMenu {
 
         private ItemStack noPoints;
 
-        public SkillPointsItem(Fallout plugin) {
+        public SkillPointsItem() {
             super(ChatColor.AQUA + "Allocation Points",
                     new ItemStack(Material.DIAMOND),
                     "The skill points",

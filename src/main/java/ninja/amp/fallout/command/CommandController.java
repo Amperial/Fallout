@@ -20,7 +20,9 @@ package ninja.amp.fallout.command;
 
 import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.message.FOMessage;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabExecutor;
 
 import java.util.ArrayList;
@@ -128,7 +130,14 @@ public class CommandController implements TabExecutor {
      */
     public void addCommand(CommandGroup command) {
         commands.add(command);
-        plugin.getCommand(command.getName()).setExecutor(this);
+
+        String alias = command.getName().toLowerCase();
+        PluginCommand cmd = plugin.getServer().getPluginCommand(plugin.getDescription().getName().toLowerCase() + ":" + alias);
+        if (cmd == null) {
+            cmd = plugin.getServer().getPluginCommand(alias);
+        }
+        cmd.setExecutor(this);
+
         pageList = new CommandPageList(plugin);
     }
 

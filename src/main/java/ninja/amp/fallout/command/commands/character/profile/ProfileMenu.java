@@ -37,10 +37,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * An inventory menu used for viewing a character's profile.
@@ -48,8 +45,6 @@ import java.util.UUID;
  * @author Austin Payne
  */
 public class ProfileMenu extends ItemMenu {
-
-    private Map<UUID, Map<Skill, Integer>> pendingSkills = new HashMap<>();
 
     @SuppressWarnings("deprecation")
     public ProfileMenu(Fallout plugin) {
@@ -196,7 +191,6 @@ public class ProfileMenu extends ItemMenu {
 
         @Override
         public ItemStack getFinalIcon(Owner owner) {
-            ItemStack itemStack;
             Perk selected = null;
             for (Perk perk : owner.getCharacter().getPerks()) {
                 if (perk.getTier() == tier) {

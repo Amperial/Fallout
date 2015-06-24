@@ -32,7 +32,7 @@ public enum Race {
     GHOUL("Ghoul", new Special(1, 4, 1, 1, 4, 1, 5), new Special(6, 13, 9, 7, 10, 8, 10)),
     SUPER_MUTANT("SuperMutant", new Special(5, 1, 4, 1, 1, 1, 1), new Special(13, 10, 12, 4, 5, 10, 10)),
     VAULT_DWELLER("VaultDweller", new Special(1, 1, 1, 1, 1, 1, 1), new Special(10, 10, 10, 10, 10, 10, 10)),
-    DEITY("Deity", new Special(1, 1, 1, 1, 1, 1, 1), null);
+    DEITY("Deity", new Special(1, 1, 1, 1, 1, 1, 1), new Special(-1, -1, -1, -1, -1, -1, -1));
 
     private static final List<String> raceNames;
     private final String name;

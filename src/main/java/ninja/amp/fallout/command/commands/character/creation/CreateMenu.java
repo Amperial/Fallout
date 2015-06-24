@@ -38,8 +38,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.UUID;
-
 /**
  * An inventory menu used for creating a character.
  *
@@ -182,7 +180,6 @@ public class CreateMenu extends ItemMenu {
         @Override
         public void onItemClick(ItemClickEvent event) {
             Player player = event.getPlayer();
-            UUID playerId = player.getUniqueId();
 
             Character.Gender gender = getGender(player);
             Race race = getRace(player);
