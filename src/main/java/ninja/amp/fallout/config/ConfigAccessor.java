@@ -18,9 +18,9 @@
  */
 package ninja.amp.fallout.config;
 
-import ninja.amp.fallout.Fallout;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,19 +34,19 @@ import java.util.logging.Level;
  */
 public class ConfigAccessor {
 
-    private Fallout plugin;
-    private ConfigType configType;
+    private JavaPlugin plugin;
+    private Config configType;
     private File configFile;
     private FileConfiguration fileConfiguration;
 
     /**
      * Creates a new config accessor.
      *
-     * @param plugin     The fallout plugin instance
+     * @param plugin     The plugin instance
      * @param configType The type of the configuration file
      * @param parent     The parent file
      */
-    public ConfigAccessor(Fallout plugin, ConfigType configType, File parent) {
+    public ConfigAccessor(JavaPlugin plugin, Config configType, File parent) {
         this.plugin = plugin;
         this.configType = configType;
         this.configFile = new File(parent, configType.getFileName());
@@ -110,11 +110,11 @@ public class ConfigAccessor {
     }
 
     /**
-     * Gets the {@link ConfigType}.
+     * Gets the config type.
      *
      * @return The type of the configuration file
      */
-    public ConfigType getConfigType() {
+    public Config getConfigType() {
         return configType;
     }
 

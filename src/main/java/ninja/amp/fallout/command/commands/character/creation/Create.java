@@ -19,8 +19,8 @@
 package ninja.amp.fallout.command.commands.character.creation;
 
 import ninja.amp.fallout.Fallout;
-import ninja.amp.fallout.characters.Character;
-import ninja.amp.fallout.characters.CharacterManager;
+import ninja.amp.fallout.character.Character;
+import ninja.amp.fallout.character.CharacterManager;
 import ninja.amp.fallout.command.Command;
 import ninja.amp.fallout.command.commands.character.special.SpecialMenu;
 import ninja.amp.fallout.message.FOMessage;
@@ -52,15 +52,15 @@ public class Create extends Command {
     public void execute(String command, CommandSender sender, String[] args) {
         Player player = (Player) sender;
 
-        CharacterManager characterManager = plugin.getCharacterManager();
+        CharacterManager characterManager = fallout.getCharacterManager();
         if (characterManager.isOwner(player.getUniqueId())) {
-            plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_ALREADYEXISTS);
+            fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_ALREADYEXISTS);
         } else {
             String characterName = args[0];
             if (characterManager.isCharacter(characterName)) {
-                plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_NAMETAKEN);
+                fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_NAMETAKEN);
             } else if (characterName.length() < 3 || characterName.length() > 20 || !characterName.matches("[a-zA-Z]*")) {
-                plugin.getMessenger().sendMessage(player, FOMessage.ERROR_NAMEFORMAT);
+                fallout.getMessenger().sendMessage(player, FOMessage.ERROR_NAMEFORMAT);
             } else {
                 Character.CharacterBuilder builder = new Character.CharacterBuilder(player);
                 builder.name(characterName);
@@ -69,10 +69,10 @@ public class Create extends Command {
                             .height(Math.max(36, Integer.parseInt(args[2])))
                             .weight(Math.max(72, Integer.parseInt(args[3])));
                 } catch (NumberFormatException e) {
-                    plugin.getMessenger().sendMessage(player, FOMessage.ERROR_NUMBERFORMAT);
+                    fallout.getMessenger().sendMessage(player, FOMessage.ERROR_NUMBERFORMAT);
                     return;
                 }
-                plugin.getCharacterManager().addCharacterBuilder(player, builder);
+                fallout.getCharacterManager().addCharacterBuilder(player, builder);
                 createMenu.open(player);
             }
         }

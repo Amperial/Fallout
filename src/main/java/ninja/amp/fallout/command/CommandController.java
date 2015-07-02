@@ -20,13 +20,11 @@ package ninja.amp.fallout.command;
 
 import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.message.FOMessage;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabExecutor;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -38,7 +36,7 @@ import java.util.Set;
 public class CommandController implements TabExecutor {
 
     private Fallout plugin;
-    private Set<CommandGroup> commands = new HashSet<>();
+    private Set<CommandGroup> commands = new LinkedHashSet<>();
     private CommandPageList pageList = null;
 
     /**
@@ -131,12 +129,24 @@ public class CommandController implements TabExecutor {
     public void addCommand(CommandGroup command) {
         commands.add(command);
 
-        String alias = command.getName().toLowerCase();
-        PluginCommand cmd = plugin.getServer().getPluginCommand(plugin.getDescription().getName().toLowerCase() + ":" + alias);
-        if (cmd == null) {
-            cmd = plugin.getServer().getPluginCommand(alias);
-        }
-        cmd.setExecutor(this);
+        String prefix = command.getPlugin().getDescription().getName().toLowerCase();
+        String label = command.getName().toLowerCase();
+        plugin.getServer().getPluginCommand(prefix + ":" + label).setExecutor(this);
+
+        pageList = new CommandPageList(plugin);
+    }
+
+    /**
+     * Removes a command from the command controller.
+     *
+     * @param command The command to remove
+     */
+    public void removeCommand(CommandGroup command) {
+        commands.remove(command);
+
+        String prefix = command.getPlugin().getDescription().getName().toLowerCase();
+        String label = command.getName().toLowerCase();
+        plugin.getServer().getPluginCommand(prefix + ":" + label).setExecutor(null);
 
         pageList = new CommandPageList(plugin);
     }
@@ -151,11 +161,13 @@ public class CommandController implements TabExecutor {
     }
 
     /**
-     * Destroys the command controller.
+     * Removes the command controller from being the command executor for the commands.
      */
-    public void destroy() {
+    public void unregisterCommands() {
         for (CommandGroup command : commands) {
-            plugin.getCommand(command.getName()).setExecutor(null);
+            String prefix = command.getPlugin().getDescription().getName().toLowerCase();
+            String label = command.getName().toLowerCase();
+            plugin.getServer().getPluginCommand(prefix + ":" + label).setExecutor(null);
         }
     }
 

@@ -18,11 +18,13 @@
  */
 package ninja.amp.fallout.command;
 
-import ninja.amp.fallout.Fallout;
+import ninja.amp.fallout.FalloutCore;
 import ninja.amp.fallout.message.FOMessage;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -36,7 +38,7 @@ import java.util.Map;
  */
 public class CommandGroup {
 
-    protected final Fallout plugin;
+    protected final FalloutCore fallout;
     private final String name;
     private final Map<String, CommandGroup> children = new LinkedHashMap<>();
     private final List<String> tabCompleteList = new ArrayList<>();
@@ -48,11 +50,11 @@ public class CommandGroup {
     /**
      * Creates a new command group.
      *
-     * @param plugin The fallout plugin instance
-     * @param name   The name of the command
+     * @param fallout The fallout plugin core
+     * @param name    The name of the command
      */
-    public CommandGroup(Fallout plugin, String name) {
-        this.plugin = plugin;
+    public CommandGroup(FalloutCore fallout, String name) {
+        this.fallout = fallout;
         this.name = name.toLowerCase();
     }
 
@@ -63,6 +65,15 @@ public class CommandGroup {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Gets the plugin instance that created this command.
+     *
+     * @return The plugin instance
+     */
+    public JavaPlugin getPlugin() {
+        return fallout.getPlugin();
     }
 
     /**
@@ -81,8 +92,8 @@ public class CommandGroup {
      */
     public void setPermission(Permission permission) {
         this.permission = permission;
-        if (plugin.getServer().getPluginManager().getPermission(permission.getName()) == null) {
-            plugin.getServer().getPluginManager().addPermission(permission);
+        if (Bukkit.getServer().getPluginManager().getPermission(permission.getName()) == null) {
+            Bukkit.getServer().getPluginManager().addPermission(permission);
         }
     }
 
@@ -239,13 +250,13 @@ public class CommandGroup {
                     if (sender instanceof Player || !entry.isPlayerOnly()) {
                         entry.execute(command, sender, args);
                     } else {
-                        plugin.getMessenger().sendMessage(sender, FOMessage.COMMAND_NOTAPLAYER);
+                        fallout.getMessenger().sendMessage(sender, FOMessage.COMMAND_NOTAPLAYER);
                     }
                 } else {
-                    plugin.getMessenger().sendMessage(sender, FOMessage.COMMAND_NOPERMISSION, command);
+                    fallout.getMessenger().sendMessage(sender, FOMessage.COMMAND_NOPERMISSION, command);
                 }
             } else {
-                plugin.getMessenger().sendMessage(sender, FOMessage.COMMAND_USAGE, ((Command) entry).getCommandUsage());
+                fallout.getMessenger().sendMessage(sender, FOMessage.COMMAND_USAGE, ((Command) entry).getCommandUsage());
             }
         } else {
             String subCommand = args.length == 0 ? "" : args[0];
@@ -259,7 +270,7 @@ public class CommandGroup {
                 }
                 entry.execute(subCommand, sender, newArgs);
             } else {
-                plugin.getMessenger().sendMessage(sender, FOMessage.COMMAND_INVALID, "\"" + subCommand + "\"", "\"" + command + "\"");
+                fallout.getMessenger().sendMessage(sender, FOMessage.COMMAND_INVALID, "\"" + subCommand + "\"", "\"" + command + "\"");
             }
         }
     }

@@ -19,8 +19,8 @@
 package ninja.amp.fallout.command.commands.roll;
 
 import ninja.amp.fallout.Fallout;
-import ninja.amp.fallout.characters.Skill;
-import ninja.amp.fallout.characters.Trait;
+import ninja.amp.fallout.character.Skill;
+import ninja.amp.fallout.character.Trait;
 import ninja.amp.fallout.command.Command;
 import ninja.amp.fallout.command.CommandController;
 import ninja.amp.fallout.message.FOMessage;
@@ -58,20 +58,20 @@ public class LocalRoll extends Command {
         switch (args[0].toLowerCase()) {
             case "dice":
                 if (args.length == 2) {
-                    plugin.getRollManager().rollDice((Player) sender, args[1], RollManager.Distance.LOCAL);
+                    fallout.getRollManager().rollDice((Player) sender, args[1], RollManager.Distance.LOCAL);
                 } else {
-                    plugin.getMessenger().sendMessage(sender, FOMessage.COMMAND_USAGE, "/fo roll dice <amount>d<sides>[+/-modifier]");
+                    fallout.getMessenger().sendMessage(sender, FOMessage.COMMAND_USAGE, "/fo roll dice <amount>d<sides>[+/-modifier]");
                 }
                 break;
             case "armor":
                 if (args.length == 2) {
-                    plugin.getRollManager().rollArmor((Player) sender, args[1], RollManager.Distance.LOCAL);
+                    fallout.getRollManager().rollArmor((Player) sender, args[1], RollManager.Distance.LOCAL);
                 } else {
-                    plugin.getMessenger().sendMessage(sender, FOMessage.COMMAND_USAGE, "/fo roll armor <damage type>[+/-modifier]");
+                    fallout.getMessenger().sendMessage(sender, FOMessage.COMMAND_USAGE, "/fo roll armor <damage type>[+/-modifier]");
                 }
                 break;
             default:
-                plugin.getRollManager().rollDefault((Player) sender, args[0], RollManager.Distance.LOCAL);
+                fallout.getRollManager().rollDefault((Player) sender, args[0], RollManager.Distance.LOCAL);
         }
     }
 

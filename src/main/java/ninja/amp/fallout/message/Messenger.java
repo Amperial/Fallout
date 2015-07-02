@@ -19,8 +19,8 @@
 package ninja.amp.fallout.message;
 
 import ninja.amp.fallout.Fallout;
-import ninja.amp.fallout.characters.Character;
-import ninja.amp.fallout.config.ConfigType;
+import ninja.amp.fallout.character.Character;
+import ninja.amp.fallout.config.FOConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -29,6 +29,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -41,6 +42,7 @@ import java.util.logging.Logger;
  */
 public class Messenger {
 
+    private Fallout plugin;
     private boolean debug;
     private Logger log;
     private Map<Class<?>, RecipientHandler> recipientHandlers = new HashMap<>();
@@ -59,21 +61,11 @@ public class Messenger {
      * @param plugin The fallout plugin instance
      */
     public Messenger(Fallout plugin) {
+        this.plugin = plugin;
         this.debug = plugin.getConfig().getBoolean("Debug", false);
         this.log = plugin.getLogger();
 
-        // Add missing messages to message config
-        FileConfiguration messageConfig = plugin.getConfigManager().getConfig(ConfigType.MESSAGE);
-        for (FOMessage message : FOMessage.class.getEnumConstants()) {
-            messageConfig.addDefault(message.getPath(), message.getMessage());
-        }
-        messageConfig.options().copyDefaults(true);
-        plugin.getConfigManager().getConfigAccessor(ConfigType.MESSAGE).saveConfig();
-
-        // Load messages from message config
-        for (FOMessage message : FOMessage.class.getEnumConstants()) {
-            message.setMessage(ChatColor.translateAlternateColorCodes('&', messageConfig.getString(message.getPath())));
-        }
+        registerMessages(EnumSet.allOf(FOMessage.class));
 
         // Register types of message recipients
         registerRecipient(CommandSender.class, new RecipientHandler() {
@@ -116,6 +108,28 @@ public class Messenger {
     }
 
     /**
+     * Adds the message defaults to the message config and loads them.
+     *
+     * @param messages The messages to register
+     * @return The messenger
+     */
+    public Messenger registerMessages(EnumSet<? extends Message> messages) {
+        // Add missing messages to message config
+        FileConfiguration messageConfig = plugin.getConfigManager().getConfig(FOConfig.MESSAGE);
+        for (Message message : messages) {
+            messageConfig.addDefault(message.getPath(), message.getMessage());
+        }
+        messageConfig.options().copyDefaults(true);
+        plugin.getConfigManager().getConfigAccessor(FOConfig.MESSAGE).saveConfig();
+
+        // Load messages from message config
+        for (Message message : messages) {
+            message.setMessage(ChatColor.translateAlternateColorCodes('&', messageConfig.getString(message.getPath())));
+        }
+        return this;
+    }
+
+    /**
      * Registers a recipient with a recipient handler.
      *
      * @param recipientClass   The recipient's class
@@ -134,7 +148,7 @@ public class Messenger {
      * @param message   The message
      * @param replace   Strings to replace any occurences of %s in the message with
      */
-    public void sendMessage(Object recipient, FOMessage message, Object... replace) {
+    public void sendMessage(Object recipient, Message message, Object... replace) {
         for (String s : (replace == null ? message.getMessage() : String.format(message.getMessage(), (Object[]) replace)).split("\\\\n")) {
             sendRawMessage(recipient, FOMessage.PREFIX + s);
         }

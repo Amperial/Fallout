@@ -19,8 +19,8 @@
 package ninja.amp.fallout.command.commands.character;
 
 import ninja.amp.fallout.Fallout;
-import ninja.amp.fallout.characters.Character;
-import ninja.amp.fallout.characters.CharacterManager;
+import ninja.amp.fallout.character.Character;
+import ninja.amp.fallout.character.CharacterManager;
 import ninja.amp.fallout.command.Command;
 import ninja.amp.fallout.command.CommandController;
 import ninja.amp.fallout.message.FOMessage;
@@ -50,12 +50,12 @@ public class Upgrade extends Command {
     @Override
     public void execute(String command, CommandSender sender, String[] args) {
         Player player = (Player) sender;
-        CharacterManager characterManager = plugin.getCharacterManager();
+        CharacterManager characterManager = fallout.getCharacterManager();
         if (characterManager.isLoaded(args[0])) {
             Character character = characterManager.getCharacterByName(args[0]);
             if (character.getLevel() > 4) {
                 // Character is already max level
-                plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_MAXLEVEL, character.getCharacterName());
+                fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_MAXLEVEL, character.getCharacterName());
             } else {
                 // Upgrade level
                 character.increaseLevel();
@@ -63,13 +63,13 @@ public class Upgrade extends Command {
                 // Save character to update level information
                 characterManager.saveCharacter(character);
 
-                plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_UPGRADE, character.getCharacterName(), character.getLevel());
+                fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_UPGRADE, character.getCharacterName(), character.getLevel());
                 if (!character.getOwnerId().equals(player.getUniqueId())) {
-                    plugin.getMessenger().sendMessage(character, FOMessage.CHARACTER_UPGRADED, character.getLevel());
+                    fallout.getMessenger().sendMessage(character, FOMessage.CHARACTER_UPGRADED, character.getLevel());
                 }
             }
         } else {
-            plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_DOESNTEXIST);
+            fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_DOESNTEXIST);
         }
     }
 
@@ -77,17 +77,17 @@ public class Upgrade extends Command {
     public List<String> getTabCompleteList(String[] args) {
         if (args.length == 1) {
             if (args[0].isEmpty()) {
-                return plugin.getCharacterManager().getCharacterList();
+                return fallout.getCharacterManager().getCharacterList();
             } else {
                 String arg = args[0].toLowerCase();
                 List<String> modifiedList = new ArrayList<>();
-                for (String suggestion : plugin.getCharacterManager().getCharacterList()) {
+                for (String suggestion : fallout.getCharacterManager().getCharacterList()) {
                     if (suggestion.toLowerCase().startsWith(arg)) {
                         modifiedList.add(suggestion);
                     }
                 }
                 if (modifiedList.isEmpty()) {
-                    return plugin.getCharacterManager().getCharacterList();
+                    return fallout.getCharacterManager().getCharacterList();
                 } else {
                     return modifiedList;
                 }

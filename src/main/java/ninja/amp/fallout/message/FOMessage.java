@@ -23,7 +23,7 @@ package ninja.amp.fallout.message;
  *
  * @author Austin Payne
  */
-public enum FOMessage {
+public enum FOMessage implements Message {
     PREFIX("Prefix", "&8[&bFallout&8] &b"),
     RELOAD("Reload", "Reloaded Fallout."),
 
@@ -83,28 +83,33 @@ public enum FOMessage {
     private final String defaultMessage;
     private String message;
 
-    private FOMessage(String path, String defaultMessage) {
+    FOMessage(String path, String defaultMessage) {
         this.message = defaultMessage;
         this.path = path;
         this.defaultMessage = defaultMessage;
     }
 
+    @Override
     public String getMessage() {
         return message;
     }
 
+    @Override
     public void setMessage(String message) {
         this.message = message;
     }
 
+    @Override
     public String getPath() {
         return path;
     }
 
+    @Override
     public String getDefault() {
         return defaultMessage;
     }
 
+    @Override
     public String toString() {
         return message;
     }

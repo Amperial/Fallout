@@ -19,15 +19,15 @@
 package ninja.amp.fallout.command.commands.character.profile;
 
 import ninja.amp.fallout.Fallout;
-import ninja.amp.fallout.characters.Character;
-import ninja.amp.fallout.characters.Perk;
-import ninja.amp.fallout.characters.Skill;
-import ninja.amp.fallout.characters.Trait;
-import ninja.amp.fallout.menus.ItemMenu;
-import ninja.amp.fallout.menus.MenuHolder;
-import ninja.amp.fallout.menus.Owner;
-import ninja.amp.fallout.menus.items.MenuItem;
-import ninja.amp.fallout.menus.items.StaticMenuItem;
+import ninja.amp.fallout.character.Character;
+import ninja.amp.fallout.character.Perk;
+import ninja.amp.fallout.character.Skill;
+import ninja.amp.fallout.character.Trait;
+import ninja.amp.fallout.menu.ItemMenu;
+import ninja.amp.fallout.menu.MenuHolder;
+import ninja.amp.fallout.menu.Owner;
+import ninja.amp.fallout.menu.items.MenuItem;
+import ninja.amp.fallout.menu.items.StaticMenuItem;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -136,7 +136,7 @@ public class ProfileMenu extends ItemMenu {
     /**
      * Opens the profile menu of a character for a player.
      *
-     * @param player The player
+     * @param player    The player
      * @param character The character
      */
     public void open(Player player, Character character) {

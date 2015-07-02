@@ -18,7 +18,7 @@
  */
 package ninja.amp.fallout;
 
-import ninja.amp.fallout.characters.CharacterManager;
+import ninja.amp.fallout.character.CharacterManager;
 import ninja.amp.fallout.command.Command;
 import ninja.amp.fallout.command.CommandController;
 import ninja.amp.fallout.command.CommandGroup;
@@ -45,18 +45,22 @@ import ninja.amp.fallout.command.commands.roll.LocalRoll;
 import ninja.amp.fallout.command.commands.roll.PrivateRoll;
 import ninja.amp.fallout.command.commands.roll.RollManager;
 import ninja.amp.fallout.config.ConfigManager;
-import ninja.amp.fallout.menus.MenuListener;
+import ninja.amp.fallout.menu.MenuListener;
 import ninja.amp.fallout.message.Messenger;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * The main class of the Fallout plugin.
  *
  * @author Austin Payne
  */
-public class Fallout extends JavaPlugin {
+public class Fallout extends JavaPlugin implements FalloutCore {
 
     private ConfigManager configManager;
     private Messenger messenger;
@@ -65,6 +69,7 @@ public class Fallout extends JavaPlugin {
     private FOListener foListener;
     private MenuListener menuListener;
     private RollManager rollManager;
+    private Set<Plugin> disabledExtensions = new HashSet<>();
 
     @Override
     public void onEnable() {
@@ -133,64 +138,63 @@ public class Fallout extends JavaPlugin {
 
         // Add fallout command tree to command controller
         commandController.addCommand(fallout);
+
+        // Enable any plugins that happen to depend on fallout and were disabled
+        for (Plugin plugin : disabledExtensions) {
+            if (!plugin.isEnabled()) {
+                plugin.getPluginLoader().enablePlugin(plugin);
+            }
+        }
     }
 
     @Override
     public void onDisable() {
+        // Disable any plugins that happen to depend on fallout
+        for (Plugin plugin : getServer().getPluginManager().getPlugins()) {
+            if (plugin.getDescription().getDepend().contains("Fallout") && plugin.isEnabled()) {
+                getServer().getPluginManager().disablePlugin(plugin);
+                disabledExtensions.add(plugin);
+            }
+        }
+
         // The order managers are destroyed in is not important
-        menuListener.destroy();
+        MenuListener.closeOpenMenus();
         menuListener = null;
-        foListener.destroy();
         foListener = null;
         rollManager = null;
         characterManager = null;
-        commandController.destroy();
+        commandController.unregisterCommands();
         commandController = null;
         messenger = null;
         configManager = null;
     }
 
-    /**
-     * Gets the fallout config manager.
-     *
-     * @return The config manager
-     */
+    @Override
+    public JavaPlugin getPlugin() {
+        return this;
+    }
+
+    @Override
     public ConfigManager getConfigManager() {
         return configManager;
     }
 
-    /**
-     * Gets the fallout messenger.
-     *
-     * @return The messenger
-     */
+    @Override
     public Messenger getMessenger() {
         return messenger;
     }
 
-    /**
-     * Gets the fallout command controller
-     *
-     * @return The command controller
-     */
+    @Override
     public CommandController getCommandController() {
         return commandController;
     }
 
-    /**
-     * Gets the fallout character manager
-     *
-     * @return The character manager
-     */
+    @Override
     public CharacterManager getCharacterManager() {
         return characterManager;
     }
 
-    /**
-     * Gets the fallout roll manager.
-     *
-     * @return The roll manager
-     */
+    @Override
     public RollManager getRollManager() {
         return rollManager;
     }

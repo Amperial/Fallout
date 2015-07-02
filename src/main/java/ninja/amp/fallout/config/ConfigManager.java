@@ -20,19 +20,21 @@ package ninja.amp.fallout.config;
 
 import ninja.amp.fallout.Fallout;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Contains plugin configs.
+ * Contains custom plugin configs.
  *
  * @author Austin Payne
  */
 public class ConfigManager {
 
-    private Map<ConfigType, ConfigAccessor> configs = new HashMap<>();
+    private Map<Config, ConfigAccessor> configs = new HashMap<>();
 
     /**
      * Creates a new config manager.
@@ -43,10 +45,20 @@ public class ConfigManager {
         // Save main config
         plugin.saveDefaultConfig();
 
-        // Save and load custom configs
+        // Register custom configs
+        registerCustomConfigs(EnumSet.allOf(FOConfig.class), plugin);
+    }
+
+    /**
+     * Adds a config accessor for each custom config.
+     *
+     * @param customConfigs The custom configs to register
+     * @param plugin        The plugin that owns the configs
+     */
+    public void registerCustomConfigs(EnumSet<? extends Config> customConfigs, JavaPlugin plugin) {
         File dataFolder = plugin.getDataFolder();
-        for (ConfigType configType : ConfigType.class.getEnumConstants()) {
-            addConfigAccessor(new ConfigAccessor(plugin, configType, dataFolder).saveDefaultConfig());
+        for (Config config : customConfigs) {
+            addConfigAccessor(new ConfigAccessor(plugin, config, dataFolder).saveDefaultConfig());
         }
     }
 
@@ -55,7 +67,7 @@ public class ConfigManager {
      *
      * @param configAccessor The config accessor
      */
-    public void addConfigAccessor(ConfigAccessor configAccessor) {
+    private void addConfigAccessor(ConfigAccessor configAccessor) {
         configs.put(configAccessor.getConfigType(), configAccessor);
     }
 
@@ -65,7 +77,7 @@ public class ConfigManager {
      * @param configType The type of the configuration file
      * @return The config accessor
      */
-    public ConfigAccessor getConfigAccessor(ConfigType configType) {
+    public ConfigAccessor getConfigAccessor(FOConfig configType) {
         return configs.get(configType);
     }
 
@@ -75,7 +87,7 @@ public class ConfigManager {
      * @param configType The type of the configuration file
      * @return The configuration file
      */
-    public FileConfiguration getConfig(ConfigType configType) {
+    public FileConfiguration getConfig(FOConfig configType) {
         return configs.get(configType).getConfig();
     }
 

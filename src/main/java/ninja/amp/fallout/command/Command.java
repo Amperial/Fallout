@@ -18,7 +18,7 @@
  */
 package ninja.amp.fallout.command;
 
-import ninja.amp.fallout.Fallout;
+import ninja.amp.fallout.FalloutCore;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -35,11 +35,11 @@ public abstract class Command extends CommandGroup {
     /**
      * Creates a new command.
      *
-     * @param plugin The fallout plugin instance
-     * @param name   The name of the command
+     * @param fallout The fallout plugin core
+     * @param name    The name of the command
      */
-    public Command(Fallout plugin, String name) {
-        super(plugin, name);
+    public Command(FalloutCore fallout, String name) {
+        super(fallout, name);
     }
 
     /**

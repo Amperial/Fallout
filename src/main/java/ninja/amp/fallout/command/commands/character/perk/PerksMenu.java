@@ -19,14 +19,14 @@
 package ninja.amp.fallout.command.commands.character.perk;
 
 import ninja.amp.fallout.Fallout;
-import ninja.amp.fallout.characters.Character;
-import ninja.amp.fallout.characters.CharacterManager;
-import ninja.amp.fallout.characters.Perk;
-import ninja.amp.fallout.menus.ItemMenu;
-import ninja.amp.fallout.menus.events.ItemClickEvent;
-import ninja.amp.fallout.menus.items.StaticMenuItem;
-import ninja.amp.fallout.menus.items.groups.EnumOption;
-import ninja.amp.fallout.menus.items.groups.EnumOptionItem;
+import ninja.amp.fallout.character.Character;
+import ninja.amp.fallout.character.CharacterManager;
+import ninja.amp.fallout.character.Perk;
+import ninja.amp.fallout.menu.ItemMenu;
+import ninja.amp.fallout.menu.events.ItemClickEvent;
+import ninja.amp.fallout.menu.items.StaticMenuItem;
+import ninja.amp.fallout.menu.items.groups.EnumOption;
+import ninja.amp.fallout.menu.items.groups.EnumOptionItem;
 import ninja.amp.fallout.message.FOMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;

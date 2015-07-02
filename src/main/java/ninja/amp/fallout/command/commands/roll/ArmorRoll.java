@@ -21,7 +21,7 @@ package ninja.amp.fallout.command.commands.roll;
 import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.command.Command;
 import ninja.amp.fallout.command.CommandController;
-import ninja.amp.fallout.utils.DamageType;
+import ninja.amp.fallout.util.DamageType;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;

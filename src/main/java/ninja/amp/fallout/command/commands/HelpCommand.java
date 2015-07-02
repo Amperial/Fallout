@@ -52,8 +52,8 @@ public class HelpCommand extends Command {
         if (args.length == 1) {
             pageNumber = PageList.getPageNumber(args[0]);
         }
-        Messenger messenger = plugin.getMessenger();
-        for (String line : plugin.getCommandController().getPageList().getPage(pageNumber)) {
+        Messenger messenger = fallout.getMessenger();
+        for (String line : fallout.getCommandController().getPageList().getPage(pageNumber)) {
             messenger.sendRawMessage(sender, line);
         }
     }
@@ -62,17 +62,17 @@ public class HelpCommand extends Command {
     public List<String> getTabCompleteList(String[] args) {
         if (args.length == 1) {
             if (args[0].isEmpty()) {
-                return plugin.getCommandController().getPageList().getPageNumbersList();
+                return fallout.getCommandController().getPageList().getPageNumbersList();
             } else {
                 String arg = args[0].toLowerCase();
                 List<String> modifiedList = new ArrayList<>();
-                for (String suggestion : plugin.getCommandController().getPageList().getPageNumbersList()) {
+                for (String suggestion : fallout.getCommandController().getPageList().getPageNumbersList()) {
                     if (suggestion.toLowerCase().startsWith(arg)) {
                         modifiedList.add(suggestion);
                     }
                 }
                 if (modifiedList.isEmpty()) {
-                    return plugin.getCommandController().getPageList().getPageNumbersList();
+                    return fallout.getCommandController().getPageList().getPageNumbersList();
                 } else {
                     return modifiedList;
                 }

@@ -19,8 +19,8 @@
 package ninja.amp.fallout.command.commands.character.profile;
 
 import ninja.amp.fallout.Fallout;
-import ninja.amp.fallout.characters.Character;
-import ninja.amp.fallout.characters.CharacterManager;
+import ninja.amp.fallout.character.Character;
+import ninja.amp.fallout.character.CharacterManager;
 import ninja.amp.fallout.command.Command;
 import ninja.amp.fallout.command.CommandController;
 import ninja.amp.fallout.message.FOMessage;
@@ -55,19 +55,19 @@ public class Profile extends Command {
     public void execute(String command, CommandSender sender, String[] args) {
         Player player = (Player) sender;
         Character character;
-        CharacterManager characterManager = plugin.getCharacterManager();
+        CharacterManager characterManager = fallout.getCharacterManager();
         if (args.length == 1) {
             if (characterManager.isLoaded(args[0])) {
                 character = characterManager.getCharacterByName(args[0]);
             } else {
-                plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_DOESNTEXIST);
+                fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_DOESNTEXIST);
                 return;
             }
         } else {
             if (characterManager.isOwner(player.getUniqueId())) {
                 character = characterManager.getCharacterByOwner(player.getUniqueId());
             } else {
-                plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_NOTOWNER);
+                fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_NOTOWNER);
                 return;
             }
         }
@@ -78,17 +78,17 @@ public class Profile extends Command {
     public List<String> getTabCompleteList(String[] args) {
         if (args.length == 1) {
             if (args[0].isEmpty()) {
-                return plugin.getCharacterManager().getCharacterList();
+                return fallout.getCharacterManager().getCharacterList();
             } else {
                 String arg = args[0].toLowerCase();
                 List<String> modifiedList = new ArrayList<>();
-                for (String suggestion : plugin.getCharacterManager().getCharacterList()) {
+                for (String suggestion : fallout.getCharacterManager().getCharacterList()) {
                     if (suggestion.toLowerCase().startsWith(arg)) {
                         modifiedList.add(suggestion);
                     }
                 }
                 if (modifiedList.isEmpty()) {
-                    return plugin.getCharacterManager().getCharacterList();
+                    return fallout.getCharacterManager().getCharacterList();
                 } else {
                     return modifiedList;
                 }

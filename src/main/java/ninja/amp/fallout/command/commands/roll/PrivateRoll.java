@@ -19,12 +19,12 @@
 package ninja.amp.fallout.command.commands.roll;
 
 import ninja.amp.fallout.Fallout;
-import ninja.amp.fallout.characters.Skill;
-import ninja.amp.fallout.characters.Trait;
+import ninja.amp.fallout.character.Skill;
+import ninja.amp.fallout.character.Trait;
 import ninja.amp.fallout.command.Command;
 import ninja.amp.fallout.command.CommandController;
 import ninja.amp.fallout.message.FOMessage;
-import ninja.amp.fallout.utils.DamageType;
+import ninja.amp.fallout.util.DamageType;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
@@ -58,20 +58,20 @@ public class PrivateRoll extends Command {
         switch (args[0].toLowerCase()) {
             case "dice":
                 if (args.length == 2) {
-                    plugin.getRollManager().rollDice((Player) sender, args[1], RollManager.Distance.PRIVATE);
+                    fallout.getRollManager().rollDice((Player) sender, args[1], RollManager.Distance.PRIVATE);
                 } else {
-                    plugin.getMessenger().sendMessage(sender, FOMessage.COMMAND_USAGE, "/fo privateroll dice <amount>d<sides>[+/-modifier]");
+                    fallout.getMessenger().sendMessage(sender, FOMessage.COMMAND_USAGE, "/fo privateroll dice <amount>d<sides>[+/-modifier]");
                 }
                 break;
             case "armor":
                 if (args.length == 2) {
-                    plugin.getRollManager().rollArmor((Player) sender, args[1], RollManager.Distance.PRIVATE);
+                    fallout.getRollManager().rollArmor((Player) sender, args[1], RollManager.Distance.PRIVATE);
                 } else {
-                    plugin.getMessenger().sendMessage(sender, FOMessage.COMMAND_USAGE, "/fo privateroll armor <damage type>[+/-modifier]");
+                    fallout.getMessenger().sendMessage(sender, FOMessage.COMMAND_USAGE, "/fo privateroll armor <damage type>[+/-modifier]");
                 }
                 break;
             default:
-                plugin.getRollManager().rollDefault((Player) sender, args[0], RollManager.Distance.PRIVATE);
+                fallout.getRollManager().rollDefault((Player) sender, args[0], RollManager.Distance.PRIVATE);
         }
     }
 

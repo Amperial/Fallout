@@ -19,7 +19,7 @@
 package ninja.amp.fallout.command.commands.character;
 
 import ninja.amp.fallout.Fallout;
-import ninja.amp.fallout.characters.CharacterManager;
+import ninja.amp.fallout.character.CharacterManager;
 import ninja.amp.fallout.command.Command;
 import ninja.amp.fallout.message.FOMessage;
 import org.bukkit.command.CommandSender;
@@ -45,20 +45,20 @@ public class Possess extends Command {
     @Override
     public void execute(String command, CommandSender sender, String[] args) {
         Player player = (Player) sender;
-        CharacterManager characterManager = plugin.getCharacterManager();
+        CharacterManager characterManager = fallout.getCharacterManager();
         if (characterManager.isCharacter(args[0])) {
             if (characterManager.canPossess(args[0])) {
                 if (characterManager.isOwner(player.getUniqueId())) {
                     characterManager.abandonCharacter(player);
-                    plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_ABANDON);
+                    fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_ABANDON);
                 }
                 characterManager.possessCharacter(player, args[0]);
-                plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_POSSESS, args[0]);
+                fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_POSSESS, args[0]);
             } else {
-                plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_ALREADYOWNED);
+                fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_ALREADYOWNED);
             }
         } else {
-            plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_DOESNTEXIST);
+            fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_DOESNTEXIST);
         }
     }
 

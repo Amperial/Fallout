@@ -18,7 +18,7 @@
  */
 package ninja.amp.fallout.message;
 
-import ninja.amp.fallout.utils.FOUtils;
+import ninja.amp.fallout.util.FOUtils;
 
 import java.util.ArrayList;
 import java.util.List;

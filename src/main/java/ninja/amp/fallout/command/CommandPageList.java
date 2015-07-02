@@ -18,7 +18,7 @@
  */
 package ninja.amp.fallout.command;
 
-import ninja.amp.fallout.Fallout;
+import ninja.amp.fallout.FalloutCore;
 import ninja.amp.fallout.message.Messenger;
 import ninja.amp.fallout.message.PageList;
 
@@ -34,9 +34,9 @@ public class CommandPageList extends PageList {
 
     private final List<String> pageNumbersList = new ArrayList<>();
 
-    public CommandPageList(Fallout plugin) {
+    public CommandPageList(FalloutCore fallout) {
         super("Commands", 8);
-        for (CommandGroup command : plugin.getCommandController().getCommands()) {
+        for (CommandGroup command : fallout.getCommandController().getCommands()) {
             for (CommandGroup child : command.getChildren(true)) {
                 if (((Command) child).getVisible()) {
                     add(Messenger.PRIMARY_COLOR + ((Command) child).getCommandUsage(), Messenger.SECONDARY_COLOR + "-" + ((Command) child).getDescription());

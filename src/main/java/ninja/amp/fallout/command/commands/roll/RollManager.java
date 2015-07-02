@@ -19,15 +19,15 @@
 package ninja.amp.fallout.command.commands.roll;
 
 import ninja.amp.fallout.Fallout;
-import ninja.amp.fallout.characters.Character;
-import ninja.amp.fallout.characters.CharacterManager;
-import ninja.amp.fallout.characters.Skill;
-import ninja.amp.fallout.characters.Trait;
+import ninja.amp.fallout.character.Character;
+import ninja.amp.fallout.character.CharacterManager;
+import ninja.amp.fallout.character.Skill;
+import ninja.amp.fallout.character.Trait;
 import ninja.amp.fallout.message.FOMessage;
-import ninja.amp.fallout.utils.ArmorMaterial;
-import ninja.amp.fallout.utils.DamageType;
-import ninja.amp.fallout.utils.FOArmor;
-import ninja.amp.fallout.utils.FOUtils;
+import ninja.amp.fallout.util.ArmorMaterial;
+import ninja.amp.fallout.util.DamageType;
+import ninja.amp.fallout.util.FOArmor;
+import ninja.amp.fallout.util.FOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;

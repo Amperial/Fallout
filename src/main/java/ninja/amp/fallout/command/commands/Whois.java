@@ -19,8 +19,8 @@
 package ninja.amp.fallout.command.commands;
 
 import ninja.amp.fallout.Fallout;
-import ninja.amp.fallout.characters.Character;
-import ninja.amp.fallout.characters.CharacterManager;
+import ninja.amp.fallout.character.Character;
+import ninja.amp.fallout.character.CharacterManager;
 import ninja.amp.fallout.command.Command;
 import ninja.amp.fallout.command.CommandController;
 import ninja.amp.fallout.message.FOMessage;
@@ -50,12 +50,12 @@ public class Whois extends Command {
     @Override
     public void execute(String command, CommandSender sender, String[] args) {
         Character character;
-        CharacterManager characterManager = plugin.getCharacterManager();
+        CharacterManager characterManager = fallout.getCharacterManager();
         if (characterManager.isLoaded(args[0])) {
             character = characterManager.getCharacterByName(args[0]);
-            plugin.getMessenger().sendMessage(sender, FOMessage.CHARACTER_NAME, character.getCharacterName(), character.getOwnerName());
+            fallout.getMessenger().sendMessage(sender, FOMessage.CHARACTER_NAME, character.getCharacterName(), character.getOwnerName());
         } else {
-            plugin.getMessenger().sendMessage(sender, FOMessage.CHARACTER_DOESNTEXIST);
+            fallout.getMessenger().sendMessage(sender, FOMessage.CHARACTER_DOESNTEXIST);
         }
     }
 
@@ -63,17 +63,17 @@ public class Whois extends Command {
     public List<String> getTabCompleteList(String[] args) {
         if (args.length == 1) {
             if (args[0].isEmpty()) {
-                return plugin.getCharacterManager().getCharacterList();
+                return fallout.getCharacterManager().getCharacterList();
             } else {
                 String arg = args[0].toLowerCase();
                 List<String> modifiedList = new ArrayList<>();
-                for (String suggestion : plugin.getCharacterManager().getCharacterList()) {
+                for (String suggestion : fallout.getCharacterManager().getCharacterList()) {
                     if (suggestion.toLowerCase().startsWith(arg)) {
                         modifiedList.add(suggestion);
                     }
                 }
                 if (modifiedList.isEmpty()) {
-                    return plugin.getCharacterManager().getCharacterList();
+                    return fallout.getCharacterManager().getCharacterList();
                 } else {
                     return modifiedList;
                 }

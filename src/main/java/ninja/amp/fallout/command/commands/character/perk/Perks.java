@@ -20,7 +20,7 @@ package ninja.amp.fallout.command.commands.character.perk;
 
 import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.command.Command;
-import ninja.amp.fallout.menus.ItemMenu;
+import ninja.amp.fallout.menu.ItemMenu;
 import ninja.amp.fallout.message.FOMessage;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -51,10 +51,10 @@ public class Perks extends Command {
     public void execute(String command, CommandSender sender, String[] args) {
         Player player = (Player) sender;
         UUID playerId = player.getUniqueId();
-        if (plugin.getCharacterManager().isOwner(playerId)) {
+        if (fallout.getCharacterManager().isOwner(playerId)) {
             menu.open(player);
         } else {
-            plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_NOTOWNER);
+            fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_NOTOWNER);
         }
     }
 

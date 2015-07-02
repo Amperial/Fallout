@@ -18,18 +18,18 @@
  */
 package ninja.amp.fallout;
 
-import ninja.amp.fallout.characters.Character;
-import ninja.amp.fallout.characters.CharacterManager;
-import ninja.amp.fallout.characters.Race;
+import ninja.amp.fallout.character.Character;
+import ninja.amp.fallout.character.CharacterManager;
+import ninja.amp.fallout.character.Race;
 import ninja.amp.fallout.message.FOMessage;
-import ninja.amp.fallout.utils.ArmorMaterial;
-import ninja.amp.fallout.utils.ArmorType;
+import ninja.amp.fallout.util.ArmorMaterial;
+import ninja.amp.fallout.util.ArmorType;
 import org.bukkit.Material;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -60,7 +60,7 @@ public class FOListener implements Listener {
     /**
      * Creates a new FOListener.
      *
-     * @param plugin The {@link Fallout} instance.
+     * @param plugin The fallout plugin instance
      */
     public FOListener(Fallout plugin) {
         this.plugin = plugin;
@@ -73,7 +73,7 @@ public class FOListener implements Listener {
     /**
      * Loads the player's character into the character manager if the player has a character.
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
         plugin.getCharacterManager().loadCharacter(event.getPlayer());
     }
@@ -81,7 +81,7 @@ public class FOListener implements Listener {
     /**
      * Unloads the player's character from the character manager if the player has a character.
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerQuit(PlayerQuitEvent event) {
         plugin.getCharacterManager().unloadCharacter(event.getPlayer());
     }
@@ -234,13 +234,6 @@ public class FOListener implements Listener {
                 }
             }
         }
-    }
-
-    /**
-     * Destroys the fallout listener.
-     */
-    public void destroy() {
-        HandlerList.unregisterAll(this);
     }
 
 }

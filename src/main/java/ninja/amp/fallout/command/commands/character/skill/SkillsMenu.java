@@ -19,13 +19,13 @@
 package ninja.amp.fallout.command.commands.character.skill;
 
 import ninja.amp.fallout.Fallout;
-import ninja.amp.fallout.characters.Character;
-import ninja.amp.fallout.characters.CharacterManager;
-import ninja.amp.fallout.characters.Skill;
-import ninja.amp.fallout.menus.ItemMenu;
-import ninja.amp.fallout.menus.Owner;
-import ninja.amp.fallout.menus.events.ItemClickEvent;
-import ninja.amp.fallout.menus.items.StaticMenuItem;
+import ninja.amp.fallout.character.Character;
+import ninja.amp.fallout.character.CharacterManager;
+import ninja.amp.fallout.character.Skill;
+import ninja.amp.fallout.menu.ItemMenu;
+import ninja.amp.fallout.menu.Owner;
+import ninja.amp.fallout.menu.events.ItemClickEvent;
+import ninja.amp.fallout.menu.items.StaticMenuItem;
 import ninja.amp.fallout.message.FOMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;

@@ -19,7 +19,7 @@
 package ninja.amp.fallout.command.commands.character;
 
 import ninja.amp.fallout.Fallout;
-import ninja.amp.fallout.characters.CharacterManager;
+import ninja.amp.fallout.character.CharacterManager;
 import ninja.amp.fallout.command.Command;
 import ninja.amp.fallout.message.FOMessage;
 import org.bukkit.command.CommandSender;
@@ -44,12 +44,12 @@ public class Abandon extends Command {
     @Override
     public void execute(String command, CommandSender sender, String[] args) {
         Player player = (Player) sender;
-        CharacterManager characterManager = plugin.getCharacterManager();
+        CharacterManager characterManager = fallout.getCharacterManager();
         if (characterManager.isOwner(player.getUniqueId())) {
             characterManager.abandonCharacter(player);
-            plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_ABANDON);
+            fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_ABANDON);
         } else {
-            plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_NOTOWNER);
+            fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_NOTOWNER);
         }
     }
 
