@@ -50,9 +50,9 @@ public class Messenger {
     /**
      * Basic color scheme in the fallout plugin.
      */
-    public static ChatColor PRIMARY_COLOR = ChatColor.YELLOW;
+    public static ChatColor PRIMARY_COLOR = ChatColor.AQUA;
     public static ChatColor SECONDARY_COLOR = ChatColor.GRAY;
-    public static ChatColor HIGHLIGHT_COLOR = ChatColor.RED;
+    public static ChatColor HIGHLIGHT_COLOR = ChatColor.DARK_GRAY;
 
     /**
      * Creates a new message manager.<br>
@@ -102,9 +102,9 @@ public class Messenger {
 
         // Load color theme of messages from config
         FileConfiguration config = plugin.getConfig();
-        PRIMARY_COLOR = ChatColor.valueOf(config.getString("colors.primary", "YELLOW"));
+        PRIMARY_COLOR = ChatColor.valueOf(config.getString("colors.primary", "AQUA"));
         SECONDARY_COLOR = ChatColor.valueOf(config.getString("colors.secondary", "GRAY"));
-        HIGHLIGHT_COLOR = ChatColor.valueOf(config.getString("colors.highlights", "RED"));
+        HIGHLIGHT_COLOR = ChatColor.valueOf(config.getString("colors.highlights", "DARK_GRAY"));
     }
 
     /**
@@ -151,6 +151,19 @@ public class Messenger {
     public void sendMessage(Object recipient, Message message, Object... replace) {
         for (String s : (replace == null ? message.getMessage() : String.format(message.getMessage(), (Object[]) replace)).split("\\\\n")) {
             sendRawMessage(recipient, FOMessage.PREFIX + s);
+        }
+    }
+
+    /**
+     * Sends an error message to a recipient.
+     *
+     * @param recipient The recipient of the error message. Type of recipient must be registered
+     * @param message   The error message
+     * @param replace   Strings to replace any occurences of %s in the message with
+     */
+    public void sendErrorMessage(Object recipient, Message message, Object... replace) {
+        for (String s : (replace == null ? message.getMessage() : String.format(message.getMessage(), (Object[]) replace)).split("\\\\n")) {
+            sendRawMessage(recipient, FOMessage.PREFIX_ERROR + s);
         }
     }
 

@@ -24,6 +24,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,11 +41,6 @@ public class CommandController implements TabExecutor {
     private CommandPageList pageList = null;
 
     /**
-     * An empty list of strings for use in command tab completion.
-     */
-    public static final List<String> EMPTY_LIST = new ArrayList<>();
-
-    /**
      * Creates a new command controller.
      *
      * @param plugin The fallout plugin instance
@@ -59,20 +55,13 @@ public class CommandController implements TabExecutor {
             if (command.getName().equalsIgnoreCase(cmd.getName())) {
                 String subCommand = args.length > 0 ? args[0] : "";
                 if (command.hasChildCommand(subCommand)) {
-                    if (subCommand.equals("")) {
-                        command.execute(subCommand, sender, args);
-                    } else {
-                        String[] newArgs;
-                        if (args.length == 1) {
-                            newArgs = new String[0];
-                        } else {
-                            newArgs = new String[args.length - 1];
-                            System.arraycopy(args, 1, newArgs, 0, args.length - 1);
-                        }
-                        command.execute(subCommand, sender, newArgs);
+                    List<String> argsList = new ArrayList<>(Arrays.asList(args));
+                    if (!subCommand.isEmpty()) {
+                        argsList.remove(0);
                     }
+                    command.execute(subCommand, sender, argsList);
                 } else {
-                    plugin.getMessenger().sendMessage(sender, FOMessage.COMMAND_INVALID, "\"" + subCommand + "\"", "\"" + command.getName() + "\"");
+                    plugin.getMessenger().sendErrorMessage(sender, FOMessage.COMMAND_INVALID);
                 }
                 return true;
             }
@@ -83,33 +72,20 @@ public class CommandController implements TabExecutor {
     @Override
     public List<String> onTabComplete(CommandSender sender, org.bukkit.command.Command cmd, String label, String[] args) {
         for (CommandGroup command : commands) {
-            if (command.getName().equalsIgnoreCase(cmd.getName())) {
-                if (args.length > 0) {
-                    int commandAmount = 0;
-                    for (String arg : args) {
-                        if (!arg.isEmpty() && command.hasChildCommand(arg)) {
-                            command = command.getChildCommand(arg);
-                            commandAmount++;
-                        }
+            if (command.getName().equalsIgnoreCase(cmd.getName()) && args.length > 0) {
+                int commandAmount = 0;
+                for (String arg : args) {
+                    if (!arg.isEmpty() && command.hasChildCommand(arg)) {
+                        command = command.getChildCommand(arg);
+                        commandAmount++;
                     }
-                    if (command instanceof Command && args.length - commandAmount > command.getMaxArgsLength()) {
-                        return EMPTY_LIST;
-                    } else {
-                        String[] actualArgs;
-                        if (args.length > commandAmount) {
-                            actualArgs = new String[args.length - commandAmount];
-                            System.arraycopy(args, commandAmount, actualArgs, 0, actualArgs.length);
-                        } else {
-                            actualArgs = new String[0];
-                        }
-                        return command.getTabCompleteList(actualArgs);
-                    }
-                } else {
-                    return command.getTabCompleteList(args);
+                }
+                if ((!(command instanceof Command) || args.length - commandAmount <= command.getMaxArgsLength()) && args.length > commandAmount) {
+                    return command.getTabCompleteList(Arrays.asList(args).subList(commandAmount, args.length));
                 }
             }
         }
-        return EMPTY_LIST;
+        return CommandGroup.EMPTY_LIST;
     }
 
     /**
@@ -152,15 +128,6 @@ public class CommandController implements TabExecutor {
     }
 
     /**
-     * Gets the page list of commands in the command controller.
-     *
-     * @return The command page list
-     */
-    public CommandPageList getPageList() {
-        return pageList;
-    }
-
-    /**
      * Removes the command controller from being the command executor for the commands.
      */
     public void unregisterCommands() {
@@ -169,6 +136,15 @@ public class CommandController implements TabExecutor {
             String label = command.getName().toLowerCase();
             plugin.getServer().getPluginCommand(prefix + ":" + label).setExecutor(null);
         }
+    }
+
+    /**
+     * Gets the page list of commands in the command controller.
+     *
+     * @return The command page list
+     */
+    public CommandPageList getPageList() {
+        return pageList;
     }
 
 }

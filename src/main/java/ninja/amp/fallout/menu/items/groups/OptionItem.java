@@ -37,9 +37,10 @@ public class OptionItem extends StaticMenuItem {
         super(displayName, selected, lore);
 
         this.group = group;
-        group.addOption(this);
         this.unselected = unselected.clone();
         setNameAndLore(this.unselected, getDisplayName(), getLore());
+
+        group.addOption(this);
     }
 
     @Override

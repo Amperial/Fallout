@@ -20,6 +20,7 @@ package ninja.amp.fallout.command;
 
 import ninja.amp.fallout.FalloutCore;
 import ninja.amp.fallout.message.FOMessage;
+import ninja.amp.fallout.message.Messenger;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -46,6 +47,11 @@ public class CommandGroup {
     private int minArgsLength = 0;
     private int maxArgsLength = -1;
     private boolean playerOnly = true;
+
+    /**
+     * An empty list of strings for use in command tab completion.
+     */
+    public static final List<String> EMPTY_LIST = new ArrayList<>();
 
     /**
      * Creates a new command group.
@@ -207,72 +213,80 @@ public class CommandGroup {
     }
 
     /**
-     * Gets the tab completion list of the command group.
-     *
-     * @param args The args already entered
-     * @return The tab completion list of the command group
-     */
-    public List<String> getTabCompleteList(String[] args) {
-        if (args.length == 1) {
-            if (args[0].isEmpty()) {
-                return tabCompleteList;
-            } else {
-                String arg = args[0].toLowerCase();
-                List<String> modifiedList = new ArrayList<>();
-                for (String suggestion : tabCompleteList) {
-                    if (suggestion.toLowerCase().startsWith(arg)) {
-                        modifiedList.add(suggestion);
-                    }
-                }
-                if (modifiedList.isEmpty()) {
-                    return tabCompleteList;
-                } else {
-                    return modifiedList;
-                }
-            }
-        } else {
-            return CommandController.EMPTY_LIST;
-        }
-    }
-
-    /**
-     * The command executor
+     * The command executor.
      *
      * @param command The command label
      * @param sender  The sender of the command
      * @param args    The arguments sent with the command
      */
-    public void execute(String command, CommandSender sender, String[] args) {
+    public void execute(String command, CommandSender sender, List<String> args) {
+        Messenger messenger = fallout.getMessenger();
+
         CommandGroup entry = children.get(command.toLowerCase());
         if (entry instanceof Command) {
-            if ((entry.getMinArgsLength() <= args.length || entry.getMinArgsLength() == -1) && (entry.getMaxArgsLength() >= args.length || entry.getMaxArgsLength() == -1)) {
+            if ((entry.getMinArgsLength() <= args.size() || entry.getMinArgsLength() == -1) && (entry.getMaxArgsLength() >= args.size() || entry.getMaxArgsLength() == -1)) {
                 if (entry.getPermission() == null || sender.hasPermission(entry.getPermission())) {
                     if (sender instanceof Player || !entry.isPlayerOnly()) {
                         entry.execute(command, sender, args);
                     } else {
-                        fallout.getMessenger().sendMessage(sender, FOMessage.COMMAND_NOTAPLAYER);
+                        messenger.sendErrorMessage(sender, FOMessage.COMMAND_NOTAPLAYER);
                     }
                 } else {
-                    fallout.getMessenger().sendMessage(sender, FOMessage.COMMAND_NOPERMISSION, command);
+                    messenger.sendErrorMessage(sender, FOMessage.COMMAND_NOPERMISSION, command);
                 }
             } else {
-                fallout.getMessenger().sendMessage(sender, FOMessage.COMMAND_USAGE, ((Command) entry).getCommandUsage());
+                messenger.sendErrorMessage(sender, FOMessage.COMMAND_USAGE, ((Command) entry).getCommandUsage());
             }
         } else {
-            String subCommand = args.length == 0 ? "" : args[0];
+            String subCommand = args.size() == 0 ? "" : args.get(0);
             if (entry.hasChildCommand(subCommand)) {
-                String[] newArgs;
-                if (args.length == 0) {
-                    newArgs = args;
-                } else {
-                    newArgs = new String[args.length - 1];
-                    System.arraycopy(args, 1, newArgs, 0, args.length - 1);
+                if (!args.isEmpty()) {
+                    args.remove(0);
                 }
-                entry.execute(subCommand, sender, newArgs);
+                entry.execute(subCommand, sender, args);
             } else {
-                fallout.getMessenger().sendMessage(sender, FOMessage.COMMAND_INVALID, "\"" + subCommand + "\"", "\"" + command + "\"");
+                messenger.sendErrorMessage(sender, FOMessage.COMMAND_INVALID);
             }
         }
+    }
+
+    /**
+     * Gets the tab completion list of the command group.
+     *
+     * @param args The args already entered
+     * @return The tab completion list of the command group
+     */
+    public List<String> getTabCompleteList(List<String> args) {
+        switch (args.size()) {
+            case 1:
+                return tabCompletions(args.get(0), tabCompleteList);
+            default:
+                return EMPTY_LIST;
+        }
+    }
+
+    /**
+     * Gets a list of possible tab completions from an initial list of suggestions.
+     *
+     * @param arg The string being tab completed
+     * @param suggestions The initial list of suggestions
+     * @return The list of possible tab completions
+     */
+    public static List<String> tabCompletions(String arg, List<String> suggestions) {
+        if (arg.isEmpty()) {
+            return suggestions;
+        }
+        arg = arg.toLowerCase();
+        List<String> modifiedList = new ArrayList<>();
+        for (String suggestion : suggestions) {
+            if (suggestion.toLowerCase().startsWith(arg)) {
+                modifiedList.add(suggestion);
+            }
+        }
+        if (modifiedList.isEmpty()) {
+            return suggestions;
+        }
+        return modifiedList;
     }
 
 }

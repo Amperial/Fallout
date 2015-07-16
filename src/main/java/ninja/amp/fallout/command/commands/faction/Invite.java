@@ -16,30 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.util;
+package ninja.amp.fallout.command.commands.faction;
 
-/**
- * The types of armor in fallout.
- *
- * @author Austin Payne
- */
-public enum FOArmor {
-    NONE,
-    LEATHER,
-    ENVIRONMENTAL,
-    RIOT,
-    COMBAT,
-    POWER;
-
-    /**
-     * Checks if the fallout armor type is able to defend against a roll of a certain damage type.
-     *
-     * @param damageType The damage type
-     * @param roll       The roll
-     * @return {@code true} if the armor is able to block the damage
-     */
-    public boolean canBlock(DamageType damageType, int roll) {
-        return damageType.getDefenseValue(this) >= 0 && roll >= damageType.getDefenseValue(this);
-    }
-
+public class Invite {
 }

@@ -37,11 +37,12 @@ public class EnumOptionItem<E extends Enum<E>> extends StaticMenuItem {
     public EnumOptionItem(EnumOption<E> group, E e, String displayName, ItemStack selected, ItemStack unselected, String... lore) {
         super(displayName, selected, lore);
 
-        this.e = e;
         this.group = group;
-        group.addOption(this);
+        this.e = e;
         this.unselected = unselected.clone();
         setNameAndLore(this.unselected, getDisplayName(), getLore());
+
+        group.addOption(this);
     }
 
     @Override

@@ -36,6 +36,7 @@ public class CommandPageList extends PageList {
 
     public CommandPageList(FalloutCore fallout) {
         super("Commands", 8);
+
         for (CommandGroup command : fallout.getCommandController().getCommands()) {
             for (CommandGroup child : command.getChildren(true)) {
                 if (((Command) child).getVisible()) {
@@ -53,7 +54,7 @@ public class CommandPageList extends PageList {
     /**
      * Gets the page numbers list of the command page list.
      *
-     * @return The list of page numbers.
+     * @return The list of page numbers
      */
     public List<String> getPageNumbersList() {
         return pageNumbersList;

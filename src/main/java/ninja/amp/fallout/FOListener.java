@@ -21,6 +21,7 @@ package ninja.amp.fallout;
 import ninja.amp.fallout.character.Character;
 import ninja.amp.fallout.character.CharacterManager;
 import ninja.amp.fallout.character.Race;
+import ninja.amp.fallout.command.commands.character.knowledge.Information;
 import ninja.amp.fallout.message.FOMessage;
 import ninja.amp.fallout.util.ArmorMaterial;
 import ninja.amp.fallout.util.ArmorType;
@@ -32,6 +33,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityCombustByBlockEvent;
+import org.bukkit.event.entity.EntityCombustByEntityEvent;
+import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
@@ -118,14 +122,15 @@ public class FOListener implements Listener {
                     CharacterManager characterManager = plugin.getCharacterManager();
                     if (characterManager.isOwner(playerId)) {
                         Character character = characterManager.getCharacterByOwner(playerId);
-                        if (!ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.LEATHER) && character.getRace().equals(Race.SUPER_MUTANT)) { // Super Mutants can only wear leather armor
+                        ArmorMaterial armorMaterial = ArmorMaterial.getArmorMaterial(material);
+                        if (!ArmorMaterial.LEATHER.equals(armorMaterial) && character.getRace().equals(Race.SUPER_MUTANT)) { // Super Mutants can only wear leather armor
                             event.setCancelled(true);
                             player.updateInventory();
-                            plugin.getMessenger().sendMessage(player, FOMessage.RACE_ONLYLEATHER);
-                        } else if (ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.DIAMOND) && !player.hasPermission("fallout.powerarmor")) { // Wearing power armor requires permission
+                            plugin.getMessenger().sendErrorMessage(player, FOMessage.RACE_ONLYLEATHER);
+                        } else if (ArmorMaterial.DIAMOND.equals(armorMaterial) && !character.hasKnowledge(Information.POWER_ARMOR)) { // Wearing power armor requires permission
                             event.setCancelled(true);
                             player.updateInventory();
-                            plugin.getMessenger().sendMessage(player, FOMessage.ERROR_POWERARMOR);
+                            plugin.getMessenger().sendErrorMessage(player, FOMessage.INFORMATION_MISSING, Information.POWER_ARMOR);
                         }
                     }
                 }
@@ -139,7 +144,6 @@ public class FOListener implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getWhoClicked() instanceof Player) {
-            Player player = (Player) event.getWhoClicked();
             if (event.isLeftClick() || event.isRightClick()) {
                 ItemStack itemStack = null;
                 if (event.isShiftClick()) {
@@ -150,6 +154,7 @@ public class FOListener implements Listener {
                 if (itemStack != null) {
                     Material material = itemStack.getType();
                     if (ArmorType.isArmor(material)) {
+                        Player player = (Player) event.getWhoClicked();
                         if (event.isShiftClick() && !ArmorType.getArmorType(material).canEquip(player)) { // The armor won't actually go into the armor slot, don't cancel
                             return;
                         }
@@ -157,12 +162,13 @@ public class FOListener implements Listener {
                         CharacterManager characterManager = plugin.getCharacterManager();
                         if (characterManager.isOwner(playerId)) {
                             Character character = characterManager.getCharacterByOwner(playerId);
-                            if (!ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.LEATHER) && character.getRace().equals(Race.SUPER_MUTANT)) { // Super Mutants can only wear leather armor
+                            ArmorMaterial armorMaterial = ArmorMaterial.getArmorMaterial(material);
+                            if (!ArmorMaterial.LEATHER.equals(armorMaterial) && character.getRace().equals(Race.SUPER_MUTANT)) { // Super Mutants can only wear leather armor
                                 event.setCancelled(true);
-                                plugin.getMessenger().sendMessage(player, FOMessage.RACE_ONLYLEATHER);
-                            } else if (ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.DIAMOND) && !player.hasPermission("fallout.powerarmor")) { // Wearing power armor requires permission
+                                plugin.getMessenger().sendErrorMessage(player, FOMessage.RACE_ONLYLEATHER);
+                            } else if (ArmorMaterial.DIAMOND.equals(armorMaterial) && !character.hasKnowledge(Information.POWER_ARMOR)) { // Wearing power armor requires permission
                                 event.setCancelled(true);
-                                plugin.getMessenger().sendMessage(player, FOMessage.ERROR_POWERARMOR);
+                                plugin.getMessenger().sendErrorMessage(player, FOMessage.INFORMATION_MISSING, Information.POWER_ARMOR);
                             }
                         }
                     }
@@ -184,12 +190,13 @@ public class FOListener implements Listener {
                 CharacterManager characterManager = plugin.getCharacterManager();
                 if (characterManager.isOwner(playerId)) {
                     Character character = characterManager.getCharacterByOwner(playerId);
-                    if (!ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.LEATHER) && character.getRace().equals(Race.SUPER_MUTANT)) { // Super Mutants can only wear leather armor
+                    ArmorMaterial armorMaterial = ArmorMaterial.getArmorMaterial(material);
+                    if (!ArmorMaterial.LEATHER.equals(armorMaterial) && character.getRace().equals(Race.SUPER_MUTANT)) { // Super Mutants can only wear leather armor
                         event.setCancelled(true);
-                        plugin.getMessenger().sendMessage(player, FOMessage.RACE_ONLYLEATHER);
-                    } else if (ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.DIAMOND) && !player.hasPermission("fallout.powerarmor")) { // Wearing power armor requires permission
+                        plugin.getMessenger().sendErrorMessage(player, FOMessage.RACE_ONLYLEATHER);
+                    } else if (ArmorMaterial.DIAMOND.equals(armorMaterial) && !character.hasKnowledge(Information.POWER_ARMOR)) { // Wearing power armor requires permission
                         event.setCancelled(true);
-                        plugin.getMessenger().sendMessage(player, FOMessage.ERROR_POWERARMOR);
+                        plugin.getMessenger().sendErrorMessage(player, FOMessage.INFORMATION_MISSING, Information.POWER_ARMOR);
                     }
                 }
             }
@@ -207,13 +214,23 @@ public class FOListener implements Listener {
     }
 
     /**
+     * Stops mobs from burning due to sunlight.
+     */
+    @EventHandler
+    public void onEntityCombust(EntityCombustEvent event) {
+        if (!(event instanceof EntityCombustByBlockEvent) && !(event instanceof EntityCombustByEntityEvent) && event.getEntityType() != EntityType.ARROW) {
+            event.setCancelled(true);
+        }
+    }
+
+    /**
      * Stops diamond armor from being crafted.
      */
     @EventHandler
     public void onDiamondArmorCraft(CraftItemEvent event) {
         if (preventCraftingDiamondArmor) {
             Material material = event.getRecipe().getResult().getType();
-            if (ArmorType.isArmor(material) && ArmorMaterial.getArmorMaterial(material).equals(ArmorMaterial.DIAMOND)) {
+            if (ArmorType.isArmor(material) && ArmorMaterial.DIAMOND.equals(ArmorMaterial.getArmorMaterial(material))) {
                 event.setCancelled(true);
             }
         }

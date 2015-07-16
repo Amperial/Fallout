@@ -16,12 +16,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.command.commands.character.special;
+package ninja.amp.fallout.command.commands.radio;
 
 import ninja.amp.fallout.FalloutCore;
 import ninja.amp.fallout.command.Command;
 import ninja.amp.fallout.menu.ItemMenu;
-import ninja.amp.fallout.message.FOMessage;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
@@ -30,32 +29,26 @@ import org.bukkit.permissions.PermissionDefault;
 import java.util.List;
 
 /**
- * A command that opens the SPECIAL modification menu, letting the sender view and set their character's SPECIAL traits.
+ * A command that lets the sender view and play various minecraft records.
  *
  * @author Austin Payne
  */
-public class Special extends Command {
+public class Radio extends Command {
 
     private ItemMenu menu;
 
-    public Special(FalloutCore fallout, SpecialMenu menu) {
-        super(fallout, "special");
-        setDescription("View and set your fallout character's traits.");
-        setCommandUsage("/fo character special");
-        setPermission(new Permission("fallout.character.special", PermissionDefault.TRUE));
+    public Radio(FalloutCore fallout) {
+        super(fallout, "radio");
+        setDescription("Opens the fallout radio menu.");
+        setCommandUsage("/fo radio");
+        setPermission(new Permission("fallout.radio", PermissionDefault.TRUE));
 
-        this.menu = menu;
+        this.menu = new RadioMenu(fallout);
     }
 
     @Override
     public void execute(String command, CommandSender sender, List<String> args) {
-        Player player = (Player) sender;
-
-        if (fallout.getCharacterManager().isOwner(player.getUniqueId())) {
-            menu.open(player);
-        } else {
-            fallout.getMessenger().sendErrorMessage(player, FOMessage.CHARACTER_NOTOWNER);
-        }
+        menu.open((Player) sender);
     }
 
 }

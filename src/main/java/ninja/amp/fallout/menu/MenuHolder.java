@@ -18,6 +18,7 @@
  */
 package ninja.amp.fallout.menu;
 
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
@@ -31,7 +32,7 @@ public class MenuHolder implements InventoryHolder {
     private ItemMenu menu;
     private Inventory inventory;
 
-    public MenuHolder(ItemMenu menu) {
+    private MenuHolder(ItemMenu menu) {
         this.menu = menu;
     }
 
@@ -49,8 +50,18 @@ public class MenuHolder implements InventoryHolder {
         return inventory;
     }
 
-    public void setInventory(Inventory inventory) {
-        this.inventory = inventory;
+    /**
+     * Creates an inventory owned by a menu holder.
+     *
+     * @param owner The item menu to own the inventory
+     * @param size The size of the inventory
+     * @param name The name of the inventory
+     * @return The inventory created
+     */
+    public static MenuHolder createInventory(ItemMenu owner, int size, String name) {
+        MenuHolder holder = new MenuHolder(owner);
+        holder.inventory = Bukkit.createInventory(holder, size, name);
+        return holder;
     }
 
 }

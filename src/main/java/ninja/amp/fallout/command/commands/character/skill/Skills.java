@@ -18,7 +18,7 @@
  */
 package ninja.amp.fallout.command.commands.character.skill;
 
-import ninja.amp.fallout.Fallout;
+import ninja.amp.fallout.FalloutCore;
 import ninja.amp.fallout.command.Command;
 import ninja.amp.fallout.menu.ItemMenu;
 import ninja.amp.fallout.message.FOMessage;
@@ -27,7 +27,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
-import java.util.UUID;
+import java.util.List;
 
 /**
  * A command that opens the skill allocation menu, letting the sender view and level up their character's skills.
@@ -38,23 +38,23 @@ public class Skills extends Command {
 
     private ItemMenu menu;
 
-    public Skills(Fallout plugin) {
-        super(plugin, "skills");
+    public Skills(FalloutCore fallout) {
+        super(fallout, "skills");
         setDescription("View and level up your fallout character's skills.");
         setCommandUsage("/fo character skills");
         setPermission(new Permission("fallout.character.skills", PermissionDefault.TRUE));
 
-        this.menu = new SkillsMenu(plugin);
+        this.menu = new SkillsMenu(fallout);
     }
 
     @Override
-    public void execute(String command, CommandSender sender, String[] args) {
+    public void execute(String command, CommandSender sender, List<String> args) {
         Player player = (Player) sender;
-        UUID playerId = player.getUniqueId();
-        if (fallout.getCharacterManager().isOwner(playerId)) {
+
+        if (fallout.getCharacterManager().isOwner(player.getUniqueId())) {
             menu.open(player);
         } else {
-            fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_NOTOWNER);
+            fallout.getMessenger().sendErrorMessage(player, FOMessage.CHARACTER_NOTOWNER);
         }
     }
 

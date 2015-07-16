@@ -20,6 +20,7 @@ package ninja.amp.fallout;
 
 import ninja.amp.fallout.character.CharacterManager;
 import ninja.amp.fallout.command.CommandController;
+import ninja.amp.fallout.command.commands.faction.FactionManager;
 import ninja.amp.fallout.command.commands.roll.RollManager;
 import ninja.amp.fallout.config.ConfigManager;
 import ninja.amp.fallout.message.Messenger;
@@ -74,5 +75,12 @@ public interface FalloutCore {
      * @return The roll manager
      */
     RollManager getRollManager();
+
+    /**
+     * Gets the fallout faction manager.
+     *
+     * @return The faction manager
+     */
+    FactionManager getFactionManager();
 
 }

@@ -22,6 +22,7 @@ import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.config.ConfigManager;
 import ninja.amp.fallout.config.FOConfig;
 import ninja.amp.fallout.message.FOMessage;
+import ninja.amp.fallout.message.Messenger;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -66,6 +67,7 @@ public class CharacterManager {
      * @return The player's character
      */
     public Character loadCharacter(Player owner) {
+        Messenger messenger = plugin.getMessenger();
         ConfigManager configManager = plugin.getConfigManager();
 
         UUID ownerId = owner.getUniqueId();
@@ -81,11 +83,11 @@ public class CharacterManager {
             try {
                 character = new Character(characterConfig.getConfigurationSection(characterName.toLowerCase()));
             } catch (Exception e) {
-                plugin.getMessenger().sendMessage(owner, FOMessage.ERROR_CHARACTERLOAD, e.getMessage());
-                plugin.getMessenger().debug("Failed to load character " + characterName + ". " + e.getMessage());
+                messenger.sendErrorMessage(owner, FOMessage.ERROR_CHARACTERLOAD, characterName, e.getMessage());
+                messenger.debug("Failed to load character " + characterName + ". " + e.getMessage());
                 return null;
             }
-            plugin.getMessenger().debug("Loaded character " + characterName);
+            messenger.debug("Loaded character " + characterName);
 
             // Save loaded character to update any information
             saveCharacter(character);
@@ -187,7 +189,7 @@ public class CharacterManager {
     }
 
     /**
-     * Deletes a character
+     * Deletes a character.
      *
      * @param character The character to delete
      */
@@ -221,6 +223,7 @@ public class CharacterManager {
      * @return The character possessed
      */
     public Character possessCharacter(Player owner, String characterName) {
+        Messenger messenger = plugin.getMessenger();
         ConfigManager configManager = plugin.getConfigManager();
 
         // Load character from character config
@@ -229,14 +232,14 @@ public class CharacterManager {
         try {
             character = new Character(characterConfig.getConfigurationSection(characterName.toLowerCase()));
         } catch (Exception e) {
-            plugin.getMessenger().sendMessage(owner, FOMessage.ERROR_CHARACTERLOAD, e.getMessage());
-            plugin.getMessenger().debug("Failed to load character " + characterName + ". " + e.getMessage());
+            messenger.sendErrorMessage(owner, FOMessage.ERROR_CHARACTERLOAD, characterName, e.getMessage());
+            messenger.debug("Failed to load character " + characterName + ". " + e.getMessage());
             return null;
         }
         if (character.getOwnerName() == null) {
             // Possess character
             character.possess(owner);
-            plugin.getMessenger().debug("Possessed character " + character.getCharacterName());
+            messenger.debug("Possessed character " + character.getCharacterName());
 
             // Add owning player to players config
             FileConfiguration playerConfig = configManager.getConfig(FOConfig.PLAYER);
@@ -264,7 +267,7 @@ public class CharacterManager {
      *
      * @param owner The character's owner
      */
-    public void abandonCharacter(Player owner) {
+    public Character abandonCharacter(Player owner) {
         ConfigManager configManager = plugin.getConfigManager();
 
         UUID ownerId = owner.getUniqueId();
@@ -288,6 +291,8 @@ public class CharacterManager {
         if (plugin.getConfig().getBoolean("NicknamePlayers", true)) {
             plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), "nick " + character.getOwnerName() + " off");
         }
+
+        return character;
     }
 
     /**
@@ -353,8 +358,7 @@ public class CharacterManager {
     }
 
     /**
-     * Gets the character currently owned by a player.<br>
-     * The
+     * Gets the character currently owned by a player.
      *
      * @param ownerId The owner's UUID
      * @return The character owned by the player
@@ -407,6 +411,15 @@ public class CharacterManager {
      */
     public List<String> getCharacterList() {
         return new ArrayList<>(charactersByName.keySet());
+    }
+
+    /**
+     * Gets a list of the characters that exist in the character config.
+     *
+     * @return A list of the names of the existing characters
+     */
+    public List<String> getExistingCharacters() {
+        return new ArrayList<>(this.plugin.getConfigManager().getConfig(FOConfig.CHARACTER).getKeys(false));
     }
 
 }

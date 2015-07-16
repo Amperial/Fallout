@@ -19,9 +19,7 @@
 package ninja.amp.fallout.util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The types of damage in fallout.
@@ -29,28 +27,21 @@ import java.util.Map;
  * @author Austin Payne
  */
 public enum DamageType {
-    BULLET("Bullet", 6, 5, 3, 2, 1),
-    LASER("Laser", 5, 4, 4, 3, 0),
-    FIRE("Fire", -1, 2, 6, 5, 2),
-    PLASMA("Plasma", -1, 5, 6, 5, 4),
-    EMP("EMP", -1, -1, -1, -1, 5),
-    EXPLOSION("Explosion", 6, 4, 6, 5, 3),
-    CUTTING("Cutting", 3, 6, 5, 3, 1),
-    THRUSTING("Thrusting", 5, -1, 4, 3, 0),
-    BASHING("Bashing", 4, 5, 5, 4, 3);
+    BULLET("Bullet"),
+    LASER("Laser"),
+    FIRE("Fire"),
+    PLASMA("Plasma"),
+    EMP("EMP"),
+    EXPLOSION("Explosion"),
+    CUTTING("Cutting"),
+    THRUSTING("Thrusting"),
+    BASHING("Bashing");
 
     private static final List<String> damageTypeNames;
     private final String name;
-    private final Map<FOArmor, Integer> defenseValues = new HashMap<>();
 
-    DamageType(String name, int leather, int env, int riot, int combat, int power) {
+    DamageType(String name) {
         this.name = name;
-
-        defenseValues.put(FOArmor.LEATHER, leather);
-        defenseValues.put(FOArmor.ENVIRONMENTAL, env);
-        defenseValues.put(FOArmor.RIOT, riot);
-        defenseValues.put(FOArmor.COMBAT, combat);
-        defenseValues.put(FOArmor.POWER, power);
     }
 
     /**
@@ -60,16 +51,6 @@ public enum DamageType {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * Gets the defense value of an armor type against the damage type.
-     *
-     * @param armorType The fallout armor type
-     * @return The defense value
-     */
-    public int getDefenseValue(FOArmor armorType) {
-        return defenseValues.get(armorType);
     }
 
     /**

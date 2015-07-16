@@ -18,19 +18,20 @@
  */
 package ninja.amp.fallout.command.commands.character.skill;
 
-import ninja.amp.fallout.Fallout;
+import ninja.amp.fallout.FalloutCore;
+import ninja.amp.fallout.character.Character;
 import ninja.amp.fallout.character.CharacterManager;
 import ninja.amp.fallout.character.Skill;
 import ninja.amp.fallout.command.Command;
-import ninja.amp.fallout.command.CommandController;
 import ninja.amp.fallout.message.FOMessage;
+import ninja.amp.fallout.message.Messenger;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * A command that resets a character's skill levels.
@@ -39,8 +40,8 @@ import java.util.List;
  */
 public class ResetSkills extends Command {
 
-    public ResetSkills(Fallout plugin) {
-        super(plugin, "resetskills");
+    public ResetSkills(FalloutCore fallout) {
+        super(fallout, "resetskills");
         setDescription("Resets your or another fallout character's skill levels.");
         setCommandUsage("/fo character resetskills [character]");
         setPermission(new Permission("fallout.character.resetskills", PermissionDefault.OP));
@@ -48,56 +49,46 @@ public class ResetSkills extends Command {
     }
 
     @Override
-    public void execute(String command, CommandSender sender, String[] args) {
+    public void execute(String command, CommandSender sender, List<String> args) {
         Player player = (Player) sender;
-        ninja.amp.fallout.character.Character character;
+
+        Messenger messenger = fallout.getMessenger();
         CharacterManager characterManager = fallout.getCharacterManager();
-        if (args.length == 1) {
-            if (characterManager.isLoaded(args[0])) {
-                character = characterManager.getCharacterByName(args[0]);
+
+        Character character;
+        if (args.size() == 1) {
+            String name = args.get(0);
+            if (characterManager.isLoaded(name)) {
+                character = characterManager.getCharacterByName(name);
             } else {
-                fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_DOESNTEXIST);
+                messenger.sendErrorMessage(player, FOMessage.CHARACTER_DOESNTEXIST);
                 return;
             }
         } else {
-            if (characterManager.isOwner(player.getUniqueId())) {
-                character = characterManager.getCharacterByOwner(player.getUniqueId());
+            UUID playerId = player.getUniqueId();
+            if (characterManager.isOwner(playerId)) {
+                character = characterManager.getCharacterByOwner(playerId);
             } else {
-                fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_NOTOWNER);
+                messenger.sendErrorMessage(player, FOMessage.CHARACTER_NOTOWNER);
                 return;
             }
         }
+
         for (Skill skill : Skill.class.getEnumConstants()) {
-            character.setSkillLevel(skill, 1);
+            character.setSkillLevel(skill, 0);
         }
         characterManager.saveCharacter(character);
-        fallout.getMessenger().sendMessage(player, FOMessage.SKILLS_RESET, character.getCharacterName());
-        if (!character.getOwnerId().equals(player.getUniqueId())) {
-            fallout.getMessenger().sendMessage(character, FOMessage.SKILLS_RESETTED);
-        }
+        messenger.sendMessage(player, FOMessage.SKILLS_RESET, character.getCharacterName());
+        messenger.sendMessage(character, FOMessage.SKILLS_RESETTED);
     }
 
     @Override
-    public List<String> getTabCompleteList(String[] args) {
-        if (args.length == 1) {
-            if (args[0].isEmpty()) {
-                return fallout.getCharacterManager().getCharacterList();
-            } else {
-                String arg = args[0].toLowerCase();
-                List<String> modifiedList = new ArrayList<>();
-                for (String suggestion : fallout.getCharacterManager().getCharacterList()) {
-                    if (suggestion.toLowerCase().startsWith(arg)) {
-                        modifiedList.add(suggestion);
-                    }
-                }
-                if (modifiedList.isEmpty()) {
-                    return fallout.getCharacterManager().getCharacterList();
-                } else {
-                    return modifiedList;
-                }
-            }
-        } else {
-            return CommandController.EMPTY_LIST;
+    public List<String> getTabCompleteList(List<String> args) {
+        switch (args.size()) {
+            case 1:
+                return tabCompletions(args.get(0), fallout.getCharacterManager().getCharacterList());
+            default:
+                return EMPTY_LIST;
         }
     }
 

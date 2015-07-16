@@ -51,6 +51,8 @@ public class Character {
     private Map<Skill, Integer> skills = new HashMap<>();
     private List<Perk> perks = new ArrayList<>();
     private int level;
+    private List<String> knowledge = new ArrayList<>();
+    private String faction;
 
     /**
      * Creates a Character from a character builder.
@@ -70,9 +72,10 @@ public class Character {
         this.special = new Special(race.getMinSpecial());
         // All skill levels start at 1
         for (Skill skill : Skill.class.getEnumConstants()) {
-            skills.put(skill, 1);
+            skills.put(skill, 0);
         }
         this.level = 0;
+        this.faction = null;
     }
 
     /**
@@ -102,7 +105,7 @@ public class Character {
         }
         if (section.isString("name")) {
             this.characterName = section.getString("name");
-            if (characterName.length() < 3 || characterName.length() > 20 || !characterName.matches("[a-zA-Z]*")) {
+            if (characterName.length() < 3 || characterName.length() > 20 || !characterName.matches("([A-Z][a-z]+_)?[A-Z][a-z]+")) {
                 throw new Exception("Character names must be comprised of between 3 and 20 letters");
             }
         } else {
@@ -155,7 +158,7 @@ public class Character {
             ConfigurationSection skillLevels = section.getConfigurationSection("skills");
             for (Skill skill : Skill.class.getEnumConstants()) {
                 if (skillLevels.isInt(skill.getName())) {
-                    skills.put(skill, FOUtils.clamp(skillLevels.getInt(skill.getName()), 1, 6));
+                    skills.put(skill, FOUtils.clamp(skillLevels.getInt(skill.getName()), 0, 5));
                 } else {
                     throw new Exception("Missing or invalid skill: " + skill.getName());
                 }
@@ -179,6 +182,12 @@ public class Character {
         } else {
             throw new Exception("Missing or invalid level");
         }
+        if (section.isList("knowledge")) {
+            this.knowledge = section.getStringList("knowledge");
+        } else {
+            throw new Exception("Missing or invalid knowledge");
+        }
+        this.faction = section.getString("faction");
     }
 
     /**
@@ -380,6 +389,52 @@ public class Character {
     }
 
     /**
+     * Checks if the character knows a certain piece of information.
+     *
+     * @param information The piece of information
+     * @return {@code true} if the character knows the piece of information
+     */
+    public boolean hasKnowledge(String information) {
+        return knowledge.contains(information.toLowerCase());
+    }
+
+    /**
+     * Adds a piece of information to the character.
+     *
+     * @param information The piece of information
+     */
+    public void addKnowledge(String information) {
+        knowledge.add(information.toLowerCase());
+    }
+
+    /**
+     * Removes a piece of information from the character.
+     *
+     * @param information The piece of information
+     */
+    public void removeKnowledge(String information) {
+        knowledge.remove(information.toLowerCase());
+    }
+
+    /**
+     * Gets the character's faction.
+     *
+     * @return The character's faction
+     */
+    public String getFaction() {
+        return faction;
+    }
+
+    /**
+     * Sets the character's faction.
+     *
+     * @param faction The faction
+     */
+    public void setFaction(String faction) {
+        this.faction = faction;
+    }
+
+    /**
      * Possesses the character by a player.
      *
      * @param owner The character's new owner
@@ -431,6 +486,8 @@ public class Character {
         }
         section.set("perks", perkNames);
         section.set("level", level);
+        section.set("knowledge", knowledge);
+        section.set("faction", faction);
     }
 
     /**
@@ -457,7 +514,7 @@ public class Character {
 
         private final String name;
 
-        private Alignment(String name) {
+        Alignment(String name) {
             this.name = name;
         }
 

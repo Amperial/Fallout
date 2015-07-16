@@ -32,6 +32,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.UUID;
+
 /**
  * A dynamic and interactive menu made up of an inventory and item stacks.
  *
@@ -63,7 +65,7 @@ public class ItemMenu {
         this.fallout = fallout;
         this.name = name;
         this.size = size;
-        this.items = new MenuItem[size.getSize()];
+        this.items = new MenuItem[size.toInt()];
         this.parent = parent;
     }
 
@@ -165,11 +167,9 @@ public class ItemMenu {
      * @param player The player
      */
     public void open(Player player) {
-        MenuHolder owner = new MenuHolder(this);
-        Inventory inventory = Bukkit.createInventory(owner, size.getSize(), name);
-        owner.setInventory(inventory);
-        apply(inventory, player);
-        player.openInventory(inventory);
+        MenuHolder holder = MenuHolder.createInventory(this, size.toInt(), name);
+        apply(holder.getInventory(), player);
+        player.openInventory(holder.getInventory());
     }
 
     /**
@@ -220,12 +220,14 @@ public class ItemMenu {
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getClick() == ClickType.LEFT) {
             int slot = event.getRawSlot();
-            if (slot >= 0 && slot < size.getSize() && items[slot] != null) {
+            if (slot >= 0 && slot < size.toInt() && items[slot] != null) {
                 Player player = (Player) event.getWhoClicked();
+                final UUID playerId = player.getUniqueId();
+
                 ItemClickEvent itemClickEvent;
                 CharacterManager characterManager = fallout.getCharacterManager();
-                if (characterManager.isOwner(player.getUniqueId())) {
-                    itemClickEvent = new ItemClickEvent(player, characterManager.getCharacterByOwner(player.getUniqueId()));
+                if (characterManager.isOwner(playerId)) {
+                    itemClickEvent = new ItemClickEvent(player, characterManager.getCharacterByOwner(playerId));
                 } else {
                     itemClickEvent = new ItemClickEvent(player);
                 }
@@ -235,10 +237,9 @@ public class ItemMenu {
                 } else {
                     player.updateInventory();
                     if (itemClickEvent.willClose() || itemClickEvent.willGoBack()) {
-                        final String playerName = player.getName();
                         Bukkit.getScheduler().scheduleSyncDelayedTask(fallout.getPlugin(), new Runnable() {
                             public void run() {
-                                Player p = Bukkit.getPlayerExact(playerName);
+                                Player p = Bukkit.getPlayer(playerId);
                                 if (p != null) {
                                     p.closeInventory();
                                 }
@@ -246,10 +247,9 @@ public class ItemMenu {
                         }, 1);
                     }
                     if (itemClickEvent.willGoBack() && hasParent()) {
-                        final String playerName = player.getName();
                         Bukkit.getScheduler().scheduleSyncDelayedTask(fallout.getPlugin(), new Runnable() {
                             public void run() {
-                                Player p = Bukkit.getPlayerExact(playerName);
+                                Player p = Bukkit.getPlayer(playerId);
                                 if (p != null) {
                                     parent.open(p);
                                 }
@@ -274,7 +274,7 @@ public class ItemMenu {
 
         private final int size;
 
-        private Size(int size) {
+        Size(int size) {
             this.size = size;
         }
 
@@ -283,7 +283,7 @@ public class ItemMenu {
          *
          * @return The amount of slots
          */
-        public int getSize() {
+        public int toInt() {
             return size;
         }
 

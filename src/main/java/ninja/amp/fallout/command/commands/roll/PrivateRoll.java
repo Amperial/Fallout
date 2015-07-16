@@ -18,12 +18,12 @@
  */
 package ninja.amp.fallout.command.commands.roll;
 
-import ninja.amp.fallout.Fallout;
+import ninja.amp.fallout.FalloutCore;
 import ninja.amp.fallout.character.Skill;
 import ninja.amp.fallout.character.Trait;
 import ninja.amp.fallout.command.Command;
-import ninja.amp.fallout.command.CommandController;
 import ninja.amp.fallout.message.FOMessage;
+import ninja.amp.fallout.message.Messenger;
 import ninja.amp.fallout.util.DamageType;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -42,11 +42,12 @@ public class PrivateRoll extends Command {
 
     private final List<String> tabCompleteList = new ArrayList<>();
 
-    public PrivateRoll(Fallout plugin) {
-        super(plugin, "privateroll");
+    public PrivateRoll(FalloutCore fallout) {
+        super(fallout, "privateroll");
         setVisible(false);
         setPermission(new Permission("fallout.privateroll", PermissionDefault.TRUE));
         setArgumentRange(1, 2);
+
         tabCompleteList.addAll(Trait.getTraitNames());
         tabCompleteList.addAll(Skill.getSkillNames());
         tabCompleteList.add("Dice");
@@ -54,65 +55,42 @@ public class PrivateRoll extends Command {
     }
 
     @Override
-    public void execute(String command, CommandSender sender, String[] args) {
-        switch (args[0].toLowerCase()) {
+    public void execute(String command, CommandSender sender, List<String> args) {
+        String target = args.get(0);
+
+        Messenger messenger = fallout.getMessenger();
+        RollManager rollManager = fallout.getRollManager();
+        switch (target.toLowerCase()) {
             case "dice":
-                if (args.length == 2) {
-                    fallout.getRollManager().rollDice((Player) sender, args[1], RollManager.Distance.PRIVATE);
+                if (args.size() == 2) {
+                    rollManager.rollDice((Player) sender, args.get(1), RollManager.Distance.PRIVATE);
                 } else {
-                    fallout.getMessenger().sendMessage(sender, FOMessage.COMMAND_USAGE, "/fo privateroll dice <amount>d<sides>[+/-modifier]");
+                    messenger.sendErrorMessage(sender, FOMessage.COMMAND_USAGE, "/fo privateroll dice <amount>d<sides>[+/-modifier]");
                 }
                 break;
             case "armor":
-                if (args.length == 2) {
-                    fallout.getRollManager().rollArmor((Player) sender, args[1], RollManager.Distance.PRIVATE);
+                if (args.size() == 2) {
+                    rollManager.rollArmor((Player) sender, args.get(1), RollManager.Distance.PRIVATE);
                 } else {
-                    fallout.getMessenger().sendMessage(sender, FOMessage.COMMAND_USAGE, "/fo privateroll armor <damage type>[+/-modifier]");
+                    messenger.sendErrorMessage(sender, FOMessage.COMMAND_USAGE, "/fo privateroll armor <damage type>[+/-modifier]");
                 }
                 break;
             default:
-                fallout.getRollManager().rollDefault((Player) sender, args[0], RollManager.Distance.PRIVATE);
+                rollManager.rollStandard((Player) sender, target, RollManager.Distance.PRIVATE);
         }
     }
 
     @Override
-    public List<String> getTabCompleteList(String[] args) {
-        if (args.length == 1) {
-            if (args[0].isEmpty()) {
-                return tabCompleteList;
-            } else {
-                String arg = args[0].toLowerCase();
-                List<String> modifiedList = new ArrayList<>();
-                for (String suggestion : tabCompleteList) {
-                    if (suggestion.toLowerCase().startsWith(arg)) {
-                        modifiedList.add(suggestion);
-                    }
+    public List<String> getTabCompleteList(List<String> args) {
+        switch (args.size()) {
+            case 1:
+                return tabCompletions(args.get(0), tabCompleteList);
+            case 2:
+                if (args.get(0).equalsIgnoreCase("armor")) {
+                    return tabCompletions(args.get(1), DamageType.getDamageTypeNames());
                 }
-                if (modifiedList.isEmpty()) {
-                    return tabCompleteList;
-                } else {
-                    return modifiedList;
-                }
-            }
-        } else if (args.length == 2 && args[0].equalsIgnoreCase("armor")) {
-            if (args[1].isEmpty()) {
-                return DamageType.getDamageTypeNames();
-            } else {
-                String arg = args[1].toLowerCase();
-                List<String> modifiedList = new ArrayList<>();
-                for (String suggestion : DamageType.getDamageTypeNames()) {
-                    if (suggestion.toLowerCase().startsWith(arg)) {
-                        modifiedList.add(suggestion);
-                    }
-                }
-                if (modifiedList.isEmpty()) {
-                    return DamageType.getDamageTypeNames();
-                } else {
-                    return modifiedList;
-                }
-            }
-        } else {
-            return CommandController.EMPTY_LIST;
+            default:
+                return EMPTY_LIST;
         }
     }
 

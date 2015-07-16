@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.command.commands;
+package ninja.amp.fallout.command.commands.character.knowledge;
 
 import ninja.amp.fallout.FalloutCore;
 import ninja.amp.fallout.character.Character;
@@ -31,31 +31,46 @@ import org.bukkit.permissions.PermissionDefault;
 import java.util.List;
 
 /**
- * A command that tells you the name of the owner of a given character.
+ * A command that teaches a fallout character a certain piece of information.
  *
  * @author Austin Payne
  */
-public class Whois extends Command {
+public class Teach extends Command {
 
-    public Whois(FalloutCore fallout) {
-        super(fallout, "whois");
-        setDescription("Gives the name of the given character's owner.");
-        setCommandUsage("/fo whois <character>");
-        setPermission(new Permission("fallout.character.whois", PermissionDefault.TRUE));
-        setArgumentRange(1, 1);
+    public Teach(FalloutCore fallout) {
+        super(fallout, "teach");
+        setDescription("Teaches a fallout character secret information.");
+        setCommandUsage("/fo character teach <character> <information>");
+        setPermission(new Permission("fallout.character.teach", PermissionDefault.OP));
+        setArgumentRange(2, 2);
         setPlayerOnly(false);
     }
 
     @Override
     public void execute(String command, CommandSender sender, List<String> args) {
         String name = args.get(0);
+        String information = args.get(1);
 
         Messenger messenger = fallout.getMessenger();
         CharacterManager characterManager = fallout.getCharacterManager();
 
         if (characterManager.isLoaded(name)) {
             Character character = characterManager.getCharacterByName(name);
-            messenger.sendMessage(sender, FOMessage.CHARACTER_NAME, character.getCharacterName(), character.getOwnerName());
+            if (Information.informationExists(information)) {
+                information = Information.getInformationPiece(information);
+                if (character.hasKnowledge(information)) {
+                    messenger.sendErrorMessage(sender, FOMessage.INFORMATION_ALREADYTAUGHT, character.getCharacterName(), information);
+                } else {
+                    character.addKnowledge(information);
+
+                    characterManager.saveCharacter(character);
+
+                    messenger.sendMessage(sender, FOMessage.INFORMATION_TEACH, character.getCharacterName(), information);
+                    messenger.sendMessage(character, FOMessage.INFORMATION_LEARN, information);
+                }
+            } else {
+                messenger.sendErrorMessage(sender, FOMessage.INFORMATION_DOESNTEXIST, information);
+            }
         } else {
             messenger.sendErrorMessage(sender, FOMessage.CHARACTER_DOESNTEXIST);
         }
@@ -66,6 +81,8 @@ public class Whois extends Command {
         switch (args.size()) {
             case 1:
                 return tabCompletions(args.get(0), fallout.getCharacterManager().getCharacterList());
+            case 2:
+                return tabCompletions(args.get(1), Information.getInformationPieces());
             default:
                 return EMPTY_LIST;
         }

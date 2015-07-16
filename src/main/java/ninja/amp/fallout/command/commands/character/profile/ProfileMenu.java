@@ -18,21 +18,22 @@
  */
 package ninja.amp.fallout.command.commands.character.profile;
 
-import ninja.amp.fallout.Fallout;
+import ninja.amp.fallout.FalloutCore;
 import ninja.amp.fallout.character.Character;
 import ninja.amp.fallout.character.Perk;
 import ninja.amp.fallout.character.Skill;
 import ninja.amp.fallout.character.Trait;
+import ninja.amp.fallout.command.commands.character.knowledge.Information;
 import ninja.amp.fallout.menu.ItemMenu;
 import ninja.amp.fallout.menu.MenuHolder;
 import ninja.amp.fallout.menu.Owner;
 import ninja.amp.fallout.menu.items.MenuItem;
 import ninja.amp.fallout.menu.items.StaticMenuItem;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -47,54 +48,161 @@ import java.util.List;
 public class ProfileMenu extends ItemMenu {
 
     @SuppressWarnings("deprecation")
-    public ProfileMenu(Fallout plugin) {
-        super("Character Profile", Size.SIX_LINE, plugin);
+    public ProfileMenu(FalloutCore fallout) {
+        super(ChatColor.AQUA + "Profile: ", Size.SIX_LINE, fallout);
 
-        ItemStack infoItem = new ItemStack(Material.WOOL, 1, DyeColor.RED.getWoolData());
-        setItem(1, new CharacterInfoItem("Gender", infoItem) {
+        setItem(1, new CharacterInfoItem("Gender", new ItemStack(Material.BREAD)) {
             @Override
-            public String getInfo(Character character) {
+            public ItemStack getIcon(Character character) {
+                switch (character.getGender()) {
+                    case MALE:
+                        return new ItemStack(Material.STRING);
+                    case FEMALE:
+                        return new ItemStack(Material.NETHER_BRICK_ITEM);
+                    default:
+                        return super.getIcon(character);
+                }
+            }
+
+            @Override
+            public void addInfo(Character character, List<String> lore) {
                 String s = character.getGender().name().toLowerCase();
-                return java.lang.Character.toString(s.charAt(0)).toUpperCase() + s.substring(1);
+                lore.add(java.lang.Character.toString(s.charAt(0)).toUpperCase() + s.substring(1));
             }
         });
-        setItem(2, new CharacterInfoItem("Race", infoItem) {
+        setItem(2, new CharacterInfoItem("Race", new ItemStack(Material.LEATHER_HELMET)) {
             @Override
-            public String getInfo(Character character) {
-                return character.getRace().getName();
+            public ItemStack getIcon(Character character) {
+                switch (character.getRace()) {
+                    case WASTELANDER:
+                    case VAULT_DWELLER:
+                        return new ItemStack(Material.SKULL_ITEM, 1, (short) 0);
+                    case GHOUL:
+                        return new ItemStack(Material.SKULL_ITEM, 1, (short) 2);
+                    case SUPER_MUTANT:
+                        return new ItemStack(Material.RAW_FISH, 1, (short) 3);
+                    case DEITY:
+                        return new ItemStack(Material.DIAMOND_HELMET);
+                    default:
+                        return super.getIcon(character);
+                }
+            }
+
+            @Override
+            public void addInfo(Character character, List<String> lore) {
+                lore.add(character.getRace().getName());
             }
         });
-        setItem(3, new CharacterInfoItem("Alignment", infoItem) {
+        setItem(3, new CharacterInfoItem("Alignment", new ItemStack(Material.ENDER_STONE)) {
             @Override
-            public String getInfo(Character character) {
-                return character.getAlignment().getName();
+            @SuppressWarnings("deprecation")
+            public ItemStack getIcon(Character character) {
+                switch (character.getAlignment()) {
+                    case LAWFUL_GOOD:
+                        return new ItemStack(Material.GLOWSTONE);
+                    case LAWFUL_NEUTRAL:
+                        return new ItemStack(Material.REDSTONE_LAMP_OFF);
+                    case LAWFUL_EVIL:
+                        return new ItemStack(Material.REDSTONE_ORE);
+                    case GOOD:
+                        return new ItemStack(Material.WOOL, 1, DyeColor.GREEN.getWoolData());
+                    case NEUTRAL:
+                        return new ItemStack(Material.ENDER_STONE);
+                    case EVIL:
+                        return new ItemStack(Material.PISTON_STICKY_BASE);
+                    case CHAOTIC_GOOD:
+                        return new ItemStack(Material.LEAVES);
+                    case CHAOTIC_NEUTRAL:
+                        return new ItemStack(Material.WOOD, 1, (short) 5);
+                    case CHAOTIC_EVIL:
+                        return new ItemStack(Material.EMERALD_ORE);
+                    default:
+                        return super.getIcon(character);
+                }
+            }
+
+            @Override
+            public void addInfo(Character character, List<String> lore) {
+                lore.add(character.getAlignment().getName());
             }
         });
-        setItem(10, new CharacterInfoItem("Age", infoItem) {
+        setItem(10, new CharacterInfoItem("Age", new ItemStack(Material.SAPLING)) {
+            ItemStack[] icons = new ItemStack[] {
+                    new ItemStack(Material.RED_ROSE, 1, (short) 7),
+                    new ItemStack(Material.RED_ROSE, 1, (short) 4),
+                    new ItemStack(Material.RED_ROSE, 1, (short) 8),
+                    new ItemStack(Material.RED_ROSE, 1, (short) 1),
+                    new ItemStack(Material.DEAD_BUSH),
+                    new ItemStack(Material.RED_ROSE, 1,(short) 5),
+                    new ItemStack(Material.LONG_GRASS, 1, (short) 1),
+                    new ItemStack(Material.DOUBLE_PLANT, 1, (short) 3),
+                    new ItemStack(Material.LONG_GRASS, 1, (short) 2),
+                    new ItemStack(Material.SEEDS)
+            };
+            int[] ageRanges = new int[] { 75, 60, 45, 35, 31, 27, 23, 19, 15, 6};
+
             @Override
-            public String getInfo(Character character) {
-                return String.valueOf(character.getAge());
+            public ItemStack getIcon(Character character) {
+                int age = character.getAge();
+
+                for (int i = 0; i < 10; ++i) {
+                    if (age >= ageRanges[i]) {
+                        return icons[i].clone();
+                    }
+                }
+
+                return super.getIcon(character);
+            }
+
+            @Override
+            public void addInfo(Character character, List<String> lore) {
+                lore.add(String.valueOf(character.getAge()));
             }
         });
-        setItem(11, new CharacterInfoItem("Height", infoItem) {
+        setItem(11, new CharacterInfoItem("Weight", new ItemStack(Material.DIAMOND_CHESTPLATE)) {
             @Override
-            public String getInfo(Character character) {
-                return character.getHeight() + " in.";
+            public void addInfo(Character character, List<String> lore) {
+                lore.add(character.getWeight() + " lbs.");
             }
         });
-        setItem(12, new CharacterInfoItem("Weight", infoItem) {
+        setItem(12, new CharacterInfoItem("Height", new ItemStack(Material.DIAMOND_LEGGINGS)) {
             @Override
-            public String getInfo(Character character) {
-                return character.getWeight() + " lbs.";
+            public void addInfo(Character character, List<String> lore) {
+                lore.add(character.getHeight() + "in.");
             }
         });
 
-        setItem(5, new StaticMenuItem("Perks", new ItemStack(Material.GOLD_BLOCK)) {
+        setItem(5, new StaticMenuItem("Perks", new ItemStack(Material.STAINED_GLASS, 1, DyeColor.ORANGE.getWoolData())) {
             @Override
             public ItemStack getFinalIcon(Owner owner) {
                 ItemStack itemStack = super.getFinalIcon(owner);
+
                 itemStack.setAmount(owner.getCharacter().getLevel());
                 return itemStack;
+            }
+        });
+        setItem(4, new CharacterInfoItem("Faction", new ItemStack(Material.PAINTING)) {
+            @Override
+            public void addInfo(Character character, List<String> lore) {
+                if (character.getFaction() == null) {
+                    lore.add("No Allegiance");
+                } else {
+                    lore.add(character.getFaction());
+                }
+            }
+        });
+        setItem(13, new CharacterInfoItem("Knowledge", new ItemStack(Material.BOOK_AND_QUILL)) {
+            @Override
+            public void addInfo(Character character, List<String> lore) {
+                for (String information : Information.getInformationPieces()) {
+                    if (character.hasKnowledge(information)) {
+                        lore.add(information);
+                    }
+                }
+
+                if (lore.isEmpty()) {
+                    lore.add("No Knowledge");
+                }
             }
         });
 
@@ -121,16 +229,13 @@ public class ProfileMenu extends ItemMenu {
         setItem(52, new SkillItem(Skill.SCIENCE, "Science", skillItem));
         setItem(53, new SkillItem(Skill.LOGICAL_THINKING, "Logical Thinking", skillItem));
 
-        ItemStack traitItem = new ItemStack(Material.WOOL, 1, DyeColor.LIME.getWoolData());
-        setItem(37, new SpecialItem(Trait.STRENGTH, traitItem));
-        setItem(38, new SpecialItem(Trait.PERCEPTION, traitItem));
-        setItem(39, new SpecialItem(Trait.ENDURANCE, traitItem));
-        setItem(40, new SpecialItem(Trait.CHARISMA, traitItem));
-        setItem(41, new SpecialItem(Trait.INTELLIGENCE, traitItem));
-        setItem(42, new SpecialItem(Trait.AGILITY, traitItem));
-        setItem(43, new SpecialItem(Trait.LUCK, traitItem));
-
-        fillEmptySlots();
+        setItem(37, new SpecialItem(Trait.STRENGTH, new ItemStack(Material.IRON_SPADE)));
+        setItem(38, new SpecialItem(Trait.PERCEPTION, new ItemStack(Material.STONE_AXE)));
+        setItem(39, new SpecialItem(Trait.ENDURANCE, new ItemStack(Material.IRON_CHESTPLATE)));
+        setItem(40, new SpecialItem(Trait.CHARISMA, new ItemStack(Material.WATCH)));
+        setItem(41, new SpecialItem(Trait.INTELLIGENCE, new ItemStack(Material.NAME_TAG)));
+        setItem(42, new SpecialItem(Trait.AGILITY, new ItemStack(Material.FEATHER)));
+        setItem(43, new SpecialItem(Trait.LUCK, new ItemStack(Material.FISHING_ROD)));
     }
 
     /**
@@ -140,11 +245,9 @@ public class ProfileMenu extends ItemMenu {
      * @param character The character
      */
     public void open(Player player, Character character) {
-        MenuHolder owner = new MenuHolder(this);
-        Inventory inventory = Bukkit.createInventory(owner, getSize().getSize(), getName() + ": " + character.getCharacterName());
-        owner.setInventory(inventory);
-        apply(inventory, Bukkit.getPlayer(character.getOwnerId()));
-        player.openInventory(inventory);
+        MenuHolder holder = MenuHolder.createInventory(this, getSize().toInt(), getName() + character.getCharacterName());
+        apply(holder.getInventory(), Bukkit.getPlayer(character.getOwnerId()));
+        player.openInventory(holder.getInventory());
     }
 
     /**
@@ -152,24 +255,34 @@ public class ProfileMenu extends ItemMenu {
      */
     private abstract class CharacterInfoItem extends MenuItem {
 
-        public CharacterInfoItem(String displayName, ItemStack icon) {
-            super(displayName, icon);
+        public CharacterInfoItem(String displayName, ItemStack icon, String... lore) {
+            super(displayName, icon, lore);
         }
 
         @Override
         public ItemStack getFinalIcon(Owner owner) {
-            List<String> lore = new ArrayList<>();
-            lore.add(getInfo(owner.getCharacter()));
-            return setNameAndLore(getIcon().clone(), getDisplayName(), lore);
+            List<String> lore = new ArrayList<>(getLore());
+            addInfo(owner.getCharacter(), lore);
+            return setNameAndLore(getIcon(owner.getCharacter()), getDisplayName(), lore);
         }
 
         /**
-         * Gets the info of a certain type of a character.
+         * Gets the item stack for a certain character's detail.
          *
          * @param character The character
-         * @return The info
+         * @return The item stack
          */
-        public abstract String getInfo(Character character);
+        public ItemStack getIcon(Character character) {
+            return getIcon().clone();
+        }
+
+        /**
+         * Adds information of a certain character's detail to the item stack lore.
+         *
+         * @param character The character
+         * @param lore The item stack
+         */
+        public abstract void addInfo(Character character, List<String> lore);
 
     }
 
@@ -179,9 +292,6 @@ public class ProfileMenu extends ItemMenu {
     private class PerkItem extends MenuItem {
 
         private int tier;
-
-        @SuppressWarnings("deprecation")
-        private final ItemStack invisibleItem = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.GRAY.getData());
 
         public PerkItem(int tier, ItemStack icon) {
             super("", icon, "Tier " + tier + " Perk");
@@ -199,7 +309,7 @@ public class ProfileMenu extends ItemMenu {
                 }
             }
             if (selected == null) {
-                return invisibleItem;
+                return null;
             } else {
                 List<String> lore = new ArrayList<>(getLore());
                 lore.addAll(Arrays.asList(selected.getDescription()));

@@ -18,9 +18,8 @@
  */
 package ninja.amp.fallout.command.commands.character.special;
 
-import ninja.amp.fallout.Fallout;
+import ninja.amp.fallout.FalloutCore;
 import ninja.amp.fallout.character.Character;
-import ninja.amp.fallout.character.CharacterManager;
 import ninja.amp.fallout.character.Special;
 import ninja.amp.fallout.character.Trait;
 import ninja.amp.fallout.menu.ItemMenu;
@@ -45,34 +44,34 @@ import java.util.UUID;
  */
 public class SpecialMenu extends ItemMenu {
 
-    private CharacterManager characterManager;
+    private FalloutCore fallout;
     private Map<UUID, Special> pendingSpecials = new HashMap<>();
 
-    public SpecialMenu(Fallout plugin) {
-        super("SPECIAL Modification", Size.FIVE_LINE, plugin);
+    public SpecialMenu(FalloutCore fallout) {
+        super(ChatColor.AQUA + "SPECIAL Modification", Size.FIVE_LINE, fallout);
 
-        this.characterManager = plugin.getCharacterManager();
+        this.fallout = fallout;
 
-        setItem(41, new SpecialConfirmItem(plugin));
+        setItem(41, new SpecialConfirmItem());
         setItem(39, new SpecialCancelItem());
 
-        setItem(10, new SpecialItem(Trait.STRENGTH, new ItemStack(Material.DIAMOND_SWORD)));
+        setItem(10, new SpecialItem(Trait.STRENGTH, new ItemStack(Material.IRON_SPADE)));
         setItem(1, new SpecialAddItem(Trait.STRENGTH));
         setItem(19, new SpecialRemoveItem(Trait.STRENGTH));
 
-        setItem(11, new SpecialItem(Trait.PERCEPTION, new ItemStack(Material.COMPASS)));
+        setItem(11, new SpecialItem(Trait.PERCEPTION, new ItemStack(Material.STONE_AXE)));
         setItem(2, new SpecialAddItem(Trait.PERCEPTION));
         setItem(20, new SpecialRemoveItem(Trait.PERCEPTION));
 
-        setItem(12, new SpecialItem(Trait.ENDURANCE, new ItemStack(Material.GOLD_BOOTS)));
+        setItem(12, new SpecialItem(Trait.ENDURANCE, new ItemStack(Material.IRON_CHESTPLATE)));
         setItem(3, new SpecialAddItem(Trait.ENDURANCE));
         setItem(21, new SpecialRemoveItem(Trait.ENDURANCE));
 
-        setItem(13, new SpecialItem(Trait.CHARISMA, new ItemStack(Material.DIAMOND)));
+        setItem(13, new SpecialItem(Trait.CHARISMA, new ItemStack(Material.WATCH)));
         setItem(4, new SpecialAddItem(Trait.CHARISMA));
         setItem(22, new SpecialRemoveItem(Trait.CHARISMA));
 
-        setItem(14, new SpecialItem(Trait.INTELLIGENCE, new ItemStack(Material.BOOK)));
+        setItem(14, new SpecialItem(Trait.INTELLIGENCE, new ItemStack(Material.NAME_TAG)));
         setItem(5, new SpecialAddItem(Trait.INTELLIGENCE));
         setItem(23, new SpecialRemoveItem(Trait.INTELLIGENCE));
 
@@ -80,16 +79,14 @@ public class SpecialMenu extends ItemMenu {
         setItem(6, new SpecialAddItem(Trait.AGILITY));
         setItem(24, new SpecialRemoveItem(Trait.AGILITY));
 
-        setItem(16, new SpecialItem(Trait.LUCK, new ItemStack(Material.DIAMOND_SWORD)));
+        setItem(16, new SpecialItem(Trait.LUCK, new ItemStack(Material.FISHING_ROD)));
         setItem(7, new SpecialAddItem(Trait.LUCK));
         setItem(25, new SpecialRemoveItem(Trait.LUCK));
-
-        fillEmptySlots();
     }
 
     @Override
     public void open(Player player) {
-        Character character = characterManager.getCharacterByOwner(player.getUniqueId());
+        Character character = fallout.getCharacterManager().getCharacterByOwner(player.getUniqueId());
         pendingSpecials.put(character.getOwnerId(), new Special(character.getSpecial()));
 
         super.open(player);
@@ -150,7 +147,7 @@ public class SpecialMenu extends ItemMenu {
         @SuppressWarnings("deprecation")
         public SpecialAddItem(Trait trait) {
             super("Add Point",
-                    new ItemStack(Material.WOOL, 1, DyeColor.LIME.getWoolData()),
+                    new ItemStack(Material.WOOL, 1, DyeColor.GREEN.getWoolData()),
                     "Increases the below",
                     "trait by one point.");
 
@@ -194,7 +191,6 @@ public class SpecialMenu extends ItemMenu {
     private class SpecialRemoveItem extends StaticMenuItem {
 
         private Trait trait;
-
         private ItemStack disabledIcon;
 
         @SuppressWarnings("deprecation")
@@ -243,13 +239,10 @@ public class SpecialMenu extends ItemMenu {
      */
     private class SpecialConfirmItem extends StaticMenuItem {
 
-        private Fallout plugin;
-
-        public SpecialConfirmItem(Fallout plugin) {
+        @SuppressWarnings("deprecation")
+        public SpecialConfirmItem() {
             super(ChatColor.GREEN + "Confirm SPECIAL Modification",
-                    new ItemStack(Material.EMERALD_BLOCK));
-
-            this.plugin = plugin;
+                    new ItemStack(Material.STAINED_GLASS, 1, DyeColor.LIGHT_BLUE.getWoolData()));
         }
 
         @Override
@@ -261,10 +254,10 @@ public class SpecialMenu extends ItemMenu {
 
             if (character.getRace().isValid(special)) {
                 character.getSpecial().set(special);
-                plugin.getCharacterManager().saveCharacter(character);
-                plugin.getMessenger().sendMessage(player, FOMessage.SPECIAL_SET, character.getCharacterName());
+                fallout.getCharacterManager().saveCharacter(character);
+                fallout.getMessenger().sendMessage(player, FOMessage.SPECIAL_SET, character.getCharacterName());
             } else {
-                plugin.getMessenger().sendMessage(player, FOMessage.SPECIAL_INVALID);
+                fallout.getMessenger().sendErrorMessage(player, FOMessage.SPECIAL_INVALID);
             }
 
             resetPendingSpecial(playerId);
@@ -279,9 +272,10 @@ public class SpecialMenu extends ItemMenu {
      */
     private class SpecialCancelItem extends StaticMenuItem {
 
+        @SuppressWarnings("deprecation")
         public SpecialCancelItem() {
             super(ChatColor.DARK_RED + "Cancel SPECIAL Modification",
-                    new ItemStack(Material.REDSTONE_BLOCK),
+                    new ItemStack(Material.STAINED_GLASS, 1, DyeColor.MAGENTA.getWoolData()),
                     "Cancels the current",
                     "selection and exits",
                     "the menu.");

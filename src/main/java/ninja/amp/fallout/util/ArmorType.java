@@ -20,6 +20,7 @@ package ninja.amp.fallout.util;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Minecraft armor types (where armor can be equipped).
@@ -50,6 +51,27 @@ public enum ArmorType {
                 return player.getInventory().getBoots() == null;
             default:
                 return false;
+        }
+    }
+
+    /**
+     * Gets the item stack a player has equipped in a slot.
+     *
+     * @param player The player
+     * @return The item stack
+     */
+    public ItemStack getEquipped(Player player) {
+        switch (this) {
+            case HELMET:
+                return player.getInventory().getHelmet();
+            case CHESTPLATE:
+                return player.getInventory().getChestplate();
+            case LEGGINGS:
+                return player.getInventory().getLeggings();
+            case BOOTS:
+                return player.getInventory().getBoots();
+            default:
+                return null;
         }
     }
 

@@ -20,6 +20,12 @@ package ninja.amp.fallout.util;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.PlayerInventory;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Minecraft armor materials and their corresponding fallout versions.
@@ -27,25 +33,37 @@ import org.bukkit.entity.Player;
  * @author Austin Payne
  */
 public enum ArmorMaterial {
-    LEATHER(FOArmor.LEATHER),
-    CHAINMAIL(FOArmor.COMBAT),
-    IRON(FOArmor.RIOT),
-    GOLD(FOArmor.ENVIRONMENTAL),
-    DIAMOND(FOArmor.POWER);
+    LEATHER("Leather"),
+    CHAINMAIL("Combat"),
+    IRON("Riot"),
+    GOLD("Environmental"),
+    DIAMOND("Power");
 
-    private final FOArmor foArmor;
+    private static final List<String> materialNames;
+    private final String name;
+    private final Map<DamageType, Integer> defenseValues = new HashMap<>(9);
 
-    ArmorMaterial(FOArmor foArmor) {
-        this.foArmor = foArmor;
+    ArmorMaterial(String name) {
+        this.name = name;
     }
 
     /**
-     * Gets the fallout version of an armor material.
+     * Gets the display name of the armor material.
      *
-     * @return The fallout armor
+     * @return The armor material's display name
      */
-    public FOArmor getFOVersion() {
-        return foArmor;
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Gets the defense value of the armor material against a certain damage type.
+     *
+     * @param damageType The damage type
+     * @return The armor material's resistance to the damage type
+     */
+    public int getDefenseValue(DamageType damageType) {
+        return defenseValues.get(damageType);
     }
 
     /**
@@ -73,15 +91,61 @@ public enum ArmorMaterial {
         if (ArmorType.HELMET.canEquip(player) || ArmorType.CHESTPLATE.canEquip(player) || ArmorType.LEGGINGS.canEquip(player) || ArmorType.BOOTS.canEquip(player)) {
             return false;
         }
-        ArmorMaterial material = getArmorMaterial(player.getInventory().getHelmet().getType());
-        if (!getArmorMaterial(player.getInventory().getChestplate().getType()).equals(material)) {
-            return false;
-        } else if (!getArmorMaterial(player.getInventory().getLeggings().getType()).equals(material)) {
-            return false;
-        } else if (!getArmorMaterial(player.getInventory().getBoots().getType()).equals(material)) {
-            return false;
+        PlayerInventory inventory = player.getInventory();
+        ArmorMaterial material = getArmorMaterial(inventory.getHelmet().getType());
+
+        return material != null &&
+                material.equals(getArmorMaterial(inventory.getChestplate().getType())) &&
+                material.equals(getArmorMaterial(inventory.getLeggings().getType())) &&
+                material.equals(getArmorMaterial(inventory.getBoots().getType()));
+    }
+
+    /**
+     * Gets an armor material from its name.
+     *
+     * @param name The name of the armor material
+     * @return The armor material
+     */
+    public static ArmorMaterial fromName(String name) {
+        for (ArmorMaterial armorMaterial : ArmorMaterial.class.getEnumConstants()) {
+            if (armorMaterial.getName().equalsIgnoreCase(name)) {
+                return armorMaterial;
+            }
         }
-        return true;
+        return null;
+    }
+
+    /**
+     * Gets a list of armor material names.
+     *
+     * @return The list of armor material names
+     */
+    public static List<String> getMaterialNames() {
+        return materialNames;
+    }
+
+    static {
+        materialNames = new ArrayList<>(5);
+
+        int[][] values = {
+                { 1, 2, 0, 0, 0, 1, 4, 2, 3 },
+                { 5, 4, 2, 2, 0, 2, 4, 4, 3 },
+                { 4, 3, 1, 1, 0, 1, 2, 3, 2 },
+                { 2, 3, 5, 2, 0, 3, 1, 0, 2 },
+                { 6, 7, 5, 3, 2, 4, 6, 7, 4 }
+        };
+
+        ArmorMaterial[] armorMaterials = ArmorMaterial.class.getEnumConstants();
+        DamageType[] damageTypes = DamageType.class.getEnumConstants();
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 9; j++) {
+                armorMaterials[i].defenseValues.put(damageTypes[j], values[i][j]);
+            }
+        }
+
+        for (ArmorMaterial armorMaterial : armorMaterials) {
+            materialNames.add(armorMaterial.getName());
+        }
     }
 
 }

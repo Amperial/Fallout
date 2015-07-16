@@ -31,6 +31,8 @@ import ninja.amp.fallout.command.commands.character.Delete;
 import ninja.amp.fallout.command.commands.character.Possess;
 import ninja.amp.fallout.command.commands.character.Upgrade;
 import ninja.amp.fallout.command.commands.character.creation.Create;
+import ninja.amp.fallout.command.commands.character.knowledge.Teach;
+import ninja.amp.fallout.command.commands.character.knowledge.Unteach;
 import ninja.amp.fallout.command.commands.character.perk.Perks;
 import ninja.amp.fallout.command.commands.character.perk.ResetPerks;
 import ninja.amp.fallout.command.commands.character.profile.Profile;
@@ -38,6 +40,8 @@ import ninja.amp.fallout.command.commands.character.skill.ResetSkills;
 import ninja.amp.fallout.command.commands.character.skill.Skills;
 import ninja.amp.fallout.command.commands.character.special.Special;
 import ninja.amp.fallout.command.commands.character.special.SpecialMenu;
+import ninja.amp.fallout.command.commands.faction.FactionManager;
+import ninja.amp.fallout.command.commands.radio.Radio;
 import ninja.amp.fallout.command.commands.roll.ArmorRoll;
 import ninja.amp.fallout.command.commands.roll.DiceRoll;
 import ninja.amp.fallout.command.commands.roll.GlobalRoll;
@@ -66,9 +70,10 @@ public class Fallout extends JavaPlugin implements FalloutCore {
     private Messenger messenger;
     private CommandController commandController;
     private CharacterManager characterManager;
+    private RollManager rollManager;
+    private FactionManager factionManager;
     private FOListener foListener;
     private MenuListener menuListener;
-    private RollManager rollManager;
     private Set<Plugin> disabledExtensions = new HashSet<>();
 
     @Override
@@ -79,6 +84,7 @@ public class Fallout extends JavaPlugin implements FalloutCore {
         commandController = new CommandController(this);
         characterManager = new CharacterManager(this);
         rollManager = new RollManager(this);
+        factionManager = new FactionManager(this);
         foListener = new FOListener(this);
         menuListener = new MenuListener(this);
 
@@ -97,6 +103,8 @@ public class Fallout extends JavaPlugin implements FalloutCore {
         Command resetSkills = new ResetSkills(this);
         Command perks = new Perks(this);
         Command resetPerks = new ResetPerks(this);
+        Command teach = new Teach(this);
+        Command unteach = new Unteach(this);
         CommandGroup character = new CommandGroup(this, "character")
                 .addChildCommand(create)
                 .addChildCommand(delete)
@@ -108,7 +116,9 @@ public class Fallout extends JavaPlugin implements FalloutCore {
                 .addChildCommand(skills)
                 .addChildCommand(resetSkills)
                 .addChildCommand(perks)
-                .addChildCommand(resetPerks);
+                .addChildCommand(resetPerks)
+                .addChildCommand(teach)
+                .addChildCommand(unteach);
         character.setPermission(new Permission("fallout.character.all", PermissionDefault.OP));
 
         // Main /fo command tree
@@ -116,6 +126,7 @@ public class Fallout extends JavaPlugin implements FalloutCore {
                 .addChildCommand(new AboutCommand(this))
                 .addChildCommand(new HelpCommand(this))
                 .addChildCommand(new ReloadCommand(this))
+                .addChildCommand(new Radio(this))
                 .addChildCommand(new LocalRoll(this)
                         .addChildCommand(new ArmorRoll(this))
                         .addChildCommand(new DiceRoll(this)))
@@ -133,6 +144,8 @@ public class Fallout extends JavaPlugin implements FalloutCore {
                 .addChildCommand(resetSkills)
                 .addChildCommand(perks)
                 .addChildCommand(resetPerks)
+                .addChildCommand(teach)
+                .addChildCommand(unteach)
                 .addChildCommand(character);
         fallout.setPermission(new Permission("fallout.all", PermissionDefault.OP));
 
@@ -161,6 +174,7 @@ public class Fallout extends JavaPlugin implements FalloutCore {
         MenuListener.closeOpenMenus();
         menuListener = null;
         foListener = null;
+        factionManager = null;
         rollManager = null;
         characterManager = null;
         commandController.unregisterCommands();
@@ -197,6 +211,11 @@ public class Fallout extends JavaPlugin implements FalloutCore {
     @Override
     public RollManager getRollManager() {
         return rollManager;
+    }
+
+    @Override
+    public FactionManager getFactionManager() {
+        return factionManager;
     }
 
     /**

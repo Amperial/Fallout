@@ -18,16 +18,14 @@
  */
 package ninja.amp.fallout.command.commands;
 
-import ninja.amp.fallout.Fallout;
+import ninja.amp.fallout.FalloutCore;
 import ninja.amp.fallout.command.Command;
-import ninja.amp.fallout.command.CommandController;
 import ninja.amp.fallout.message.Messenger;
 import ninja.amp.fallout.message.PageList;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,8 +35,8 @@ import java.util.List;
  */
 public class HelpCommand extends Command {
 
-    public HelpCommand(Fallout plugin) {
-        super(plugin, "help");
+    public HelpCommand(FalloutCore fallout) {
+        super(fallout, "help");
         setDescription("Lists all fallout commands");
         setCommandUsage("/fo help [page]");
         setPermission(new Permission("fallout.help", PermissionDefault.TRUE));
@@ -47,11 +45,12 @@ public class HelpCommand extends Command {
     }
 
     @Override
-    public void execute(String command, CommandSender sender, String[] args) {
+    public void execute(String command, CommandSender sender, List<String> args) {
         int pageNumber = 1;
-        if (args.length == 1) {
-            pageNumber = PageList.getPageNumber(args[0]);
+        if (args.size() == 1) {
+            pageNumber = PageList.getPageNumber(args.get(0));
         }
+
         Messenger messenger = fallout.getMessenger();
         for (String line : fallout.getCommandController().getPageList().getPage(pageNumber)) {
             messenger.sendRawMessage(sender, line);
@@ -59,26 +58,12 @@ public class HelpCommand extends Command {
     }
 
     @Override
-    public List<String> getTabCompleteList(String[] args) {
-        if (args.length == 1) {
-            if (args[0].isEmpty()) {
-                return fallout.getCommandController().getPageList().getPageNumbersList();
-            } else {
-                String arg = args[0].toLowerCase();
-                List<String> modifiedList = new ArrayList<>();
-                for (String suggestion : fallout.getCommandController().getPageList().getPageNumbersList()) {
-                    if (suggestion.toLowerCase().startsWith(arg)) {
-                        modifiedList.add(suggestion);
-                    }
-                }
-                if (modifiedList.isEmpty()) {
-                    return fallout.getCommandController().getPageList().getPageNumbersList();
-                } else {
-                    return modifiedList;
-                }
-            }
-        } else {
-            return CommandController.EMPTY_LIST;
+    public List<String> getTabCompleteList(List<String> args) {
+        switch (args.size()) {
+            case 1:
+                return tabCompletions(args.get(0), fallout.getCommandController().getPageList().getPageNumbersList());
+            default:
+                return EMPTY_LIST;
         }
     }
 

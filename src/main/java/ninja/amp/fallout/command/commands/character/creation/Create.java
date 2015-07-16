@@ -18,16 +18,20 @@
  */
 package ninja.amp.fallout.command.commands.character.creation;
 
-import ninja.amp.fallout.Fallout;
+import ninja.amp.fallout.FalloutCore;
 import ninja.amp.fallout.character.Character;
 import ninja.amp.fallout.character.CharacterManager;
 import ninja.amp.fallout.command.Command;
 import ninja.amp.fallout.command.commands.character.special.SpecialMenu;
+import ninja.amp.fallout.menu.ItemMenu;
 import ninja.amp.fallout.message.FOMessage;
+import ninja.amp.fallout.message.Messenger;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
+
+import java.util.List;
 
 /**
  * A command that creates a fallout character.
@@ -36,43 +40,48 @@ import org.bukkit.permissions.PermissionDefault;
  */
 public class Create extends Command {
 
-    private CreateMenu createMenu;
+    private ItemMenu createMenu;
 
-    public Create(Fallout plugin, SpecialMenu specialMenu) {
-        super(plugin, "create");
+    public Create(FalloutCore fallout, SpecialMenu specialMenu) {
+        super(fallout, "create");
         setDescription("Creates a fallout character.");
         setCommandUsage("/fo character create <name> <age> <height in.> <weight lb.>");
         setPermission(new Permission("fallout.character.create", PermissionDefault.TRUE));
         setArgumentRange(4, 4);
 
-        createMenu = new CreateMenu(plugin, specialMenu);
+        createMenu = new CreateMenu(fallout, specialMenu);
     }
 
     @Override
-    public void execute(String command, CommandSender sender, String[] args) {
+    public void execute(String command, CommandSender sender, List<String> args) {
         Player player = (Player) sender;
+        String name = args.get(0);
+        String age = args.get(1);
+        String height = args.get(2);
+        String weight = args.get(3);
 
+        Messenger messenger = fallout.getMessenger();
         CharacterManager characterManager = fallout.getCharacterManager();
+
         if (characterManager.isOwner(player.getUniqueId())) {
-            fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_ALREADYEXISTS);
+            messenger.sendErrorMessage(player, FOMessage.CHARACTER_ALREADYEXISTS);
         } else {
-            String characterName = args[0];
-            if (characterManager.isCharacter(characterName)) {
-                fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_NAMETAKEN);
-            } else if (characterName.length() < 3 || characterName.length() > 20 || !characterName.matches("[a-zA-Z]*")) {
-                fallout.getMessenger().sendMessage(player, FOMessage.ERROR_NAMEFORMAT);
+            if (characterManager.isCharacter(name)) {
+                messenger.sendErrorMessage(player, FOMessage.CHARACTER_NAMETAKEN);
+            } else if (name.length() < 3 || name.length() > 20 || !name.matches("([A-Z][a-z]+_)?[A-Z][a-z]+")) {
+                messenger.sendErrorMessage(player, FOMessage.ERROR_NAMEFORMAT);
             } else {
                 Character.CharacterBuilder builder = new Character.CharacterBuilder(player);
-                builder.name(characterName);
+                builder.name(name);
                 try {
-                    builder.age(Math.max(6, Integer.parseInt(args[1])))
-                            .height(Math.max(36, Integer.parseInt(args[2])))
-                            .weight(Math.max(72, Integer.parseInt(args[3])));
+                    builder.age(Math.max(6, Integer.parseInt(age)))
+                            .height(Math.max(36, Integer.parseInt(height)))
+                            .weight(Math.max(72, Integer.parseInt(weight)));
                 } catch (NumberFormatException e) {
-                    fallout.getMessenger().sendMessage(player, FOMessage.ERROR_NUMBERFORMAT);
+                    messenger.sendErrorMessage(player, FOMessage.ERROR_NUMBERFORMAT);
                     return;
                 }
-                fallout.getCharacterManager().addCharacterBuilder(player, builder);
+                characterManager.addCharacterBuilder(player, builder);
                 createMenu.open(player);
             }
         }

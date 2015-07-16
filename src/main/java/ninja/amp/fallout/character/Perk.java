@@ -56,12 +56,12 @@ public enum Perk {
     INNOCENT_DEFENSE(4, "Hero", "+2 to Combat rolls when defending", "the weak and innocent"),
     INCREASED_SNEAK(4, "Shadow", "+3 to Daytime Sneak and", "+5 to Nighttime Sneak rolls"),
 
-    BATTLEFIELD_TERROR(5, "Death or Glory", "Can keep fighting until body has sustained", "extreme damage. Refer to guide"),
-    GENERAL(5, "Old-World General", "Provides benefits to followers in exchange", "for devotion. Refer to guide"),
-    CREATURES(5, "One With the Wasteland", ""),
-    TELEKINESIS(5, "The Master's Legacy", ""),
-    TELEPATHY(5, "The Master's Legacy", ""),
-    SPIRIT_FORM(5, "Undying Will", "");
+    BATTLEFIELD_TERROR(5, "Death or Glory", "You are war-incarnate.", "See full guide"),
+    GENERAL(5, "Old-World General", "Your word is law, your orders absolute.", "See full guide"),
+    CREATURES(5, "One With the Wasteland", "You are one with the wasteland,", "its power defends you.", "See full guide"),
+    TELEKINESIS(5, "The Master's Legacy", "The work of the master lives on", "through you, gain telekinesis.", "See full guide"),
+    TELEPATHY(5, "The Master's Legacy", "The work of the master lives on", "through you, gain telepathy.", "See full guide"),
+    SPIRIT_FORM(5, "Undying Will", "You refuse the embrace of", "death and become a spirit.", "See full guide");
 
     private static final Map<Integer, Set<Perk>> tiers;
     private static final List<String> perkNames;

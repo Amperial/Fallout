@@ -22,6 +22,8 @@ import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.command.Command;
 import org.bukkit.command.CommandSender;
 
+import java.util.List;
+
 /**
  * A command that lets you manually roll the dice with an optional modifier.
  *
@@ -36,7 +38,7 @@ public class DiceRoll extends Command {
     }
 
     @Override
-    public void execute(String command, CommandSender sender, String[] args) {
+    public void execute(String command, CommandSender sender, List<String> args) {
         // Command is only here to be shown in help.
         // Rolling is handled in GlobalRoll/LocalRoll/PrivateRoll commands
     }

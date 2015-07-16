@@ -18,14 +18,18 @@
  */
 package ninja.amp.fallout.command.commands.character;
 
-import ninja.amp.fallout.Fallout;
+import ninja.amp.fallout.FalloutCore;
 import ninja.amp.fallout.character.CharacterManager;
 import ninja.amp.fallout.command.Command;
 import ninja.amp.fallout.message.FOMessage;
+import ninja.amp.fallout.message.Messenger;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * A command that deletes the senders fallout character.
@@ -34,22 +38,25 @@ import org.bukkit.permissions.PermissionDefault;
  */
 public class Delete extends Command {
 
-    public Delete(Fallout plugin) {
-        super(plugin, "delete");
+    public Delete(FalloutCore fallout) {
+        super(fallout, "delete");
         setDescription("Deletes your fallout character.");
         setCommandUsage("/fo character delete");
         setPermission(new Permission("fallout.character.delete", PermissionDefault.TRUE));
     }
 
     @Override
-    public void execute(String command, CommandSender sender, String[] args) {
+    public void execute(String command, CommandSender sender, List<String> args) {
         Player player = (Player) sender;
+        UUID playerId = player.getUniqueId();
+
+        Messenger messenger = fallout.getMessenger();
         CharacterManager characterManager = fallout.getCharacterManager();
-        if (characterManager.isOwner(player.getUniqueId())) {
-            characterManager.deleteCharacter(characterManager.getCharacterByOwner(player.getUniqueId()));
-            fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_DELETE);
+        if (characterManager.isOwner(playerId)) {
+            characterManager.deleteCharacter(characterManager.getCharacterByOwner(playerId));
+            messenger.sendMessage(player, FOMessage.CHARACTER_DELETE);
         } else {
-            fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_NOTOWNER);
+            messenger.sendErrorMessage(player, FOMessage.CHARACTER_NOTOWNER);
         }
     }
 

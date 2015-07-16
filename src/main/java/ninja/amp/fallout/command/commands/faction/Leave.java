@@ -16,26 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.menu.items;
+package ninja.amp.fallout.command.commands.faction;
 
-import ninja.amp.fallout.menu.events.ItemClickEvent;
-import org.bukkit.ChatColor;
-import org.bukkit.inventory.ItemStack;
-
-/**
- * A menu item that opens the item menu's parent menu if one exists.
- *
- * @author Austin Payne
- */
-public class BackItem extends StaticMenuItem {
-
-    public BackItem(ItemStack icon) {
-        super(ChatColor.RED + "Back", icon);
-    }
-
-    @Override
-    public void onItemClick(ItemClickEvent event) {
-        event.setWillGoBack(true);
-    }
-
+public class Leave {
 }

@@ -20,11 +20,9 @@ package ninja.amp.fallout.command.commands.roll;
 
 import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.command.Command;
-import ninja.amp.fallout.command.CommandController;
 import ninja.amp.fallout.util.DamageType;
 import org.bukkit.command.CommandSender;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,32 +40,18 @@ public class ArmorRoll extends Command {
     }
 
     @Override
-    public void execute(String command, CommandSender sender, String[] args) {
+    public void execute(String command, CommandSender sender, List<String> args) {
         // Command is only here to be shown in help.
         // Rolling is handled in GlobalRoll/LocalRoll/PrivateRoll commands
     }
 
     @Override
-    public List<String> getTabCompleteList(String[] args) {
-        if (args.length == 1) {
-            if (args[0].isEmpty()) {
-                return DamageType.getDamageTypeNames();
-            } else {
-                String arg = args[0].toLowerCase();
-                List<String> modifiedList = new ArrayList<>();
-                for (String suggestion : DamageType.getDamageTypeNames()) {
-                    if (suggestion.toLowerCase().startsWith(arg)) {
-                        modifiedList.add(suggestion);
-                    }
-                }
-                if (modifiedList.isEmpty()) {
-                    return DamageType.getDamageTypeNames();
-                } else {
-                    return modifiedList;
-                }
-            }
-        } else {
-            return CommandController.EMPTY_LIST;
+    public List<String> getTabCompleteList(List<String> args) {
+        switch (args.size()) {
+            case 1:
+                return tabCompletions(args.get(0), DamageType.getDamageTypeNames());
+            default:
+                return EMPTY_LIST;
         }
     }
 

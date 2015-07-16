@@ -20,7 +20,6 @@ package ninja.amp.fallout.menu.items;
 
 import ninja.amp.fallout.menu.events.ItemClickEvent;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -28,8 +27,8 @@ import org.bukkit.inventory.ItemStack;
  */
 public class CloseItem extends StaticMenuItem {
 
-    public CloseItem() {
-        super(ChatColor.RED + "Close", new ItemStack(Material.RECORD_4));
+    public CloseItem(ItemStack icon) {
+        super(ChatColor.RED + "Close", icon);
     }
 
     @Override

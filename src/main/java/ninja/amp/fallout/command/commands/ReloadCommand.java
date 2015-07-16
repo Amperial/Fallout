@@ -18,13 +18,15 @@
  */
 package ninja.amp.fallout.command.commands;
 
-import ninja.amp.fallout.Fallout;
+import ninja.amp.fallout.FalloutCore;
 import ninja.amp.fallout.command.Command;
 import ninja.amp.fallout.message.FOMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
+
+import java.util.List;
 
 /**
  * A command that reloads the plugin.
@@ -33,8 +35,8 @@ import org.bukkit.permissions.PermissionDefault;
  */
 public class ReloadCommand extends Command {
 
-    public ReloadCommand(Fallout plugin) {
-        super(plugin, "reload");
+    public ReloadCommand(FalloutCore fallout) {
+        super(fallout, "reload");
         setDescription("Reloads the fallout plugin");
         setCommandUsage("/fo reload");
         setPermission(new Permission("fallout.reload", PermissionDefault.OP));
@@ -42,10 +44,10 @@ public class ReloadCommand extends Command {
     }
 
     @Override
-    public void execute(String command, CommandSender sender, String[] args) {
+    public void execute(String command, CommandSender sender, List<String> args) {
         Bukkit.getPluginManager().disablePlugin(getPlugin());
         getPlugin().getPluginLoader().enablePlugin(getPlugin());
-        fallout.getMessenger().sendMessage(sender, FOMessage.RELOAD);
+        fallout.getMessenger().sendMessage(sender, FOMessage.RELOAD, getPlugin().getName());
     }
 
 }

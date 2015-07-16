@@ -21,6 +21,7 @@ package ninja.amp.fallout.menu.items;
 import ninja.amp.fallout.menu.Owner;
 import ninja.amp.fallout.menu.events.ItemClickEvent;
 import ninja.amp.fallout.menu.events.ItemClickEventHandler;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -41,7 +42,11 @@ public class MenuItem implements ItemClickEventHandler {
 
     public MenuItem(String displayName, ItemStack icon, String... lore) {
         this.displayName = displayName;
-        this.icon = icon.clone();
+        if (icon == null) {
+            this.icon = new ItemStack(Material.STONE);
+        } else {
+            this.icon = icon.clone();
+        }
         this.lore = Arrays.asList(lore);
     }
 

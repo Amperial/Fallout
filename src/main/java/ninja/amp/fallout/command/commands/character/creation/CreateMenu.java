@@ -18,7 +18,7 @@
  */
 package ninja.amp.fallout.command.commands.character.creation;
 
-import ninja.amp.fallout.Fallout;
+import ninja.amp.fallout.FalloutCore;
 import ninja.amp.fallout.character.Character;
 import ninja.amp.fallout.character.CharacterManager;
 import ninja.amp.fallout.character.Race;
@@ -32,6 +32,7 @@ import ninja.amp.fallout.menu.items.groups.EnumOptionItem;
 import ninja.amp.fallout.menu.items.groups.Option;
 import ninja.amp.fallout.menu.items.groups.OptionItem;
 import ninja.amp.fallout.message.FOMessage;
+import ninja.amp.fallout.message.Messenger;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -45,40 +46,36 @@ import org.bukkit.inventory.ItemStack;
  */
 public class CreateMenu extends ItemMenu {
 
+    private FalloutCore fallout;
     private EnumOption<Character.Gender> gender;
     private EnumOption<Race> race;
     private Option conformity;
     private Option morality;
 
     @SuppressWarnings("deprecation")
-    public CreateMenu(Fallout plugin, SpecialMenu specialMenu) {
-        super("Character Options", ItemMenu.Size.FIVE_LINE, plugin);
+    public CreateMenu(FalloutCore fallout, SpecialMenu specialMenu) {
+        super(ChatColor.AQUA + "Character Options", ItemMenu.Size.FIVE_LINE, fallout);
 
-        setItem(41, new CreateConfirmItem(plugin, specialMenu));
-        setItem(39, new CreateCancelItem(plugin));
+        this.fallout = fallout;
 
-        ItemStack selected = new ItemStack(Material.WOOL, 1, DyeColor.LIME.getWoolData());
+        setItem(41, new CreateConfirmItem(specialMenu));
+        setItem(39, new CreateCancelItem());
+
         ItemStack unselected = new ItemStack(Material.WOOL, 1, DyeColor.GRAY.getWoolData());
 
         gender = new EnumOption<>();
-        setItem(1, new EnumOptionItem<>(gender, Character.Gender.MALE, "Male", selected, unselected));
-        setItem(2, new EnumOptionItem<>(gender, Character.Gender.FEMALE, "Female", selected, unselected));
+        setItem(1, new EnumOptionItem<>(gender, Character.Gender.MALE, "Male", new ItemStack(Material.STRING), unselected));
+        setItem(2, new EnumOptionItem<>(gender, Character.Gender.FEMALE, "Female", new ItemStack(Material.NETHER_BRICK_ITEM), unselected));
 
         race = new EnumOption<>();
-        setItem(4, new EnumOptionItem<>(race, Race.WASTELANDER, "Wastelander", selected, unselected));
-        setItem(5, new EnumOptionItem<>(race, Race.GHOUL, "Ghoul", selected, unselected));
-        setItem(6, new EnumOptionItem<>(race, Race.SUPER_MUTANT, "Super Mutant", selected, unselected));
-        setItem(7, new EnumOptionItem<>(race, Race.VAULT_DWELLER, "Vault Dweller", selected, unselected));
-        setItem(8, new EnumOptionItem<Race>(race, Race.DEITY, "Deity", selected, unselected) {
-            private final ItemStack invisibleItem = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.GRAY.getData());
-
+        setItem(4, new EnumOptionItem<>(race, Race.WASTELANDER, "Wastelander", new ItemStack(Material.SKULL_ITEM, 1, (short) 0), unselected));
+        setItem(5, new EnumOptionItem<>(race, Race.GHOUL, "Ghoul", new ItemStack(Material.SKULL_ITEM, 1, (short) 2), unselected));
+        setItem(6, new EnumOptionItem<>(race, Race.SUPER_MUTANT, "Super Mutant", new ItemStack(Material.RAW_FISH, 1, (short) 3), unselected));
+        setItem(7, new EnumOptionItem<>(race, Race.VAULT_DWELLER, "Vault Dweller", new ItemStack(Material.SKULL_ITEM, 1, (short) 0), unselected));
+        setItem(8, new EnumOptionItem<Race>(race, Race.DEITY, "Deity", new ItemStack(Material.DIAMOND_HELMET), unselected) {
             @Override
             public ItemStack getFinalIcon(Player player) {
-                if (player.hasPermission("fallout.race.deity")) {
-                    return super.getFinalIcon(player);
-                } else {
-                    return invisibleItem;
-                }
+                return player.hasPermission("fallout.race.deity") ? super.getFinalIcon(player) : null;
             }
 
             @Override
@@ -89,17 +86,19 @@ public class CreateMenu extends ItemMenu {
             }
         });
 
+        ItemStack red = new ItemStack(Material.WOOL, 1, DyeColor.RED.getWoolData());
+        ItemStack yellow = new ItemStack(Material.WOOL, 1, DyeColor.YELLOW.getWoolData());
+        ItemStack green = new ItemStack(Material.WOOL, 1, DyeColor.GREEN.getWoolData());
+
         conformity = new Option();
-        setItem(19, new OptionItem(conformity, "Lawful", selected, unselected));
-        setItem(20, new OptionItem(conformity, "Balanced", selected, unselected));
-        setItem(21, new OptionItem(conformity, "Chaotic", selected, unselected));
+        setItem(19, new OptionItem(conformity, "Lawful", green, unselected));
+        setItem(20, new OptionItem(conformity, "Balanced", yellow, unselected));
+        setItem(21, new OptionItem(conformity, "Chaotic", red, unselected));
 
         morality = new Option();
-        setItem(23, new OptionItem(morality, "Good", selected, unselected));
-        setItem(24, new OptionItem(morality, "Neutral", selected, unselected));
-        setItem(25, new OptionItem(morality, "Evil", selected, unselected));
-
-        fillEmptySlots();
+        setItem(23, new OptionItem(morality, "Good", green, unselected));
+        setItem(24, new OptionItem(morality, "Neutral", yellow, unselected));
+        setItem(25, new OptionItem(morality, "Evil", red, unselected));
     }
 
     @Override
@@ -168,34 +167,34 @@ public class CreateMenu extends ItemMenu {
      */
     private class CreateConfirmItem extends SubMenuItem {
 
-        private Fallout plugin;
-
-        public CreateConfirmItem(Fallout plugin, SpecialMenu specialMenu) {
-            super(plugin, ChatColor.GREEN + "Confirm Character Options",
-                    new ItemStack(Material.EMERALD_BLOCK), specialMenu);
-
-            this.plugin = plugin;
+        @SuppressWarnings("deprecation")
+        public CreateConfirmItem(SpecialMenu specialMenu) {
+            super(fallout.getPlugin(), ChatColor.GREEN + "Confirm Character Options",
+                    new ItemStack(Material.STAINED_GLASS, 1, DyeColor.LIGHT_BLUE.getWoolData()), specialMenu);
         }
 
         @Override
         public void onItemClick(ItemClickEvent event) {
             Player player = event.getPlayer();
 
+            Messenger messenger = fallout.getMessenger();
+            CharacterManager characterManager = fallout.getCharacterManager();
+
             Character.Gender gender = getGender(player);
             Race race = getRace(player);
             Character.Alignment alignment = getAlignment(player);
             if (gender == null || race == null || alignment == null) {
-                plugin.getMessenger().sendMessage(player, FOMessage.ERROR_ALLOPTIONS);
+                messenger.sendErrorMessage(player, FOMessage.ERROR_ALLOPTIONS);
                 return;
             }
             resetOptions(player);
 
-            Character.CharacterBuilder builder = plugin.getCharacterManager().getCharacterBuilder(player);
+            Character.CharacterBuilder builder = characterManager.getCharacterBuilder(player);
             builder.gender(gender);
             builder.race(race);
             builder.alignment(alignment);
-            plugin.getCharacterManager().createCharacter(player);
-            plugin.getMessenger().sendMessage(player, FOMessage.CHARACTER_CREATE, builder.getName());
+            characterManager.createCharacter(player);
+            messenger.sendMessage(player, FOMessage.CHARACTER_CREATE, builder.getName());
 
             super.onItemClick(event);
         }
@@ -207,21 +206,18 @@ public class CreateMenu extends ItemMenu {
      */
     private class CreateCancelItem extends StaticMenuItem {
 
-        private CharacterManager characterManager;
-
-        public CreateCancelItem(Fallout plugin) {
+        @SuppressWarnings("deprecation")
+        public CreateCancelItem() {
             super(ChatColor.DARK_RED + "Cancel Character Creation",
-                    new ItemStack(Material.REDSTONE_BLOCK),
+                    new ItemStack(Material.STAINED_GLASS, 1, DyeColor.MAGENTA.getWoolData()),
                     "Cancels character",
                     "creation and exits",
                     "the menu.");
-
-            this.characterManager = plugin.getCharacterManager();
         }
 
         @Override
         public void onItemClick(ItemClickEvent event) {
-            characterManager.unloadCharacter(event.getPlayer());
+            fallout.getCharacterManager().unloadCharacter(event.getPlayer());
 
             event.setWillClose(true);
         }

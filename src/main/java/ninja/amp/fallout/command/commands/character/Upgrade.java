@@ -18,18 +18,16 @@
  */
 package ninja.amp.fallout.command.commands.character;
 
-import ninja.amp.fallout.Fallout;
+import ninja.amp.fallout.FalloutCore;
 import ninja.amp.fallout.character.Character;
 import ninja.amp.fallout.character.CharacterManager;
 import ninja.amp.fallout.command.Command;
-import ninja.amp.fallout.command.CommandController;
 import ninja.amp.fallout.message.FOMessage;
+import ninja.amp.fallout.message.Messenger;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,23 +37,26 @@ import java.util.List;
  */
 public class Upgrade extends Command {
 
-    public Upgrade(Fallout plugin) {
-        super(plugin, "upgrade");
+    public Upgrade(FalloutCore fallout) {
+        super(fallout, "upgrade");
         setDescription("Upgrades the level of a fallout character.");
         setCommandUsage("/fo character upgrade <character>");
         setPermission(new Permission("fallout.character.upgrade", PermissionDefault.OP));
         setArgumentRange(1, 1);
+        setPlayerOnly(false);
     }
 
     @Override
-    public void execute(String command, CommandSender sender, String[] args) {
-        Player player = (Player) sender;
+    public void execute(String command, CommandSender sender, List<String> args) {
+        String name = args.get(0);
+
+        Messenger messenger = fallout.getMessenger();
         CharacterManager characterManager = fallout.getCharacterManager();
-        if (characterManager.isLoaded(args[0])) {
-            Character character = characterManager.getCharacterByName(args[0]);
+        if (characterManager.isLoaded(name)) {
+            Character character = characterManager.getCharacterByName(name);
             if (character.getLevel() > 4) {
                 // Character is already max level
-                fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_MAXLEVEL, character.getCharacterName());
+                messenger.sendErrorMessage(sender, FOMessage.CHARACTER_MAXLEVEL, character.getCharacterName());
             } else {
                 // Upgrade level
                 character.increaseLevel();
@@ -63,37 +64,21 @@ public class Upgrade extends Command {
                 // Save character to update level information
                 characterManager.saveCharacter(character);
 
-                fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_UPGRADE, character.getCharacterName(), character.getLevel());
-                if (!character.getOwnerId().equals(player.getUniqueId())) {
-                    fallout.getMessenger().sendMessage(character, FOMessage.CHARACTER_UPGRADED, character.getLevel());
-                }
+                messenger.sendMessage(sender, FOMessage.CHARACTER_UPGRADE, character.getCharacterName(), character.getLevel());
+                messenger.sendMessage(character, FOMessage.CHARACTER_UPGRADED, character.getLevel());
             }
         } else {
-            fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_DOESNTEXIST);
+            messenger.sendErrorMessage(sender, FOMessage.CHARACTER_DOESNTEXIST);
         }
     }
 
     @Override
-    public List<String> getTabCompleteList(String[] args) {
-        if (args.length == 1) {
-            if (args[0].isEmpty()) {
-                return fallout.getCharacterManager().getCharacterList();
-            } else {
-                String arg = args[0].toLowerCase();
-                List<String> modifiedList = new ArrayList<>();
-                for (String suggestion : fallout.getCharacterManager().getCharacterList()) {
-                    if (suggestion.toLowerCase().startsWith(arg)) {
-                        modifiedList.add(suggestion);
-                    }
-                }
-                if (modifiedList.isEmpty()) {
-                    return fallout.getCharacterManager().getCharacterList();
-                } else {
-                    return modifiedList;
-                }
-            }
-        } else {
-            return CommandController.EMPTY_LIST;
+    public List<String> getTabCompleteList(List<String> args) {
+        switch (args.size()) {
+            case 1:
+                return tabCompletions(args.get(0), fallout.getCharacterManager().getCharacterList());
+            default:
+                return EMPTY_LIST;
         }
     }
 

@@ -21,6 +21,8 @@ package ninja.amp.fallout.command;
 import ninja.amp.fallout.FalloutCore;
 import org.bukkit.command.CommandSender;
 
+import java.util.List;
+
 /**
  * A command that can contain child commands and be executed.
  *
@@ -97,6 +99,6 @@ public abstract class Command extends CommandGroup {
     }
 
     @Override
-    public abstract void execute(String command, CommandSender sender, String[] args);
+    public abstract void execute(String command, CommandSender sender, List<String> args);
 
 }

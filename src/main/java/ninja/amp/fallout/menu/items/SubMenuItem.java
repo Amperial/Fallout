@@ -25,6 +25,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.UUID;
+
 /**
  * A menu item that opens a nested item menu.
  *
@@ -46,10 +48,10 @@ public class SubMenuItem extends StaticMenuItem {
     @SuppressWarnings("deprecation")
     public void onItemClick(ItemClickEvent event) {
         event.setWillClose(true);
-        final String playerName = event.getPlayer().getName();
+        final UUID playerId = event.getPlayer().getUniqueId();
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             public void run() {
-                Player p = Bukkit.getPlayerExact(playerName);
+                Player p = Bukkit.getPlayer(playerId);
                 if (p != null) {
                     menu.open(p);
                 }

@@ -18,7 +18,7 @@
  */
 package ninja.amp.fallout.command.commands.character.perk;
 
-import ninja.amp.fallout.Fallout;
+import ninja.amp.fallout.FalloutCore;
 import ninja.amp.fallout.command.Command;
 import ninja.amp.fallout.menu.ItemMenu;
 import ninja.amp.fallout.message.FOMessage;
@@ -27,7 +27,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
-import java.util.UUID;
+import java.util.List;
 
 /**
  * A command that lets the sender view and select their character's perks.
@@ -38,23 +38,23 @@ public class Perks extends Command {
 
     private ItemMenu menu;
 
-    public Perks(Fallout plugin) {
-        super(plugin, "perks");
+    public Perks(FalloutCore fallout) {
+        super(fallout, "perks");
         setDescription("View and select your fallout character's perks.");
         setCommandUsage("/fo character perks");
         setPermission(new Permission("fallout.character.perks", PermissionDefault.TRUE));
 
-        this.menu = new PerksMenu(plugin);
+        this.menu = new PerksMenu(fallout);
     }
 
     @Override
-    public void execute(String command, CommandSender sender, String[] args) {
+    public void execute(String command, CommandSender sender, List<String> args) {
         Player player = (Player) sender;
-        UUID playerId = player.getUniqueId();
-        if (fallout.getCharacterManager().isOwner(playerId)) {
+
+        if (fallout.getCharacterManager().isOwner(player.getUniqueId())) {
             menu.open(player);
         } else {
-            fallout.getMessenger().sendMessage(player, FOMessage.CHARACTER_NOTOWNER);
+            fallout.getMessenger().sendErrorMessage(player, FOMessage.CHARACTER_NOTOWNER);
         }
     }
 

@@ -45,6 +45,7 @@ public class AboutCommand extends Command {
         setCommandUsage("/fo");
         setPermission(new Permission("fallout.about", PermissionDefault.TRUE));
         setPlayerOnly(false);
+
         header = Messenger.HIGHLIGHT_COLOR + "<-------<| " + Messenger.PRIMARY_COLOR + "About Fallout " + Messenger.HIGHLIGHT_COLOR + "|>------->";
         info.add(Messenger.SECONDARY_COLOR + "Author: " + StringUtils.join(plugin.getDescription().getAuthors(), ", "));
         info.add(Messenger.SECONDARY_COLOR + "Version: " + plugin.getDescription().getVersion());
@@ -52,7 +53,7 @@ public class AboutCommand extends Command {
     }
 
     @Override
-    public void execute(String command, CommandSender sender, String[] args) {
+    public void execute(String command, CommandSender sender, List<String> args) {
         sender.sendMessage(header);
         for (String message : info) {
             sender.sendMessage(message);
