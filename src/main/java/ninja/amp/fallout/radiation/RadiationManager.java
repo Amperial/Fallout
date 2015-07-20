@@ -16,21 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.command.commands.faction;
+package ninja.amp.fallout.radiation;
 
-import ninja.amp.fallout.Fallout;
-
-/**
- * Manages all of the fallout factions.
- *
- * @author Austin Payne
- */
-public class FactionManager {
-
-    private Fallout plugin;
-
-    public FactionManager(Fallout fallout) {
-        this.plugin = plugin;
-    }
-
+public class RadiationManager {
 }

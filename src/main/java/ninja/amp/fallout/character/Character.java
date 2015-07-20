@@ -18,6 +18,7 @@
  */
 package ninja.amp.fallout.character;
 
+import ninja.amp.fallout.util.ArmorMaterial;
 import ninja.amp.fallout.util.FOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -53,6 +54,10 @@ public class Character {
     private int level;
     private List<String> knowledge = new ArrayList<>();
     private String faction;
+    private int radiation;
+    private int resistance;
+    private long lastRadX;
+    private long remainingRadX;
 
     /**
      * Creates a Character from a character builder.
@@ -76,6 +81,10 @@ public class Character {
         }
         this.level = 0;
         this.faction = null;
+        this.radiation = 0;
+        this.updateRadiationResistance();
+        this.lastRadX = 0;
+        this.remainingRadX = 0;
     }
 
     /**
@@ -145,7 +154,11 @@ public class Character {
             Map<Trait, Integer> traits = new HashMap<>();
             for (Trait trait : Trait.class.getEnumConstants()) {
                 if (specialSection.isInt(trait.getName())) {
-                    traits.put(trait, FOUtils.clamp(specialSection.getInt(trait.getName()), race.getMinSpecial().get(trait), race.getMaxSpecial().get(trait)));
+                    int level = specialSection.getInt(trait.getName());
+                    if (race != Race.DEITY) {
+                        level = FOUtils.clamp(level, race.getMinSpecial().get(trait), race.getMaxSpecial().get(trait));
+                    }
+                    traits.put(trait, level);
                 } else {
                     throw new Exception("Missing or invalid trait: " + trait.getName());
                 }
@@ -188,6 +201,16 @@ public class Character {
             throw new Exception("Missing or invalid knowledge");
         }
         this.faction = section.getString("faction");
+        if (section.isInt("radiation")) {
+            this.radiation = FOUtils.clamp(section.getInt("radiation"), 0, 1000);
+        } else {
+            throw new Exception("Missing or invalid radiation");
+        }
+        updateRadiationResistance();
+        if (section.isLong("lastRadX") && section.isLong("remainingRadX")) {
+            this.lastRadX = section.getLong("lastRadX");
+            this.remainingRadX = section.getLong("remainingRadX");
+        }
     }
 
     /**
@@ -297,6 +320,9 @@ public class Character {
      */
     public void addPerk(Perk perk) {
         perks.add(perk);
+        if (perk == Perk.ANTI_RADIATION) {
+            updateRadiationResistance();
+        }
     }
 
     /**
@@ -306,6 +332,9 @@ public class Character {
      */
     public void removePerk(Perk perk) {
         perks.remove(perk);
+        if (perk == Perk.ANTI_RADIATION) {
+            updateRadiationResistance();
+        }
     }
 
     /**
@@ -435,6 +464,82 @@ public class Character {
     }
 
     /**
+     * Gets the character's radiation level.
+     *
+     * @return The character's radiation level
+     */
+    public int getRadiation() {
+        return radiation;
+    }
+
+    /**
+     * Adds radiation to the character.
+     *
+     * @param radiation The radiation to add
+     */
+    public void addRadiation(int radiation) {
+        this.radiation = FOUtils.clamp(this.radiation + radiation, 0, 1000);
+    }
+
+    /**
+     * Resets the character's radiation level.
+     */
+    public void resetRadiation() {
+        this.radiation = 0;
+    }
+
+    /**
+     * Gets the character's radiation resistance.
+     *
+     * @return The character's radiation resistance
+     */
+    public int getRadiationResistance() {
+        int finalResistance = resistance;
+        if (System.currentTimeMillis() - lastRadX <= 240000) {
+            finalResistance += 25 + (skillLevel(Skill.FIRST_AID) * 10);
+        }
+        return Math.min(finalResistance, 85);
+    }
+
+    /**
+     * Updates the character's radiation resistance.
+     */
+    public void updateRadiationResistance() {
+        // Initial resistance based on endurance
+        resistance = 2 * special.get(Trait.ENDURANCE);
+        // Resistance from perks
+        if (perks.contains(Perk.ANTI_RADIATION)) {
+            resistance += 25;
+        }
+        // Resistance from armor
+        if (ownerId != null) {
+            Player player = Bukkit.getPlayer(ownerId);
+            if (ArmorMaterial.isWearingFullSet(player)) {
+                ArmorMaterial material = ArmorMaterial.getArmorMaterial(player.getInventory().getHelmet().getType());
+                if (ArmorMaterial.DIAMOND.equals(material)) {
+                    resistance += 10;
+                } else if (ArmorMaterial.GOLD.equals(material)) {
+                    resistance += 30;
+                }
+            }
+        }
+    }
+
+    /**
+     * Updates the character's rad-x duration and last time used.
+     */
+    public void useRadX() {
+        long timeElapsed = System.currentTimeMillis() - lastRadX;
+        if (remainingRadX > timeElapsed) {
+            remainingRadX -= timeElapsed;
+        } else {
+            remainingRadX = 0;
+        }
+        remainingRadX += 240000L;
+        lastRadX += timeElapsed;
+    }
+
+    /**
      * Possesses the character by a player.
      *
      * @param owner The character's new owner
@@ -488,6 +593,9 @@ public class Character {
         section.set("level", level);
         section.set("knowledge", knowledge);
         section.set("faction", faction);
+        section.set("radiation", radiation);
+        section.set("lastRadX", lastRadX);
+        section.set("remainingRadX", remainingRadX);
     }
 
     /**

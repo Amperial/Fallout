@@ -254,6 +254,7 @@ public class SpecialMenu extends ItemMenu {
 
             if (character.getRace().isValid(special)) {
                 character.getSpecial().set(special);
+                character.updateRadiationResistance();
                 fallout.getCharacterManager().saveCharacter(character);
                 fallout.getMessenger().sendMessage(player, FOMessage.SPECIAL_SET, character.getCharacterName());
             } else {

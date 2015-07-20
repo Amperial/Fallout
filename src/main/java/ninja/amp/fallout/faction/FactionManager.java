@@ -16,29 +16,27 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Fallout.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ninja.amp.fallout.config;
+package ninja.amp.fallout.faction;
+
+import ninja.amp.fallout.Fallout;
 
 /**
- * Custom configuration files used in the fallout plugin.
+ * Manages all of the fallout factions.
  *
  * @author Austin Payne
  */
-public enum FOConfig implements Config {
-    MESSAGE("Messages.yml"),
-    CHARACTER("Characters.yml"),
-    PLAYER("Players.yml"),
-    FACTION("Factions.yml"),
-    ZONE("Zones.yml");
+public class FactionManager {
 
-    private final String fileName;
+    private Fallout plugin;
 
-    FOConfig(String fileName) {
-        this.fileName = fileName;
-    }
-
-    @Override
-    public String getFileName() {
-        return fileName;
+    /**
+     * Creates a new faction manager.<br>
+     * Must be created after the {@link ninja.amp.fallout.config.ConfigManager} and {@link ninja.amp.fallout.message.Messenger}!
+     *
+     * @param plugin The fallout plugin instance
+     */
+    public FactionManager(Fallout plugin) {
+        this.plugin = plugin;
     }
 
 }

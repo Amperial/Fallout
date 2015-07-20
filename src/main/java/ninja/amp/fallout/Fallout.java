@@ -40,7 +40,7 @@ import ninja.amp.fallout.command.commands.character.skill.ResetSkills;
 import ninja.amp.fallout.command.commands.character.skill.Skills;
 import ninja.amp.fallout.command.commands.character.special.Special;
 import ninja.amp.fallout.command.commands.character.special.SpecialMenu;
-import ninja.amp.fallout.command.commands.faction.FactionManager;
+import ninja.amp.fallout.faction.FactionManager;
 import ninja.amp.fallout.command.commands.radio.Radio;
 import ninja.amp.fallout.command.commands.roll.ArmorRoll;
 import ninja.amp.fallout.command.commands.roll.DiceRoll;
