@@ -514,12 +514,14 @@ public class Character {
         // Resistance from armor
         if (ownerId != null) {
             Player player = Bukkit.getPlayer(ownerId);
-            if (ArmorMaterial.isWearingFullSet(player)) {
-                ArmorMaterial material = ArmorMaterial.getArmorMaterial(player.getInventory().getHelmet().getType());
-                if (ArmorMaterial.DIAMOND.equals(material)) {
-                    resistance += 10;
-                } else if (ArmorMaterial.GOLD.equals(material)) {
-                    resistance += 30;
+            if (player != null) {
+                if (ArmorMaterial.isWearingFullSet(player)) {
+                    ArmorMaterial material = ArmorMaterial.getArmorMaterial(player.getInventory().getHelmet().getType());
+                    if (ArmorMaterial.DIAMOND.equals(material)) {
+                        resistance += 10;
+                    } else if (ArmorMaterial.GOLD.equals(material)) {
+                        resistance += 30;
+                    }
                 }
             }
         }
