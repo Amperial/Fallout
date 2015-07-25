@@ -75,8 +75,11 @@ public class ResetPerks extends Command {
             }
         }
 
-        for (Perk perk : new ArrayList<>(character.getPerks())) {
+        for (Perk perk : character.getPerks()) {
             character.removePerk(perk);
+            if (perk == Perk.ANTI_RADIATION) {
+                character.updateRadiationResistance();
+            }
         }
         characterManager.saveCharacter(character);
         messenger.sendMessage(player, FOMessage.PERKS_RESET, character.getCharacterName());

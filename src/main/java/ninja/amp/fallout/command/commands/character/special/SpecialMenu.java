@@ -87,7 +87,7 @@ public class SpecialMenu extends ItemMenu {
     @Override
     public void open(Player player) {
         Character character = fallout.getCharacterManager().getCharacterByOwner(player.getUniqueId());
-        pendingSpecials.put(character.getOwnerId(), new Special(character.getSpecial()));
+        pendingSpecials.put(character.getOwnerId(), character.getSpecial());
 
         super.open(player);
     }
@@ -253,7 +253,7 @@ public class SpecialMenu extends ItemMenu {
             Special special = getPendingSpecial(playerId);
 
             if (character.getRace().isValid(special)) {
-                character.getSpecial().set(special);
+                character.setSpecial(special);
                 character.updateRadiationResistance();
                 fallout.getCharacterManager().saveCharacter(character);
                 fallout.getMessenger().sendMessage(player, FOMessage.SPECIAL_SET, character.getCharacterName());

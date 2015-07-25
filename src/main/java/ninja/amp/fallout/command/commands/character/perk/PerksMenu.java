@@ -193,6 +193,9 @@ public class PerksMenu extends ItemMenu {
             for (Perk perk : perks) {
                 if (!character.hasPerk(perk)) {
                     character.addPerk(perk);
+                    if (perk == Perk.ANTI_RADIATION) {
+                        character.updateRadiationResistance();
+                    }
                 }
             }
             fallout.getCharacterManager().saveCharacter(character);

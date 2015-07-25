@@ -82,7 +82,7 @@ public class SkillsMenu extends ItemMenu {
     @Override
     public void open(Player player) {
         Character character = fallout.getCharacterManager().getCharacterByOwner(player.getUniqueId());
-        pendingSkills.put(character.getOwnerId(), new HashMap<>(character.getSkillLevels()));
+        pendingSkills.put(character.getOwnerId(), character.getSkillLevels());
 
         super.open(player);
     }

@@ -66,7 +66,7 @@ public class CharacterManager {
      * @param owner The player whose character to load
      * @return The player's character
      */
-    public Character loadCharacter(Player owner) {
+    public synchronized Character loadCharacter(Player owner) {
         Messenger messenger = plugin.getMessenger();
         ConfigManager configManager = plugin.getConfigManager();
 
@@ -82,6 +82,7 @@ public class CharacterManager {
             Character character;
             try {
                 character = new Character(characterConfig.getConfigurationSection(characterName.toLowerCase()));
+                character.updateRadiationResistance();
             } catch (Exception e) {
                 messenger.sendErrorMessage(owner, FOMessage.ERROR_CHARACTERLOAD, characterName, e.getMessage());
                 messenger.debug("Failed to load character " + characterName + ". " + e.getMessage());
@@ -100,11 +101,33 @@ public class CharacterManager {
     }
 
     /**
+     * Loads an offline character.
+     *
+     * @param characterName The character's name
+     * @return The offline character, or {@code} null if character doesn't exist
+     */
+    public synchronized Character loadOfflineCharacter(String characterName) {
+        Messenger messenger = plugin.getMessenger();
+
+        FileConfiguration characterConfig = plugin.getConfigManager().getConfig(FOConfig.CHARACTER);
+        if (characterConfig.contains(characterName.toLowerCase())) {
+            try {
+                Character character = new Character(characterConfig.getConfigurationSection(characterName.toLowerCase()));
+                messenger.debug("Loaded offline character " + characterName);
+                return character;
+            } catch (Exception e) {
+                messenger.debug("Failed to load character " + characterName + ". " + e.getMessage());
+            }
+        }
+        return null;
+    }
+
+    /**
      * Unloads a player's character if currently owning one.
      *
      * @param owner The player whose character to unload
      */
-    public void unloadCharacter(Player owner) {
+    public synchronized void unloadCharacter(Player owner) {
         UUID ownerId = owner.getUniqueId();
         if (isOwner(ownerId)) {
             removeFromManager(charactersByOwner.get(ownerId));
@@ -121,7 +144,7 @@ public class CharacterManager {
      *
      * @param character The character to save
      */
-    public void saveCharacter(Character character) {
+    public synchronized void saveCharacter(Character character) {
         FileConfiguration characterConfig = plugin.getConfigManager().getConfig(FOConfig.CHARACTER);
         character.save(characterConfig.getConfigurationSection(character.getCharacterName().toLowerCase()));
         plugin.getConfigManager().getConfigAccessor(FOConfig.CHARACTER).saveConfig();
@@ -133,7 +156,7 @@ public class CharacterManager {
      *
      * @param character The character to add to the manager
      */
-    private Character addToManager(Character character) {
+    private synchronized Character addToManager(Character character) {
         charactersByOwner.put(character.getOwnerId(), character);
         charactersByName.put(character.getCharacterName().toLowerCase(), character);
         plugin.getMessenger().debug("Added character " + character.getCharacterName() + " to character manager");
@@ -145,7 +168,7 @@ public class CharacterManager {
      *
      * @param character The character to remove from the manager
      */
-    private void removeFromManager(Character character) {
+    private synchronized void removeFromManager(Character character) {
         charactersByOwner.remove(character.getOwnerId());
         charactersByName.remove(character.getCharacterName().toLowerCase());
         plugin.getMessenger().debug("Removed character " + character.getCharacterName() + " from character manager");
@@ -159,12 +182,13 @@ public class CharacterManager {
      * @param owner The character's owner
      * @return The character created
      */
-    public Character createCharacter(Player owner) {
+    public synchronized Character createCharacter(Player owner) {
         ConfigManager configManager = plugin.getConfigManager();
 
         // Create character from character builder and add to manager
         UUID ownerId = owner.getUniqueId();
         Character character = characterBuilders.get(ownerId).build();
+        character.updateRadiationResistance();
         characterBuilders.remove(ownerId);
         plugin.getMessenger().debug("Created character " + character.getCharacterName());
 
@@ -193,7 +217,7 @@ public class CharacterManager {
      *
      * @param character The character to delete
      */
-    public void deleteCharacter(Character character) {
+    public synchronized void deleteCharacter(Character character) {
         // Remove character from manager
         removeFromManager(character);
 
@@ -222,7 +246,7 @@ public class CharacterManager {
      * @param characterName The character's name
      * @return The character possessed
      */
-    public Character possessCharacter(Player owner, String characterName) {
+    public synchronized Character possessCharacter(Player owner, String characterName) {
         Messenger messenger = plugin.getMessenger();
         ConfigManager configManager = plugin.getConfigManager();
 
@@ -231,6 +255,7 @@ public class CharacterManager {
         Character character;
         try {
             character = new Character(characterConfig.getConfigurationSection(characterName.toLowerCase()));
+            character.updateRadiationResistance();
         } catch (Exception e) {
             messenger.sendErrorMessage(owner, FOMessage.ERROR_CHARACTERLOAD, characterName, e.getMessage());
             messenger.debug("Failed to load character " + characterName + ". " + e.getMessage());
@@ -267,7 +292,7 @@ public class CharacterManager {
      *
      * @param owner The character's owner
      */
-    public Character abandonCharacter(Player owner) {
+    public synchronized Character abandonCharacter(Player owner) {
         ConfigManager configManager = plugin.getConfigManager();
 
         UUID ownerId = owner.getUniqueId();
@@ -301,7 +326,7 @@ public class CharacterManager {
      * @param player  The character's owner
      * @param builder The character builder
      */
-    public void addCharacterBuilder(Player player, Character.CharacterBuilder builder) {
+    public synchronized void addCharacterBuilder(Player player, Character.CharacterBuilder builder) {
         characterBuilders.put(player.getUniqueId(), builder);
         plugin.getMessenger().debug("Added character builder for player " + player.getName());
     }
@@ -312,7 +337,7 @@ public class CharacterManager {
      * @param player The character's owner
      * @return The character builder, or {@code null} if the player has not begun to create a character
      */
-    public Character.CharacterBuilder getCharacterBuilder(Player player) {
+    public synchronized Character.CharacterBuilder getCharacterBuilder(Player player) {
         return characterBuilders.get(player.getUniqueId());
     }
 
@@ -322,7 +347,7 @@ public class CharacterManager {
      * @param playerId The player's uuid
      * @return {@code true} if the player is an owner
      */
-    public boolean isOwner(UUID playerId) {
+    public synchronized boolean isOwner(UUID playerId) {
         return charactersByOwner.containsKey(playerId);
     }
 
@@ -332,7 +357,7 @@ public class CharacterManager {
      * @param characterName The character's name
      * @return {@code true} if the character exists
      */
-    public boolean isCharacter(String characterName) {
+    public synchronized boolean isCharacter(String characterName) {
         return plugin.getConfigManager().getConfig(FOConfig.CHARACTER).contains(characterName.toLowerCase());
     }
 
@@ -342,7 +367,7 @@ public class CharacterManager {
      * @param characterName The character's name
      * @return {@code true} if the character is loaded
      */
-    public boolean isLoaded(String characterName) {
+    public synchronized boolean isLoaded(String characterName) {
         return charactersByName.containsKey(characterName.toLowerCase());
     }
 
@@ -352,7 +377,7 @@ public class CharacterManager {
      * @param characterName The character's name
      * @return {@code true} if the character exists and has no current owner
      */
-    public boolean canPossess(String characterName) {
+    public synchronized boolean canPossess(String characterName) {
         FileConfiguration characterConfig = plugin.getConfigManager().getConfig(FOConfig.CHARACTER);
         return characterConfig.contains(characterName.toLowerCase()) && !characterConfig.contains(characterName.toLowerCase() + ".ownerId");
     }
@@ -363,7 +388,7 @@ public class CharacterManager {
      * @param ownerId The owner's UUID
      * @return The character owned by the player
      */
-    public Character getCharacterByOwner(UUID ownerId) {
+    public synchronized Character getCharacterByOwner(UUID ownerId) {
         return charactersByOwner.containsKey(ownerId) ? charactersByOwner.get(ownerId) : null;
     }
 
@@ -373,7 +398,7 @@ public class CharacterManager {
      * @param characterName The character's name
      * @return The character with the given name
      */
-    public Character getCharacterByName(String characterName) {
+    public synchronized Character getCharacterByName(String characterName) {
         return charactersByName.containsKey(characterName.toLowerCase()) ? charactersByName.get(characterName.toLowerCase()) : null;
     }
 
@@ -409,7 +434,7 @@ public class CharacterManager {
      *
      * @return A list of the names of the manager's characters
      */
-    public List<String> getCharacterList() {
+    public synchronized List<String> getCharacterList() {
         return new ArrayList<>(charactersByName.keySet());
     }
 
@@ -418,7 +443,7 @@ public class CharacterManager {
      *
      * @return A list of the names of the existing characters
      */
-    public List<String> getExistingCharacters() {
+    public synchronized List<String> getExistingCharacters() {
         return new ArrayList<>(this.plugin.getConfigManager().getConfig(FOConfig.CHARACTER).getKeys(false));
     }
 

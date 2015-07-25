@@ -18,6 +18,7 @@
  */
 package ninja.amp.fallout.character;
 
+import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.util.ArmorMaterial;
 import ninja.amp.fallout.util.FOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -26,11 +27,11 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Stores the information about a fallout character.
@@ -41,19 +42,25 @@ public class Character {
 
     private String ownerName;
     private UUID ownerId;
-    private String characterName;
-    private Race race;
-    private int age;
-    private int height;
-    private int weight;
-    private Gender gender;
-    private Alignment alignment;
-    private Special special;
-    private Map<Skill, Integer> skills = new HashMap<>();
-    private List<Perk> perks = new ArrayList<>();
-    private int level;
-    private List<String> knowledge = new ArrayList<>();
+    private final Object ownerLock = new Object();
+
+    private final String characterName;
+    private final Race race;
+    private final int age;
+    private final int height;
+    private final int weight;
+    private final Gender gender;
+    private final Alignment alignment;
+
+    private final Special special;
+    private AtomicInteger level;
+    private final Map<Skill, Integer> skills = new HashMap<>();
+    private final List<Perk> perks = new ArrayList<>();
+    private final List<String> knowledge = new ArrayList<>();
+
     private String faction;
+    private final Object factionLock = new Object();
+
     private int radiation;
     private int resistance;
     private long lastRadX;
@@ -67,6 +74,7 @@ public class Character {
     public Character(CharacterBuilder builder) {
         this.ownerName = builder.ownerName;
         this.ownerId = builder.ownerId;
+
         this.characterName = builder.characterName;
         this.race = builder.race;
         this.age = builder.age;
@@ -74,15 +82,16 @@ public class Character {
         this.weight = builder.weight;
         this.gender = builder.gender;
         this.alignment = builder.alignment;
+
         this.special = new Special(race.getMinSpecial());
-        // All skill levels start at 1
+        this.level = new AtomicInteger();
         for (Skill skill : Skill.class.getEnumConstants()) {
             skills.put(skill, 0);
         }
-        this.level = 0;
+
         this.faction = null;
+
         this.radiation = 0;
-        this.updateRadiationResistance();
         this.lastRadX = 0;
         this.remainingRadX = 0;
     }
@@ -101,9 +110,9 @@ public class Character {
             } catch (IllegalArgumentException e) {
                 throw new Exception("Missing or invalid owner ID");
             }
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (ownerId.equals(player.getUniqueId())) {
-                    lastOwnerName = player.getName();
+            for (Map.Entry<UUID, String> player : Fallout.getOnlinePlayers().entrySet()) {
+                if (ownerId.equals(player.getKey())) {
+                    lastOwnerName = player.getValue();
                     break;
                 }
             }
@@ -191,12 +200,12 @@ public class Character {
             throw new Exception("Missing or invalid perks");
         }
         if (section.isInt("level")) {
-            this.level = FOUtils.clamp(section.getInt("level"), 0, 5);
+            this.level = new AtomicInteger(FOUtils.clamp(section.getInt("level"), 0, 5));
         } else {
             throw new Exception("Missing or invalid level");
         }
         if (section.isList("knowledge")) {
-            this.knowledge = section.getStringList("knowledge");
+            this.knowledge.addAll(section.getStringList("knowledge"));
         } else {
             throw new Exception("Missing or invalid knowledge");
         }
@@ -206,7 +215,6 @@ public class Character {
         } else {
             throw new Exception("Missing or invalid radiation");
         }
-        updateRadiationResistance();
         if (section.isLong("lastRadX") && section.isLong("remainingRadX")) {
             this.lastRadX = section.getLong("lastRadX");
             this.remainingRadX = section.getLong("remainingRadX");
@@ -219,7 +227,9 @@ public class Character {
      * @return The owner's name
      */
     public String getOwnerName() {
-        return ownerName;
+        synchronized (this.ownerLock) {
+            return ownerName;
+        }
     }
 
     /**
@@ -228,7 +238,9 @@ public class Character {
      * @return The owner's uuid
      */
     public UUID getOwnerId() {
-        return ownerId;
+        synchronized (this.ownerLock) {
+            return ownerId;
+        }
     }
 
     /**
@@ -300,7 +312,20 @@ public class Character {
      * @return The character's SPECIAL
      */
     public Special getSpecial() {
-        return special;
+        synchronized (this.special) {
+            return new Special(special);
+        }
+    }
+
+    /**
+     * Sets the character's SPECIAL.
+     *
+     * @param special The SPECIAL
+     */
+    public void setSpecial(Special special) {
+        synchronized (this.special) {
+            this.special.set(special);
+        }
     }
 
     /**
@@ -310,7 +335,9 @@ public class Character {
      * @return {@code true} if the character has the perk
      */
     public boolean hasPerk(Perk perk) {
-        return perks.contains(perk);
+        synchronized (perks) {
+            return perks.contains(perk);
+        }
     }
 
     /**
@@ -319,9 +346,8 @@ public class Character {
      * @param perk The perk to add
      */
     public void addPerk(Perk perk) {
-        perks.add(perk);
-        if (perk == Perk.ANTI_RADIATION) {
-            updateRadiationResistance();
+        synchronized (perks) {
+            perks.add(perk);
         }
     }
 
@@ -331,9 +357,8 @@ public class Character {
      * @param perk The perk to remove
      */
     public void removePerk(Perk perk) {
-        perks.remove(perk);
-        if (perk == Perk.ANTI_RADIATION) {
-            updateRadiationResistance();
+        synchronized (perks) {
+            perks.remove(perk);
         }
     }
 
@@ -343,7 +368,9 @@ public class Character {
      * @return An unmodifiable view of the character's perks
      */
     public List<Perk> getPerks() {
-        return Collections.unmodifiableList(perks);
+        synchronized (perks) {
+            return new ArrayList<>(perks);
+        }
     }
 
     /**
@@ -353,8 +380,10 @@ public class Character {
      */
     public String getPerkList() {
         List<String> perkNames = new ArrayList<>();
-        for (Perk perk : perks) {
-            perkNames.add(perk.getName());
+        synchronized (perks) {
+            for (Perk perk : perks) {
+                perkNames.add(perk.getName());
+            }
         }
         return StringUtils.join(perkNames, ", ");
     }
@@ -366,7 +395,9 @@ public class Character {
      * @return The level
      */
     public int skillLevel(Skill skill) {
-        return skills.containsKey(skill) ? skills.get(skill) : 0;
+        synchronized (skills) {
+            return skills.containsKey(skill) ? skills.get(skill) : 0;
+        }
     }
 
     /**
@@ -376,7 +407,9 @@ public class Character {
      * @param level The level
      */
     public void setSkillLevel(Skill skill, int level) {
-        skills.put(skill, level);
+        synchronized (skills) {
+            skills.put(skill, level);
+        }
     }
 
     /**
@@ -385,7 +418,9 @@ public class Character {
      * @return An unmodifiable view of the character's skill levels
      */
     public Map<Skill, Integer> getSkillLevels() {
-        return Collections.unmodifiableMap(skills);
+        synchronized (skills) {
+            return new HashMap<>(skills);
+        }
     }
 
     /**
@@ -395,8 +430,10 @@ public class Character {
      */
     public String getSkillList() {
         List<String> skillLevels = new ArrayList<>();
-        for (Map.Entry<Skill, Integer> skill : skills.entrySet()) {
-            skillLevels.add(skill.getKey().getName() + " - " + skill.getValue());
+        synchronized (skills) {
+            for (Map.Entry<Skill, Integer> skill : skills.entrySet()) {
+                skillLevels.add(skill.getKey().getName() + " - " + skill.getValue());
+            }
         }
         return StringUtils.join(skillLevels, ", ");
     }
@@ -407,14 +444,16 @@ public class Character {
      * @return The character's level
      */
     public int getLevel() {
-        return level;
+        return level.intValue();
     }
 
     /**
      * Increases the character's level by 1.
+     *
+     * @return The character's new level
      */
-    public void increaseLevel() {
-        level += 1;
+    public int increaseLevel() {
+        return level.incrementAndGet();
     }
 
     /**
@@ -424,7 +463,9 @@ public class Character {
      * @return {@code true} if the character knows the piece of information
      */
     public boolean hasKnowledge(String information) {
-        return knowledge.contains(information.toLowerCase());
+        synchronized (knowledge) {
+            return knowledge.contains(information.toLowerCase());
+        }
     }
 
     /**
@@ -433,7 +474,9 @@ public class Character {
      * @param information The piece of information
      */
     public void addKnowledge(String information) {
-        knowledge.add(information.toLowerCase());
+        synchronized (knowledge) {
+            knowledge.add(information.toLowerCase());
+        }
     }
 
     /**
@@ -442,7 +485,9 @@ public class Character {
      * @param information The piece of information
      */
     public void removeKnowledge(String information) {
-        knowledge.remove(information.toLowerCase());
+        synchronized (knowledge) {
+            knowledge.remove(information.toLowerCase());
+        }
     }
 
     /**
@@ -451,7 +496,9 @@ public class Character {
      * @return The character's faction
      */
     public String getFaction() {
-        return faction;
+        synchronized (factionLock) {
+            return faction;
+        }
     }
 
     /**
@@ -460,7 +507,9 @@ public class Character {
      * @param faction The faction
      */
     public void setFaction(String faction) {
-        this.faction = faction;
+        synchronized (factionLock) {
+            this.faction = faction;
+        }
     }
 
     /**
@@ -547,16 +596,20 @@ public class Character {
      * @param owner The character's new owner
      */
     public void possess(Player owner) {
-        this.ownerName = owner.getName();
-        this.ownerId = owner.getUniqueId();
+        synchronized (ownerLock) {
+            this.ownerName = owner.getName();
+            this.ownerId = owner.getUniqueId();
+        }
     }
 
     /**
      * Abandons the character's owner.
      */
     public void abandon() {
-        ownerName = null;
-        ownerId = null;
+        synchronized (ownerLock) {
+            ownerName = null;
+            ownerId = null;
+        }
     }
 
     /**
@@ -565,12 +618,9 @@ public class Character {
      * @param section The configuration section
      */
     public void save(ConfigurationSection section) {
-        if (ownerName == null) {
-            section.set("ownerName", null);
-            section.set("ownerId", null);
-        } else {
+        synchronized (ownerLock) {
             section.set("ownerName", ownerName);
-            section.set("ownerId", ownerId.toString());
+            section.set("ownerId", ownerId == null ? null : ownerId.toString());
         }
         section.set("name", characterName);
         section.set("race", race.getName());
@@ -580,21 +630,31 @@ public class Character {
         section.set("gender", gender.name());
         section.set("alignment", alignment.name());
         ConfigurationSection specialSection = section.createSection("special");
-        for (Map.Entry<Trait, Integer> entry : special.getTraits().entrySet()) {
-            specialSection.set(entry.getKey().getName(), entry.getValue());
+        synchronized (special) {
+            for (Map.Entry<Trait, Integer> entry : special.getTraits().entrySet()) {
+                specialSection.set(entry.getKey().getName(), entry.getValue());
+            }
         }
         ConfigurationSection skillLevels = section.createSection("skills");
-        for (Map.Entry<Skill, Integer> skill : skills.entrySet()) {
-            skillLevels.set(skill.getKey().getName(), skill.getValue());
+        synchronized (skills) {
+            for (Map.Entry<Skill, Integer> skill : skills.entrySet()) {
+                skillLevels.set(skill.getKey().getName(), skill.getValue());
+            }
         }
         List<String> perkNames = new ArrayList<>();
-        for (Perk perk : perks) {
-            perkNames.add(perk.getName());
+        synchronized (perks) {
+            for (Perk perk : perks) {
+                perkNames.add(perk.getName());
+            }
         }
         section.set("perks", perkNames);
-        section.set("level", level);
-        section.set("knowledge", knowledge);
-        section.set("faction", faction);
+        section.set("level", level.intValue());
+        synchronized (knowledge) {
+            section.set("knowledge", knowledge);
+        }
+        synchronized (factionLock) {
+            section.set("faction", faction);
+        }
         section.set("radiation", radiation);
         section.set("lastRadX", lastRadX);
         section.set("remainingRadX", remainingRadX);

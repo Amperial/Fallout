@@ -25,6 +25,7 @@ import ninja.amp.fallout.command.commands.character.knowledge.Information;
 import ninja.amp.fallout.message.FOMessage;
 import ninja.amp.fallout.util.ArmorMaterial;
 import ninja.amp.fallout.util.ArmorType;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.EntityType;
@@ -48,7 +49,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Handles various fallout events.
@@ -61,6 +64,8 @@ public class FOListener implements Listener {
     private boolean preventCraftingDiamondArmor;
     private boolean preventMobsDroppingExp;
 
+    protected static Map<UUID, String> onlinePlayers = null;
+
     /**
      * Creates a new FOListener.
      *
@@ -72,6 +77,11 @@ public class FOListener implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         preventCraftingDiamondArmor = plugin.getConfig().getBoolean("PreventCraftingDiamondArmor", false);
         preventMobsDroppingExp = plugin.getConfig().getBoolean("PreventMobsDroppingExp", false);
+
+        onlinePlayers = new ConcurrentHashMap<>();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            onlinePlayers.put(player.getUniqueId(), player.getName());
+        }
     }
 
     /**
@@ -79,7 +89,9 @@ public class FOListener implements Listener {
      */
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
-        plugin.getCharacterManager().loadCharacter(event.getPlayer());
+        Player player = event.getPlayer();
+        onlinePlayers.put(player.getUniqueId(), player.getName());
+        plugin.getCharacterManager().loadCharacter(player);
     }
 
     /**
@@ -87,7 +99,9 @@ public class FOListener implements Listener {
      */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerQuit(PlayerQuitEvent event) {
-        plugin.getCharacterManager().unloadCharacter(event.getPlayer());
+        Player player = event.getPlayer();
+        plugin.getCharacterManager().unloadCharacter(player);
+        onlinePlayers.remove(player.getUniqueId());
     }
 
     /**

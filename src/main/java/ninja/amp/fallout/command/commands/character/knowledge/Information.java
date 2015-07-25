@@ -19,9 +19,8 @@
 package ninja.amp.fallout.command.commands.character.knowledge;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Keeps track of pieces of information that fallout characters can learn.
@@ -33,7 +32,7 @@ public class Information {
      */
     public static final String POWER_ARMOR = "PowerArmor";
 
-    private static final Map<String, String> informationPieces = new HashMap<>();
+    private static final ConcurrentHashMap<String, String> informationPieces = new ConcurrentHashMap<>();
 
     private Information() {
     }
@@ -54,7 +53,7 @@ public class Information {
      * @param information The information piece to add
      */
     public static void addInformation(String information) {
-        informationPieces.put(information.toLowerCase(), information);
+        informationPieces.putIfAbsent(information.toLowerCase(), information);
     }
 
     /**

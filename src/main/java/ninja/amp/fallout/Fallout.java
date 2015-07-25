@@ -56,8 +56,11 @@ import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * The main class of the Fallout plugin.
@@ -225,6 +228,15 @@ public class Fallout extends JavaPlugin implements FalloutCore {
      */
     public FOListener getFoListener() {
         return foListener;
+    }
+
+    /**
+     * Gets the unique id and name of all online players.
+     *
+     * @return The map of player id and names
+     */
+    public static Map<UUID, String> getOnlinePlayers() {
+        return FOListener.onlinePlayers == null ? null : new HashMap<>(FOListener.onlinePlayers);
     }
 
 }
