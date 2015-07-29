@@ -19,11 +19,8 @@
 package ninja.amp.fallout.command.commands.character;
 
 import ninja.amp.fallout.FalloutCore;
-import ninja.amp.fallout.character.CharacterManager;
-import ninja.amp.fallout.command.Command;
+import ninja.amp.fallout.character.Character;
 import ninja.amp.fallout.message.FOMessage;
-import ninja.amp.fallout.message.Messenger;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
@@ -35,7 +32,7 @@ import java.util.List;
  *
  * @author Austin Payne
  */
-public class Abandon extends Command {
+public class Abandon extends CharacterCommand {
 
     public Abandon(FalloutCore fallout) {
         super(fallout, "abandon");
@@ -45,17 +42,9 @@ public class Abandon extends Command {
     }
 
     @Override
-    public void execute(String command, CommandSender sender, List<String> args) {
-        Player player = (Player) sender;
-
-        Messenger messenger = fallout.getMessenger();
-        CharacterManager characterManager = fallout.getCharacterManager();
-        if (characterManager.isOwner(player.getUniqueId())) {
-            characterManager.abandonCharacter(player);
-            messenger.sendMessage(player, FOMessage.CHARACTER_ABANDON);
-        } else {
-            messenger.sendErrorMessage(player, FOMessage.CHARACTER_NOTOWNER);
-        }
+    public void execute(String command, Player sender, Character character, List<String> args) {
+        fallout.getCharacterManager().abandonCharacter(sender);
+        fallout.getMessenger().sendMessage(sender, FOMessage.CHARACTER_ABANDON);
     }
 
 }

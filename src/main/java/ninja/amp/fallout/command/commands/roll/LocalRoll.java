@@ -19,13 +19,13 @@
 package ninja.amp.fallout.command.commands.roll;
 
 import ninja.amp.fallout.FalloutCore;
+import ninja.amp.fallout.character.Character;
 import ninja.amp.fallout.character.Skill;
 import ninja.amp.fallout.character.Trait;
-import ninja.amp.fallout.command.Command;
+import ninja.amp.fallout.command.commands.character.CharacterCommand;
 import ninja.amp.fallout.message.FOMessage;
 import ninja.amp.fallout.message.Messenger;
 import ninja.amp.fallout.util.DamageType;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
@@ -38,7 +38,7 @@ import java.util.List;
  *
  * @author Austin Payne
  */
-public class LocalRoll extends Command {
+public class LocalRoll extends CharacterCommand {
 
     private final List<String> tabCompleteList = new ArrayList<>();
 
@@ -56,7 +56,7 @@ public class LocalRoll extends Command {
     }
 
     @Override
-    public void execute(String command, CommandSender sender, List<String> args) {
+    public void execute(String command, Player sender, Character character, List<String> args) {
         String target = args.get(0);
 
         Messenger messenger = fallout.getMessenger();
@@ -64,20 +64,20 @@ public class LocalRoll extends Command {
         switch (target.toLowerCase()) {
             case "dice":
                 if (args.size() == 2) {
-                    rollManager.rollDice((Player) sender, args.get(1), RollManager.Distance.LOCAL);
+                    rollManager.rollDice(sender, character, args.get(1), RollManager.Distance.LOCAL);
                 } else {
                     messenger.sendErrorMessage(sender, FOMessage.COMMAND_USAGE, "/fo roll dice <amount>d<sides>[+/-modifier]");
                 }
                 break;
             case "armor":
                 if (args.size() == 2) {
-                    rollManager.rollArmor((Player) sender, args.get(1), RollManager.Distance.LOCAL);
+                    rollManager.rollArmor(sender, character, args.get(1), RollManager.Distance.LOCAL);
                 } else {
                     messenger.sendErrorMessage(sender, FOMessage.COMMAND_USAGE, "/fo roll armor <damage type>[+/-modifier]");
                 }
                 break;
             default:
-                rollManager.rollStandard((Player) sender, target, RollManager.Distance.LOCAL);
+                rollManager.rollStandard(sender, character, target, RollManager.Distance.LOCAL);
         }
     }
 

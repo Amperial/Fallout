@@ -20,7 +20,6 @@ package ninja.amp.fallout.command.commands.roll;
 
 import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.character.Character;
-import ninja.amp.fallout.character.CharacterManager;
 import ninja.amp.fallout.character.Skill;
 import ninja.amp.fallout.character.Trait;
 import ninja.amp.fallout.message.FOMessage;
@@ -32,8 +31,6 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-
-import java.util.UUID;
 
 /**
  * Manages all dice, armor, skill, and trait rolling in fallout.
@@ -68,72 +65,64 @@ public class RollManager {
      * @param value    The roll parameters: <trait/skill>[+/-modifier]
      * @param distance The broadcast distance of the roll
      */
-    public void rollStandard(Player player, String value, Distance distance) {
-        UUID playerId = player.getUniqueId();
-
+    public void rollStandard(Player player, Character character, String value, Distance distance) {
         Messenger messenger = plugin.getMessenger();
-        CharacterManager characterManager = plugin.getCharacterManager();
-        if (characterManager.isOwner(playerId)) {
-            Character character = characterManager.getCharacterByOwner(playerId);
 
-            // Parse trait/skill name from modifier if one exists
-            String rolling = value;
-            int modifier = 0;
-            try {
-                String[] arg = value.split("\\+");
+        // Parse trait/skill name from modifier if one exists
+        String rolling = value;
+        int modifier = 0;
+        try {
+            String[] arg = value.split("\\+");
+            if (arg.length > 1) {
+                rolling = arg[0];
+                modifier += Integer.parseInt(arg[1]);
+            } else {
+                arg = value.split("-");
                 if (arg.length > 1) {
                     rolling = arg[0];
-                    modifier += Integer.parseInt(arg[1]);
-                } else {
-                    arg = value.split("-");
-                    if (arg.length > 1) {
-                        rolling = arg[0];
-                        modifier -= Integer.parseInt(arg[1]);
-                    }
+                    modifier -= Integer.parseInt(arg[1]);
                 }
-            } catch (NumberFormatException e) {
-                messenger.sendErrorMessage(player, FOMessage.ERROR_MODIFIERSYNTAX);
+            }
+        } catch (NumberFormatException e) {
+            messenger.sendErrorMessage(player, FOMessage.ERROR_MODIFIERSYNTAX);
+            return;
+        }
+
+        // Perform the roll
+        Trait trait = Trait.fromName(rolling);
+        int finalModifier;
+        if (trait == null) {
+            Skill skill = Skill.fromName(rolling);
+            if (skill == null) {
+                messenger.sendErrorMessage(player, FOMessage.ROLL_CANTROLL, value);
                 return;
             }
-
-            // Perform the roll
-            Trait trait = Trait.fromName(rolling);
-            int finalModifier;
-            if (trait == null) {
-                Skill skill = Skill.fromName(rolling);
-                if (skill == null) {
-                    messenger.sendErrorMessage(player, FOMessage.ROLL_CANTROLL, value);
-                    return;
-                }
-                rolling = skill.getName();
-                finalModifier = skillModifier(character, skill, modifier);
-            } else {
-                rolling = trait.getName();
-                if (trait == Trait.STRENGTH && ArmorMaterial.isWearingFullSet(player)) {
-                    ArmorMaterial material = ArmorMaterial.getArmorMaterial(player.getInventory().getHelmet().getType());
-                    if (material == ArmorMaterial.DIAMOND) {
-                        modifier += 2;
-                    }
-                }
-                finalModifier = specialModifier(character, trait, modifier);
-            }
-            int roll = FOUtils.random(1, 20);
-            int luck = character.getSpecial().get(Trait.LUCK);
-            FOMessage result = getResult(roll, finalModifier, luck);
-            String visualizer = getRollVisualizer(roll, finalModifier, luck);
-            switch (distance) {
-                case GLOBAL:
-                    messenger.sendMessage(plugin.getServer(), FOMessage.ROLL_STANDARD_PUBLIC, character.getCharacterName(), rolling, modifier < 0 ? modifier : "+" + modifier, visualizer, result);
-                    break;
-                case LOCAL:
-                    messenger.sendMessage(player.getLocation(), FOMessage.ROLL_STANDARD_PUBLIC, character.getCharacterName(), rolling, modifier < 0 ? modifier : "+" + modifier, visualizer, result);
-                    break;
-                case PRIVATE:
-                    messenger.sendMessage(player, FOMessage.ROLL_STANDARD_PRIVATE, rolling, modifier < 0 ? modifier : "+" + modifier, visualizer, result);
-                    break;
-            }
+            rolling = skill.getName();
+            finalModifier = skillModifier(character, skill, modifier);
         } else {
-            messenger.sendErrorMessage(player, FOMessage.CHARACTER_NOTOWNER);
+            rolling = trait.getName();
+            if (trait == Trait.STRENGTH && ArmorMaterial.isWearingFullSet(player)) {
+                ArmorMaterial material = ArmorMaterial.getArmorMaterial(player.getInventory().getHelmet().getType());
+                if (material == ArmorMaterial.DIAMOND) {
+                    modifier += 2;
+                }
+            }
+            finalModifier = specialModifier(character, trait, modifier);
+        }
+        int roll = FOUtils.random(1, 20);
+        int luck = character.getSpecial().get(Trait.LUCK);
+        FOMessage result = getResult(roll, finalModifier, luck);
+        String visualizer = getRollVisualizer(roll, finalModifier, luck);
+        switch (distance) {
+            case GLOBAL:
+                messenger.sendMessage(plugin.getServer(), FOMessage.ROLL_STANDARD_PUBLIC, character.getCharacterName(), rolling, modifier < 0 ? modifier : "+" + modifier, visualizer, result);
+                break;
+            case LOCAL:
+                messenger.sendMessage(player.getLocation(), FOMessage.ROLL_STANDARD_PUBLIC, character.getCharacterName(), rolling, modifier < 0 ? modifier : "+" + modifier, visualizer, result);
+                break;
+            case PRIVATE:
+                messenger.sendMessage(player, FOMessage.ROLL_STANDARD_PRIVATE, rolling, modifier < 0 ? modifier : "+" + modifier, visualizer, result);
+                break;
         }
     }
 
@@ -144,63 +133,55 @@ public class RollManager {
      * @param value    The roll parameters: <damage type>[+/-modifier]
      * @param distance The broadcast distance of the roll
      */
-    public void rollArmor(Player player, String value, Distance distance) {
-        UUID playerId = player.getUniqueId();
-
+    public void rollArmor(Player player, Character character, String value, Distance distance) {
         Messenger messenger = plugin.getMessenger();
-        CharacterManager characterManager = plugin.getCharacterManager();
-        if (characterManager.isOwner(playerId)) {
-            Character character = characterManager.getCharacterByOwner(playerId);
 
-            // Parse damage type from modifier if one exists
-            String rolling = value;
-            int modifier = 0;
-            try {
-                String[] arg = value.split("\\+");
+        // Parse damage type from modifier if one exists
+        String rolling = value;
+        int modifier = 0;
+        try {
+            String[] arg = value.split("\\+");
+            if (arg.length > 1) {
+                rolling = arg[0];
+                modifier += Integer.parseInt(arg[1]);
+            } else {
+                arg = value.split("-");
                 if (arg.length > 1) {
                     rolling = arg[0];
-                    modifier += Integer.parseInt(arg[1]);
-                } else {
-                    arg = value.split("-");
-                    if (arg.length > 1) {
-                        rolling = arg[0];
-                        modifier -= Integer.parseInt(arg[1]);
-                    }
+                    modifier -= Integer.parseInt(arg[1]);
                 }
-            } catch (NumberFormatException e) {
-                messenger.sendErrorMessage(player, FOMessage.ERROR_MODIFIERSYNTAX);
-                return;
             }
+        } catch (NumberFormatException e) {
+            messenger.sendErrorMessage(player, FOMessage.ERROR_MODIFIERSYNTAX);
+            return;
+        }
 
-            // Perform the roll
-            DamageType damageType = DamageType.fromName(rolling);
-            if (damageType == null) {
-                messenger.sendErrorMessage(player, FOMessage.COMMAND_USAGE, "/fo roll armor <damage type>[+/-modifier]");
-                return;
-            }
-            boolean blocked;
-            if (ArmorMaterial.isWearingFullSet(player)) {
-                ArmorMaterial material = ArmorMaterial.getArmorMaterial(player.getInventory().getHelmet().getType());
-                int damage = FOUtils.random(1, 6) + modifier;
-                int defenseValue = material.getDefenseValue(damageType);
-                blocked = defenseValue > 0 && damage <= defenseValue;
-            } else {
-                blocked = false;
-            }
-
-            FOMessage result = blocked ? FOMessage.RESULT_SUCCESS : FOMessage.RESULT_FAILURE;
-            switch (distance) {
-                case GLOBAL:
-                    messenger.sendMessage(plugin.getServer(), FOMessage.ROLL_ARMOR_PUBLIC, character.getCharacterName(), damageType.getName(), result);
-                    break;
-                case LOCAL:
-                    messenger.sendMessage(player.getLocation(), FOMessage.ROLL_ARMOR_PUBLIC, character.getCharacterName(), damageType.getName(), result);
-                    break;
-                case PRIVATE:
-                    messenger.sendMessage(player, FOMessage.ROLL_ARMOR_PRIVATE, damageType.getName(), result);
-            }
+        // Perform the roll
+        DamageType damageType = DamageType.fromName(rolling);
+        if (damageType == null) {
+            messenger.sendErrorMessage(player, FOMessage.COMMAND_USAGE, "/fo roll armor <damage type>[+/-modifier]");
+            return;
+        }
+        boolean blocked;
+        if (ArmorMaterial.isWearingFullSet(player)) {
+            ArmorMaterial material = ArmorMaterial.getArmorMaterial(player.getInventory().getHelmet().getType());
+            int damage = FOUtils.random(1, 6) + modifier;
+            int defenseValue = material.getDefenseValue(damageType);
+            blocked = defenseValue > 0 && damage <= defenseValue;
         } else {
-            messenger.sendErrorMessage(player, FOMessage.CHARACTER_NOTOWNER);
+            blocked = false;
+        }
+
+        FOMessage result = blocked ? FOMessage.RESULT_SUCCESS : FOMessage.RESULT_FAILURE;
+        switch (distance) {
+            case GLOBAL:
+                messenger.sendMessage(plugin.getServer(), FOMessage.ROLL_ARMOR_PUBLIC, character.getCharacterName(), damageType.getName(), result);
+                break;
+            case LOCAL:
+                messenger.sendMessage(player.getLocation(), FOMessage.ROLL_ARMOR_PUBLIC, character.getCharacterName(), damageType.getName(), result);
+                break;
+            case PRIVATE:
+                messenger.sendMessage(player, FOMessage.ROLL_ARMOR_PRIVATE, damageType.getName(), result);
         }
     }
 
@@ -211,74 +192,66 @@ public class RollManager {
      * @param value    The roll parameters: <amount>d<sides>[+/-modifier]
      * @param distance The broadcast distance of the roll
      */
-    public void rollDice(Player player, String value, Distance distance) {
-        UUID playerId = player.getUniqueId();
-
+    public void rollDice(Player player, Character character, String value, Distance distance) {
         Messenger messenger = plugin.getMessenger();
-        CharacterManager characterManager = plugin.getCharacterManager();
-        if (characterManager.isOwner(playerId)) {
-            Character character = characterManager.getCharacterByOwner(playerId);
 
-            // Parse amount and sides from modifier if one exists
-            int amount;
-            int sides;
-            int modifier = 0;
-            try {
-                String[] arg = value.split("d");
-                amount = Math.max(1, Integer.parseInt(arg[0]));
-                String[] arg2 = arg[1].split("\\+");
+        // Parse amount and sides from modifier if one exists
+        int amount;
+        int sides;
+        int modifier = 0;
+        try {
+            String[] arg = value.split("d");
+            amount = Math.max(1, Integer.parseInt(arg[0]));
+            String[] arg2 = arg[1].split("\\+");
+            if (arg2.length > 1) {
+                sides = Math.max(1, Integer.parseInt(arg2[0]));
+                modifier += Integer.parseInt(arg2[1]);
+            } else {
+                arg2 = arg[1].split("-");
                 if (arg2.length > 1) {
                     sides = Math.max(1, Integer.parseInt(arg2[0]));
-                    modifier += Integer.parseInt(arg2[1]);
+                    modifier -= Integer.parseInt(arg2[1]);
                 } else {
-                    arg2 = arg[1].split("-");
-                    if (arg2.length > 1) {
-                        sides = Math.max(1, Integer.parseInt(arg2[0]));
-                        modifier -= Integer.parseInt(arg2[1]);
-                    } else {
-                        sides = Math.max(1, Integer.parseInt(arg[1]));
-                    }
+                    sides = Math.max(1, Integer.parseInt(arg[1]));
                 }
-            } catch (ArrayIndexOutOfBoundsException e) {
-                messenger.sendErrorMessage(player, FOMessage.COMMAND_USAGE, "/fo roll dice <amount>d<sides>[+/-modifier]");
-                return;
-            } catch (NumberFormatException e) {
-                messenger.sendErrorMessage(player, FOMessage.ERROR_MODIFIERSYNTAX);
-                return;
             }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            messenger.sendErrorMessage(player, FOMessage.COMMAND_USAGE, "/fo roll dice <amount>d<sides>[+/-modifier]");
+            return;
+        } catch (NumberFormatException e) {
+            messenger.sendErrorMessage(player, FOMessage.ERROR_MODIFIERSYNTAX);
+            return;
+        }
 
-            if ((distance == Distance.PRIVATE && amount > privateDiceLimit) || (distance != Distance.PRIVATE && amount > publicDiceLimit)) {
-                messenger.sendErrorMessage(player, FOMessage.ROLL_DICEAMOUNT);
-                return;
-            }
-            if (sides > diceSidesLimit) {
-                messenger.sendErrorMessage(player, FOMessage.ROLL_DICESIDES);
-                return;
-            }
+        if ((distance == Distance.PRIVATE && amount > privateDiceLimit) || (distance != Distance.PRIVATE && amount > publicDiceLimit)) {
+            messenger.sendErrorMessage(player, FOMessage.ROLL_DICEAMOUNT);
+            return;
+        }
+        if (sides > diceSidesLimit) {
+            messenger.sendErrorMessage(player, FOMessage.ROLL_DICESIDES);
+            return;
+        }
 
-            // Perform the rolls
-            Object[] rolls = new Object[amount];
-            int total = modifier;
-            for (int i = 0; i < amount; i++) {
-                int roll = FOUtils.random(1, sides);
-                rolls[i] = roll;
-                total += roll;
-            }
-            String outcome = StringUtils.join(rolls, '+');
+        // Perform the rolls
+        Object[] rolls = new Object[amount];
+        int total = modifier;
+        for (int i = 0; i < amount; i++) {
+            int roll = FOUtils.random(1, sides);
+            rolls[i] = roll;
+            total += roll;
+        }
+        String outcome = StringUtils.join(rolls, '+');
 
-            switch (distance) {
-                case GLOBAL:
-                    messenger.sendMessage(plugin.getServer(), FOMessage.ROLL_DICE_PUBLIC, character.getCharacterName(), value, outcome, total);
-                    break;
-                case LOCAL:
-                    messenger.sendMessage(player.getLocation(), FOMessage.ROLL_DICE_PUBLIC, character.getCharacterName(), value, outcome, total);
-                    break;
-                case PRIVATE:
-                    messenger.sendMessage(player, FOMessage.ROLL_DICE_PRIVATE, value, outcome, total);
-                    break;
-            }
-        } else {
-            messenger.sendErrorMessage(player, FOMessage.CHARACTER_NOTOWNER);
+        switch (distance) {
+            case GLOBAL:
+                messenger.sendMessage(plugin.getServer(), FOMessage.ROLL_DICE_PUBLIC, character.getCharacterName(), value, outcome, total);
+                break;
+            case LOCAL:
+                messenger.sendMessage(player.getLocation(), FOMessage.ROLL_DICE_PUBLIC, character.getCharacterName(), value, outcome, total);
+                break;
+            case PRIVATE:
+                messenger.sendMessage(player, FOMessage.ROLL_DICE_PRIVATE, value, outcome, total);
+                break;
         }
     }
 

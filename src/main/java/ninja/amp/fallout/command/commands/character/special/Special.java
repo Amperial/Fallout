@@ -19,10 +19,9 @@
 package ninja.amp.fallout.command.commands.character.special;
 
 import ninja.amp.fallout.FalloutCore;
-import ninja.amp.fallout.command.Command;
+import ninja.amp.fallout.character.Character;
+import ninja.amp.fallout.command.commands.character.CharacterCommand;
 import ninja.amp.fallout.menu.ItemMenu;
-import ninja.amp.fallout.message.FOMessage;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
@@ -34,7 +33,7 @@ import java.util.List;
  *
  * @author Austin Payne
  */
-public class Special extends Command {
+public class Special extends CharacterCommand {
 
     private ItemMenu menu;
 
@@ -48,14 +47,8 @@ public class Special extends Command {
     }
 
     @Override
-    public void execute(String command, CommandSender sender, List<String> args) {
-        Player player = (Player) sender;
-
-        if (fallout.getCharacterManager().isOwner(player.getUniqueId())) {
-            menu.open(player);
-        } else {
-            fallout.getMessenger().sendErrorMessage(player, FOMessage.CHARACTER_NOTOWNER);
-        }
+    public void execute(String command, Player sender, Character character, List<String> args) {
+        menu.open(sender);
     }
 
 }

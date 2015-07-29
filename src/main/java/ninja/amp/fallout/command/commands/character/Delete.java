@@ -19,24 +19,20 @@
 package ninja.amp.fallout.command.commands.character;
 
 import ninja.amp.fallout.FalloutCore;
-import ninja.amp.fallout.character.CharacterManager;
-import ninja.amp.fallout.command.Command;
+import ninja.amp.fallout.character.Character;
 import ninja.amp.fallout.message.FOMessage;
-import ninja.amp.fallout.message.Messenger;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * A command that deletes the senders fallout character.
  *
  * @author Austin Payne
  */
-public class Delete extends Command {
+public class Delete extends CharacterCommand {
 
     public Delete(FalloutCore fallout) {
         super(fallout, "delete");
@@ -46,18 +42,9 @@ public class Delete extends Command {
     }
 
     @Override
-    public void execute(String command, CommandSender sender, List<String> args) {
-        Player player = (Player) sender;
-        UUID playerId = player.getUniqueId();
-
-        Messenger messenger = fallout.getMessenger();
-        CharacterManager characterManager = fallout.getCharacterManager();
-        if (characterManager.isOwner(playerId)) {
-            characterManager.deleteCharacter(characterManager.getCharacterByOwner(playerId));
-            messenger.sendMessage(player, FOMessage.CHARACTER_DELETE);
-        } else {
-            messenger.sendErrorMessage(player, FOMessage.CHARACTER_NOTOWNER);
-        }
+    public void execute(String command, Player sender, Character character, List<String> args) {
+        fallout.getCharacterManager().deleteCharacter(character);
+        fallout.getMessenger().sendMessage(sender, FOMessage.CHARACTER_DELETE);
     }
 
 }
