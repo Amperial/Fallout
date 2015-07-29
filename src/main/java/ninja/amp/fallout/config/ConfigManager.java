@@ -77,7 +77,7 @@ public class ConfigManager {
      * @param configType The type of the configuration file
      * @return The config accessor
      */
-    public ConfigAccessor getConfigAccessor(FOConfig configType) {
+    public ConfigAccessor getConfigAccessor(Config configType) {
         return configs.get(configType);
     }
 
@@ -87,7 +87,7 @@ public class ConfigManager {
      * @param configType The type of the configuration file
      * @return The configuration file
      */
-    public FileConfiguration getConfig(FOConfig configType) {
+    public FileConfiguration getConfig(Config configType) {
         return configs.get(configType).getConfig();
     }
 
