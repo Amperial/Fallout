@@ -18,8 +18,6 @@
  */
 package ninja.amp.fallout.util;
 
-import java.lang.Character;
-
 /**
  * Evaluates expressions used for various purposes in fallout.
  *

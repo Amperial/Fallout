@@ -20,10 +20,10 @@ package ninja.amp.fallout.command.commands.character.profile;
 
 import ninja.amp.fallout.FalloutCore;
 import ninja.amp.fallout.character.Character;
+import ninja.amp.fallout.character.Information;
 import ninja.amp.fallout.character.Perk;
 import ninja.amp.fallout.character.Skill;
 import ninja.amp.fallout.character.Trait;
-import ninja.amp.fallout.command.commands.character.knowledge.Information;
 import ninja.amp.fallout.menu.ItemMenu;
 import ninja.amp.fallout.menu.MenuHolder;
 import ninja.amp.fallout.menu.Owner;

@@ -20,8 +20,8 @@ package ninja.amp.fallout;
 
 import ninja.amp.fallout.character.Character;
 import ninja.amp.fallout.character.CharacterManager;
+import ninja.amp.fallout.character.Information;
 import ninja.amp.fallout.character.Race;
-import ninja.amp.fallout.command.commands.character.knowledge.Information;
 import ninja.amp.fallout.message.FOMessage;
 import ninja.amp.fallout.util.ArmorMaterial;
 import ninja.amp.fallout.util.ArmorType;

@@ -30,8 +30,8 @@ import java.util.Map;
 public enum Race {
     WASTELANDER("Human", new Special(1, 1, 1, 1, 1, 1, 1), new Special(10, 10, 10, 10, 10, 10, 10)),
     GHOUL("Ghoul", new Special(1, 4, 1, 1, 4, 1, 5), new Special(6, 13, 9, 7, 10, 8, 10)),
-    SUPER_MUTANT("SuperMutant", new Special(7, 2, 5, 1, 3, 3, 4), new Special(12, 11, 11, 4, 8, 8, 10)),
-    VAULT_DWELLER("VaultDweller", new Special(1, 1, 1, 1, 1, 1, 1), new Special(10, 10, 10, 10, 10, 10, 10)),
+    SUPER_MUTANT("Super Mutant", new Special(7, 2, 5, 1, 3, 3, 4), new Special(12, 11, 11, 4, 8, 8, 10)),
+    VAULT_DWELLER("Vault Dweller", new Special(1, 1, 1, 1, 1, 1, 1), new Special(10, 10, 10, 10, 10, 10, 10)),
     DEITY("Deity", new Special(1, 1, 1, 1, 1, 1, 1), new Special(-1, -1, -1, -1, -1, -1, -1));
 
     private static final List<String> raceNames;

@@ -37,7 +37,7 @@ public class ReloadCommand extends Command {
 
     public ReloadCommand(FalloutCore fallout) {
         super(fallout, "reload");
-        setDescription("Reloads the fallout plugin");
+        setDescription("Reloads the fallout plugin.");
         setCommandUsage("/fo reload");
         setPermission(new Permission("fallout.reload", PermissionDefault.OP));
         setPlayerOnly(false);

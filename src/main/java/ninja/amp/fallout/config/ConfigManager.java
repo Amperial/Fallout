@@ -78,7 +78,7 @@ public class ConfigManager {
      * @return The config accessor
      */
     public ConfigAccessor getConfigAccessor(Config configType) {
-        return configs.get(configType);
+        return configs.get(configType).reloadConfig();
     }
 
     /**
@@ -88,7 +88,7 @@ public class ConfigManager {
      * @return The configuration file
      */
     public FileConfiguration getConfig(Config configType) {
-        return configs.get(configType).getConfig();
+        return configs.get(configType).reloadConfig().getConfig();
     }
 
 }

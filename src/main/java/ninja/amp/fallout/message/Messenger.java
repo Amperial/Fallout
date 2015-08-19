@@ -20,6 +20,7 @@ package ninja.amp.fallout.message;
 
 import ninja.amp.fallout.Fallout;
 import ninja.amp.fallout.character.Character;
+import ninja.amp.fallout.config.ConfigAccessor;
 import ninja.amp.fallout.config.FOConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -115,16 +116,18 @@ public class Messenger {
      */
     public Messenger registerMessages(EnumSet<? extends Message> messages) {
         // Add missing messages to message config
-        FileConfiguration messageConfig = plugin.getConfigManager().getConfig(FOConfig.MESSAGE);
+        ConfigAccessor messageConfig = plugin.getConfigManager().getConfigAccessor(FOConfig.MESSAGE);
+        FileConfiguration messageConfigFile = messageConfig.getConfig();
         for (Message message : messages) {
-            messageConfig.addDefault(message.getPath(), message.getMessage());
+            if (!messageConfigFile.isString(message.getPath())) {
+                messageConfigFile.set(message.getPath(), message.getMessage());
+            }
         }
-        messageConfig.options().copyDefaults(true);
-        plugin.getConfigManager().getConfigAccessor(FOConfig.MESSAGE).saveConfig();
+        messageConfig.saveConfig();
 
         // Load messages from message config
         for (Message message : messages) {
-            message.setMessage(ChatColor.translateAlternateColorCodes('&', messageConfig.getString(message.getPath())));
+            message.setMessage(ChatColor.translateAlternateColorCodes('&', messageConfigFile.getString(message.getPath())));
         }
         return this;
     }

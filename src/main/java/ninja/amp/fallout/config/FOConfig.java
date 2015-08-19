@@ -24,11 +24,11 @@ package ninja.amp.fallout.config;
  * @author Austin Payne
  */
 public enum FOConfig implements Config {
-    MESSAGE("Messages.yml"),
-    CHARACTER("Characters.yml"),
-    PLAYER("Players.yml"),
-    FACTION("Factions.yml"),
-    ZONE("Zones.yml");
+    MESSAGE("lang.yml"),
+    CHARACTER("characters.yml"),
+    PLAYER("players.yml"),
+    FACTION("factions.yml"),
+    ZONE("zones.yml");
 
     private final String fileName;
 

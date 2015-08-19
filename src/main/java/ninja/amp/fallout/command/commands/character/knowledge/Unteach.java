@@ -21,6 +21,7 @@ package ninja.amp.fallout.command.commands.character.knowledge;
 import ninja.amp.fallout.FalloutCore;
 import ninja.amp.fallout.character.Character;
 import ninja.amp.fallout.character.CharacterManager;
+import ninja.amp.fallout.character.Information;
 import ninja.amp.fallout.command.Command;
 import ninja.amp.fallout.message.FOMessage;
 import ninja.amp.fallout.message.Messenger;

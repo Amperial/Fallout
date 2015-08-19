@@ -129,8 +129,9 @@ public class Character {
         } else {
             throw new Exception("Missing or invalid character name");
         }
-        this.race = Race.fromName(section.getString("race"));
-        if (race == null) {
+        try {
+            this.race = Race.valueOf(section.getString("race"));
+        } catch (IllegalArgumentException e) {
             throw new Exception("Missing or invalid race");
         }
         if (section.isInt("age")) {
@@ -191,9 +192,10 @@ public class Character {
         if (section.isList("perks")) {
             List<String> perkNames = section.getStringList("perks");
             for (String perkName : perkNames) {
-                Perk perk = Perk.fromName(perkName);
-                if (perk != null) {
-                    perks.add(perk);
+                try {
+                    perks.add(Perk.valueOf(perkName));
+                } catch (IllegalArgumentException e) {
+                    throw new Exception("Invalid perk: " + perkName);
                 }
             }
         } else {
@@ -623,7 +625,7 @@ public class Character {
             section.set("ownerId", ownerId == null ? null : ownerId.toString());
         }
         section.set("name", characterName);
-        section.set("race", race.getName());
+        section.set("race", race.name());
         section.set("age", age);
         section.set("height", height);
         section.set("weight", weight);
@@ -644,7 +646,7 @@ public class Character {
         List<String> perkNames = new ArrayList<>();
         synchronized (perks) {
             for (Perk perk : perks) {
-                perkNames.add(perk.getName());
+                perkNames.add(perk.name());
             }
         }
         section.set("perks", perkNames);

@@ -19,6 +19,7 @@
 package ninja.amp.fallout.character;
 
 import ninja.amp.fallout.Fallout;
+import ninja.amp.fallout.config.ConfigAccessor;
 import ninja.amp.fallout.config.ConfigManager;
 import ninja.amp.fallout.config.FOConfig;
 import ninja.amp.fallout.message.FOMessage;
@@ -145,9 +146,9 @@ public class CharacterManager {
      * @param character The character to save
      */
     public synchronized void saveCharacter(Character character) {
-        FileConfiguration characterConfig = plugin.getConfigManager().getConfig(FOConfig.CHARACTER);
-        character.save(characterConfig.getConfigurationSection(character.getCharacterName().toLowerCase()));
-        plugin.getConfigManager().getConfigAccessor(FOConfig.CHARACTER).saveConfig();
+        ConfigAccessor characterConfig = plugin.getConfigManager().getConfigAccessor(FOConfig.CHARACTER);
+        character.save(characterConfig.getConfig().getConfigurationSection(character.getCharacterName().toLowerCase()));
+        characterConfig.saveConfig();
         plugin.getMessenger().debug("Saved character " + character.getCharacterName());
     }
 
@@ -193,9 +194,9 @@ public class CharacterManager {
         plugin.getMessenger().debug("Created character " + character.getCharacterName());
 
         // Add owning player to players config
-        FileConfiguration playerConfig = configManager.getConfig(FOConfig.PLAYER);
-        playerConfig.set(ownerId.toString(), character.getCharacterName());
-        configManager.getConfigAccessor(FOConfig.PLAYER).saveConfig();
+        ConfigAccessor playerConfig = configManager.getConfigAccessor(FOConfig.PLAYER);
+        playerConfig.getConfig().set(ownerId.toString(), character.getCharacterName());
+        playerConfig.saveConfig();
 
         // Add character to character config
         configManager.getConfig(FOConfig.CHARACTER).createSection(character.getCharacterName().toLowerCase());
@@ -224,13 +225,15 @@ public class CharacterManager {
         ConfigManager configManager = plugin.getConfigManager();
 
         // Remove character from character config
-        configManager.getConfig(FOConfig.CHARACTER).set(character.getCharacterName().toLowerCase(), null);
-        configManager.getConfigAccessor(FOConfig.CHARACTER).saveConfig();
+        ConfigAccessor characterConfig = configManager.getConfigAccessor(FOConfig.CHARACTER);
+        characterConfig.getConfig().set(character.getCharacterName().toLowerCase(), null);
+        characterConfig.saveConfig();
         plugin.getMessenger().debug("Deleted character " + character.getCharacterName());
 
         // Remove owning player from players config
-        configManager.getConfig(FOConfig.PLAYER).set(character.getOwnerId().toString(), null);
-        configManager.getConfigAccessor(FOConfig.PLAYER).saveConfig();
+        ConfigAccessor playerConfig = configManager.getConfigAccessor(FOConfig.PLAYER);
+        playerConfig.getConfig().set(character.getOwnerId().toString(), null);
+        playerConfig.saveConfig();
 
         // Remove nickname from player if set
         if (plugin.getConfig().getBoolean("NicknamePlayers", true)) {
@@ -267,9 +270,9 @@ public class CharacterManager {
             messenger.debug("Possessed character " + character.getCharacterName());
 
             // Add owning player to players config
-            FileConfiguration playerConfig = configManager.getConfig(FOConfig.PLAYER);
-            playerConfig.set(owner.getUniqueId().toString(), character.getCharacterName());
-            configManager.getConfigAccessor(FOConfig.PLAYER).saveConfig();
+            ConfigAccessor playerConfig = configManager.getConfigAccessor(FOConfig.PLAYER);
+            playerConfig.getConfig().set(owner.getUniqueId().toString(), character.getCharacterName());
+            playerConfig.saveConfig();
 
             // Save loaded character to update owner information
             saveCharacter(character);
@@ -309,8 +312,9 @@ public class CharacterManager {
         saveCharacter(character);
 
         // Remove owning player from players config
-        configManager.getConfig(FOConfig.PLAYER).set(owner.getUniqueId().toString(), null);
-        configManager.getConfigAccessor(FOConfig.PLAYER).saveConfig();
+        ConfigAccessor playerConfig = configManager.getConfigAccessor(FOConfig.PLAYER);
+        playerConfig.getConfig().set(owner.getUniqueId().toString(), null);
+        playerConfig.saveConfig();
 
         // Remove nickname from player if set
         if (plugin.getConfig().getBoolean("NicknamePlayers", true)) {

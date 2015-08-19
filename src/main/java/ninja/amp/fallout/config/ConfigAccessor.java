@@ -89,7 +89,7 @@ public class ConfigAccessor {
     public ConfigAccessor saveConfig() {
         if (fileConfiguration != null) {
             try {
-                getConfig().save(configFile);
+                fileConfiguration.save(configFile);
             } catch (IOException e) {
                 plugin.getLogger().log(Level.SEVERE, "Could not save config to " + configFile, e);
             }

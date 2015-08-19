@@ -40,7 +40,7 @@ public class Possess extends Command {
 
     public Possess(FalloutCore fallout) {
         super(fallout, "possess");
-        setDescription("Possesses an unowned fallout character, abandoning your current.");
+        setDescription("Possesses an unowned fallout character.");
         setCommandUsage("/fo character possess <character>");
         setPermission(new Permission("fallout.character.possess", PermissionDefault.OP));
         setArgumentRange(1, 1);
