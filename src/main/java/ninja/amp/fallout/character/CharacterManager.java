@@ -199,7 +199,9 @@ public class CharacterManager {
         playerConfig.saveConfig();
 
         // Add character to character config
-        configManager.getConfig(FOConfig.CHARACTER).createSection(character.getCharacterName().toLowerCase());
+        ConfigAccessor characterConfig = configManager.getConfigAccessor(FOConfig.CHARACTER);
+        characterConfig.getConfig().createSection(character.getCharacterName().toLowerCase());
+        characterConfig.saveConfig();
         saveCharacter(character);
 
         // Add character to manager
