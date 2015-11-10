@@ -233,7 +233,7 @@ public class Messenger {
     /**
      * Handles sending a message to a recipient.
      */
-    private abstract class RecipientHandler {
+    public abstract class RecipientHandler {
 
         /**
          * Sends a message to the recipient.
