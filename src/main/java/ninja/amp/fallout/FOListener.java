@@ -87,7 +87,7 @@ public class FOListener implements Listener {
     /**
      * Loads the player's character into the character manager if the player has a character.
      */
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         onlinePlayers.put(player.getUniqueId(), player.getName());
@@ -97,7 +97,7 @@ public class FOListener implements Listener {
     /**
      * Unloads the player's character from the character manager if the player has a character.
      */
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         plugin.getCharacterManager().unloadCharacter(player);
