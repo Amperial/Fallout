@@ -94,11 +94,17 @@ public class RollManager {
         if (trait == null) {
             Skill skill = Skill.fromName(rolling);
             if (skill == null) {
-                messenger.sendErrorMessage(player, FOMessage.ROLL_CANTROLL, value);
-                return;
+                if (rolling.equalsIgnoreCase("Sniper")) {
+                    rolling = "Sniper";
+                    finalModifier = character.skillLevel(Skill.CONVENTIONAL_GUNS) + character.getSpecial().get(Trait.PERCEPTION) + modifier;
+                } else {
+                    messenger.sendErrorMessage(player, FOMessage.ROLL_CANTROLL, value);
+                    return;
+                }
+            } else {
+                rolling = skill.getName();
+                finalModifier = skillModifier(character, skill, modifier);
             }
-            rolling = skill.getName();
-            finalModifier = skillModifier(character, skill, modifier);
         } else {
             rolling = trait.getName();
             if (trait == Trait.STRENGTH && ArmorMaterial.isWearingFullSet(player)) {

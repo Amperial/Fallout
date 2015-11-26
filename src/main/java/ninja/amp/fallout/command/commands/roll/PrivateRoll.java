@@ -50,6 +50,7 @@ public class PrivateRoll extends CharacterCommand {
 
         tabCompleteList.addAll(Trait.getTraitNames());
         tabCompleteList.addAll(Skill.getSkillNames());
+        tabCompleteList.add("Sniper");
         tabCompleteList.add("Dice");
         tabCompleteList.add("Armor");
     }
