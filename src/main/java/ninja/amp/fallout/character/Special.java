@@ -125,14 +125,13 @@ public class Special {
 
     @Override
     public String toString() {
-        return new StringBuilder()
-                .append("S:").append(traits.get(Trait.STRENGTH))
-                .append(" P:").append(traits.get(Trait.PERCEPTION))
-                .append(" E:").append(traits.get(Trait.ENDURANCE))
-                .append(" C:").append(traits.get(Trait.CHARISMA))
-                .append(" I:").append(traits.get(Trait.INTELLIGENCE))
-                .append(" A:").append(traits.get(Trait.AGILITY))
-                .append(" L:").append(traits.get(Trait.LUCK)).toString();
+        return "S:" + traits.get(Trait.STRENGTH) +
+                " P:" + traits.get(Trait.PERCEPTION) +
+                " E:" + traits.get(Trait.ENDURANCE) +
+                " C:" + traits.get(Trait.CHARISMA) +
+                " I:" + traits.get(Trait.INTELLIGENCE) +
+                " A:" + traits.get(Trait.AGILITY) +
+                " L:" + traits.get(Trait.LUCK);
     }
 
 }

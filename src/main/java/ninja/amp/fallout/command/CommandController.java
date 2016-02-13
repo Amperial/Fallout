@@ -81,7 +81,7 @@ public class CommandController implements TabExecutor {
                     }
                 }
                 if ((!(command instanceof Command) || args.length - commandAmount <= command.getMaxArgsLength()) && args.length > commandAmount) {
-                    return command.getTabCompleteList(Arrays.asList(args).subList(commandAmount, args.length));
+                    return command.tabComplete(Arrays.asList(args).subList(commandAmount, args.length));
                 }
             }
         }

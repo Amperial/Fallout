@@ -78,7 +78,7 @@ public class Unteach extends Command {
     }
 
     @Override
-    public List<String> getTabCompleteList(List<String> args) {
+    public List<String> tabComplete(List<String> args) {
         switch (args.size()) {
             case 1:
                 return tabCompletions(args.get(0), fallout.getCharacterManager().getCharacterList());

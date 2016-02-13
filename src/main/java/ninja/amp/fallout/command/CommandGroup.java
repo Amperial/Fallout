@@ -256,7 +256,7 @@ public class CommandGroup {
      * @param args The args already entered
      * @return The tab completion list of the command group
      */
-    public List<String> getTabCompleteList(List<String> args) {
+    public List<String> tabComplete(List<String> args) {
         switch (args.size()) {
             case 1:
                 return tabCompletions(args.get(0), tabCompleteList);
