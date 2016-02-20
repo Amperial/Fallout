@@ -28,10 +28,9 @@ import java.util.List;
  */
 public enum DamageType {
     BULLET("Bullet"),
-    LASER("Laser"),
     FIRE("Fire"),
-    PLASMA("Plasma"),
-    EMP("EMP"),
+    MAGIC("Magic"),
+    ELECTRICITY("Electricity"),
     EXPLOSION("Explosion"),
     CUTTING("Cutting"),
     THRUSTING("Thrusting"),

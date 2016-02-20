@@ -40,9 +40,9 @@ public class Unteach extends Command {
 
     public Unteach(FalloutCore fallout) {
         super(fallout, "unteach");
-        setDescription("Makes a fallout character forget secret information.");
-        setCommandUsage("/fo character unteach <character> <information>");
-        setPermission(new Permission("fallout.character.unteach", PermissionDefault.OP));
+        setDescription("Makes a breach character forget secret information.");
+        setCommandUsage("/bl character unteach <character> <information>");
+        setPermission(new Permission("breach.character.unteach", PermissionDefault.OP));
         setArgumentRange(2, 2);
         setPlayerOnly(false);
     }

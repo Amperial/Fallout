@@ -40,9 +40,9 @@ public class Teach extends Command {
 
     public Teach(FalloutCore fallout) {
         super(fallout, "teach");
-        setDescription("Teaches a fallout character secret information.");
-        setCommandUsage("/fo character teach <character> <information>");
-        setPermission(new Permission("fallout.character.teach", PermissionDefault.OP));
+        setDescription("Teaches a breach character secret information.");
+        setCommandUsage("/bl character teach <character> <information>");
+        setPermission(new Permission("breach.character.teach", PermissionDefault.OP));
         setArgumentRange(2, 2);
         setPlayerOnly(false);
     }

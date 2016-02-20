@@ -39,9 +39,9 @@ public class Upgrade extends Command {
 
     public Upgrade(FalloutCore fallout) {
         super(fallout, "upgrade");
-        setDescription("Upgrades the level of a fallout character.");
-        setCommandUsage("/fo character upgrade <character>");
-        setPermission(new Permission("fallout.character.upgrade", PermissionDefault.OP));
+        setDescription("Upgrades the level of a breach character.");
+        setCommandUsage("/bl character upgrade <character>");
+        setPermission(new Permission("breach.character.upgrade", PermissionDefault.OP));
         setArgumentRange(1, 1);
         setPlayerOnly(false);
     }

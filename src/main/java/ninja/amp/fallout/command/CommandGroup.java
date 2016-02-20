@@ -268,7 +268,7 @@ public class CommandGroup {
     /**
      * Gets a list of possible tab completions from an initial list of suggestions.
      *
-     * @param arg The string being tab completed
+     * @param arg         The string being tab completed
      * @param suggestions The initial list of suggestions
      * @return The list of possible tab completions
      */

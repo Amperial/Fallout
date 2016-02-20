@@ -41,15 +41,15 @@ public class AboutCommand extends Command {
 
     public AboutCommand(Fallout plugin) {
         super(plugin, "");
-        setDescription("Lists some information about fallout.");
-        setCommandUsage("/fo");
-        setPermission(new Permission("fallout.about", PermissionDefault.TRUE));
+        setDescription("Lists some information about breach.");
+        setCommandUsage("/bl");
+        setPermission(new Permission("breach.about", PermissionDefault.TRUE));
         setPlayerOnly(false);
 
-        header = Messenger.HIGHLIGHT_COLOR + "<-------<| " + Messenger.PRIMARY_COLOR + "About Fallout " + Messenger.HIGHLIGHT_COLOR + "|>------->";
+        header = Messenger.HIGHLIGHT_COLOR + "<-------<| " + Messenger.PRIMARY_COLOR + "About Breach " + Messenger.HIGHLIGHT_COLOR + "|>------->";
         info.add(Messenger.SECONDARY_COLOR + "Author: " + StringUtils.join(plugin.getDescription().getAuthors(), ", "));
         info.add(Messenger.SECONDARY_COLOR + "Version: " + plugin.getDescription().getVersion());
-        info.add(Messenger.SECONDARY_COLOR + "Help: /fo help [page]");
+        info.add(Messenger.SECONDARY_COLOR + "Help: /bl help [page]");
     }
 
     @Override

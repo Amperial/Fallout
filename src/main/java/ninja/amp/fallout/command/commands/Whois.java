@@ -40,8 +40,8 @@ public class Whois extends Command {
     public Whois(FalloutCore fallout) {
         super(fallout, "whois");
         setDescription("Gives the name of the given character's owner.");
-        setCommandUsage("/fo whois <character>");
-        setPermission(new Permission("fallout.character.whois", PermissionDefault.TRUE));
+        setCommandUsage("/bl whois <character>");
+        setPermission(new Permission("breach.character.whois", PermissionDefault.TRUE));
         setArgumentRange(1, 1);
         setPlayerOnly(false);
     }

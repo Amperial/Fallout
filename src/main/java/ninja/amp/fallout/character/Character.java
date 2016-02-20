@@ -229,7 +229,7 @@ public class Character {
      * @return The owner's name
      */
     public String getOwnerName() {
-        synchronized (this.ownerLock) {
+        synchronized (ownerLock) {
             return ownerName;
         }
     }
@@ -240,7 +240,7 @@ public class Character {
      * @return The owner's uuid
      */
     public UUID getOwnerId() {
-        synchronized (this.ownerLock) {
+        synchronized (ownerLock) {
             return ownerId;
         }
     }
@@ -559,9 +559,11 @@ public class Character {
         // Initial resistance based on endurance
         resistance = 2 * special.get(Trait.ENDURANCE);
         // Resistance from perks
+        /*
         if (perks.contains(Perk.ANTI_RADIATION)) {
             resistance += 25;
         }
+        */
         // Resistance from armor
         if (ownerId != null) {
             Player player = Bukkit.getPlayer(ownerId);
@@ -667,7 +669,8 @@ public class Character {
      */
     public enum Gender {
         MALE,
-        FEMALE
+        FEMALE,
+        NEUTRAL
     }
 
     /**

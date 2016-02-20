@@ -54,8 +54,8 @@ public class MenuHolder implements InventoryHolder {
      * Creates an inventory owned by a menu holder.
      *
      * @param owner The item menu to own the inventory
-     * @param size The size of the inventory
-     * @param name The name of the inventory
+     * @param size  The size of the inventory
+     * @param name  The name of the inventory
      * @return The inventory created
      */
     public static MenuHolder createInventory(ItemMenu owner, int size, String name) {

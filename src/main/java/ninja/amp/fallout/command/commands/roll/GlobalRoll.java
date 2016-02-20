@@ -45,7 +45,7 @@ public class GlobalRoll extends CharacterCommand {
     public GlobalRoll(FalloutCore fallout) {
         super(fallout, "globalroll");
         setVisible(false);
-        setPermission(new Permission("fallout.globalroll", PermissionDefault.TRUE));
+        setPermission(new Permission("breach.globalroll", PermissionDefault.TRUE));
         setArgumentRange(1, 2);
 
         tabCompleteList.addAll(Trait.getTraitNames());
@@ -66,14 +66,14 @@ public class GlobalRoll extends CharacterCommand {
                 if (args.size() == 2) {
                     rollManager.rollDice(sender, character, args.get(1), RollManager.Distance.GLOBAL);
                 } else {
-                    messenger.sendErrorMessage(sender, FOMessage.COMMAND_USAGE, "/fo globalroll dice <amount>d<sides>[+/-modifier]");
+                    messenger.sendErrorMessage(sender, FOMessage.COMMAND_USAGE, "/bl globalroll dice <amount>d<sides>[+/-modifier]");
                 }
                 break;
             case "armor":
                 if (args.size() == 2) {
                     rollManager.rollArmor(sender, character, args.get(1), RollManager.Distance.GLOBAL);
                 } else {
-                    messenger.sendErrorMessage(sender, FOMessage.COMMAND_USAGE, "/fo globalroll armor <damage type>[+/-modifier]");
+                    messenger.sendErrorMessage(sender, FOMessage.COMMAND_USAGE, "/bl globalroll armor <damage type>[+/-modifier]");
                 }
                 break;
             default:

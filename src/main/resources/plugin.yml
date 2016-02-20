@@ -1,8 +1,8 @@
-name: Fallout
+name: Breach
 version: 2.1
-description: The Fallout plugin for Bukkit.
+description: The Breach plugin for Bukkit.
 author: ampayne2
 main: ninja.amp.fallout.Fallout
 commands:
-  fallout:
-    aliases: fo
+  breach:
+    aliases: bl

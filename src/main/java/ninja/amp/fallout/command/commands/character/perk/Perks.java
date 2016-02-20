@@ -39,9 +39,9 @@ public class Perks extends CharacterCommand {
 
     public Perks(FalloutCore fallout) {
         super(fallout, "perks");
-        setDescription("View and select your fallout character's perks.");
-        setCommandUsage("/fo character perks");
-        setPermission(new Permission("fallout.character.perks", PermissionDefault.TRUE));
+        setDescription("View and select your breach character's perks.");
+        setCommandUsage("/bl character perks");
+        setPermission(new Permission("breach.character.perks", PermissionDefault.TRUE));
 
         this.menu = new PerksMenu(fallout);
     }

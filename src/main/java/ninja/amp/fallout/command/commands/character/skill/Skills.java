@@ -39,9 +39,9 @@ public class Skills extends CharacterCommand {
 
     public Skills(FalloutCore fallout) {
         super(fallout, "skills");
-        setDescription("View and level up your fallout character's skills.");
-        setCommandUsage("/fo character skills");
-        setPermission(new Permission("fallout.character.skills", PermissionDefault.TRUE));
+        setDescription("View and level up your breach character's skills.");
+        setCommandUsage("/bl character skills");
+        setPermission(new Permission("breach.character.skills", PermissionDefault.TRUE));
 
         this.menu = new SkillsMenu(fallout);
     }

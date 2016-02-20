@@ -58,10 +58,10 @@ public class SkillsMenu extends ItemMenu {
         setItem(39, new SkillsCancelItem());
 
         ItemStack icon = new ItemStack(Material.WOOL, 1, DyeColor.GREEN.getWoolData());
-        setItem(0, new SkillItem(Skill.BIG_GUNS, "Big Guns", icon));
-        setItem(1, new SkillItem(Skill.CONVENTIONAL_GUNS, "Conventional Guns", icon));
-        setItem(2, new SkillItem(Skill.ENERGY_WEAPONS, "Energy Weapons", icon));
-        setItem(3, new SkillItem(Skill.MELEE_WEAPONS, "Melee Weapons", icon));
+        setItem(0, new SkillItem(Skill.HEAVY_WEAPONS, "Heavy Weapons", icon));
+        setItem(1, new SkillItem(Skill.GUNS, "Guns", icon));
+        setItem(2, new SkillItem(Skill.MAGIC, "Magic", icon));
+        setItem(3, new SkillItem(Skill.LIGHT_WEAPONS, "Light Weapons", icon));
 
         setItem(5, new SkillItem(Skill.LOCKPICKING, "Lockpicking", icon));
         setItem(6, new SkillItem(Skill.SNEAK, "Sneak", icon));
@@ -74,9 +74,6 @@ public class SkillsMenu extends ItemMenu {
         setItem(21, new SkillItem(Skill.FIRST_AID, "First Aid", icon));
         setItem(22, new SkillItem(Skill.SURGERY, "Surgery", icon));
         setItem(23, new SkillItem(Skill.REPAIR, "Repair", icon));
-
-        setItem(25, new SkillItem(Skill.SCIENCE, "Science", icon));
-        setItem(26, new SkillItem(Skill.LOGICAL_THINKING, "Logical Thinking", icon));
     }
 
     @Override

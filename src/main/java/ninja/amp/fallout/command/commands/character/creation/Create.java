@@ -44,9 +44,9 @@ public class Create extends Command {
 
     public Create(FalloutCore fallout, SpecialMenu specialMenu) {
         super(fallout, "create");
-        setDescription("Creates a fallout character.");
-        setCommandUsage("/fo character create <name> <age> <height in.> <weight lb.>");
-        setPermission(new Permission("fallout.character.create", PermissionDefault.TRUE));
+        setDescription("Creates a breach character.");
+        setCommandUsage("/bl character create <name> <age> <height in.> <weight lb.>");
+        setPermission(new Permission("breach.character.create", PermissionDefault.TRUE));
         setArgumentRange(4, 4);
 
         createMenu = new CreateMenu(fallout, specialMenu);

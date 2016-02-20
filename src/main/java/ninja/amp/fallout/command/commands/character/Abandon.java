@@ -36,9 +36,9 @@ public class Abandon extends CharacterCommand {
 
     public Abandon(FalloutCore fallout) {
         super(fallout, "abandon");
-        setDescription("Abandons your fallout character.");
-        setCommandUsage("/fo character abandon");
-        setPermission(new Permission("fallout.character.abandon", PermissionDefault.OP));
+        setDescription("Abandons your breach character.");
+        setCommandUsage("/bl character abandon");
+        setPermission(new Permission("breach.character.abandon", PermissionDefault.OP));
     }
 
     @Override

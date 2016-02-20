@@ -59,6 +59,7 @@ public class ProfileMenu extends ItemMenu {
                         return new ItemStack(Material.STRING);
                     case FEMALE:
                         return new ItemStack(Material.NETHER_BRICK_ITEM);
+                    case NEUTRAL:
                     default:
                         return super.getIcon(character);
                 }
@@ -74,13 +75,13 @@ public class ProfileMenu extends ItemMenu {
             @Override
             public ItemStack getIcon(Character character) {
                 switch (character.getRace()) {
-                    case WASTELANDER:
-                    case VAULT_DWELLER:
+                    case TENGU:
+                    case HROTHGAR:
+                    case URUTGACH:
+                    case AUTOMATON:
                         return new ItemStack(Material.SKULL_ITEM, 1, (short) 0);
-                    case GHOUL:
+                    case HUMAN:
                         return new ItemStack(Material.SKULL_ITEM, 1, (short) 2);
-                    case SUPER_MUTANT:
-                        return new ItemStack(Material.RAW_FISH, 1, (short) 3);
                     case DEITY:
                         return new ItemStack(Material.DIAMOND_HELMET);
                     default:
@@ -214,10 +215,10 @@ public class ProfileMenu extends ItemMenu {
         setItem(16, new PerkItem(5, perkItem));
 
         ItemStack skillItem = new ItemStack(Material.WOOL, 1, DyeColor.BLUE.getWoolData());
-        setItem(27, new SkillItem(Skill.BIG_GUNS, "Big Guns", skillItem));
-        setItem(28, new SkillItem(Skill.CONVENTIONAL_GUNS, "Conventional Guns", skillItem));
-        setItem(29, new SkillItem(Skill.ENERGY_WEAPONS, "Energy Weapons", skillItem));
-        setItem(30, new SkillItem(Skill.MELEE_WEAPONS, "Melee Weapons", skillItem));
+        setItem(27, new SkillItem(Skill.HEAVY_WEAPONS, "Heavy Weapons", skillItem));
+        setItem(28, new SkillItem(Skill.GUNS, "Guns", skillItem));
+        setItem(29, new SkillItem(Skill.MAGIC, "Magic", skillItem));
+        setItem(30, new SkillItem(Skill.LIGHT_WEAPONS, "Light Weapons", skillItem));
         setItem(32, new SkillItem(Skill.LOCKPICKING, "Lockpicking", skillItem));
         setItem(33, new SkillItem(Skill.SNEAK, "Sneak", skillItem));
         setItem(35, new SkillItem(Skill.SPEECH, "Speech", skillItem));
@@ -226,8 +227,6 @@ public class ProfileMenu extends ItemMenu {
         setItem(48, new SkillItem(Skill.FIRST_AID, "First Aid", skillItem));
         setItem(49, new SkillItem(Skill.SURGERY, "Surgery", skillItem));
         setItem(50, new SkillItem(Skill.REPAIR, "Repair", skillItem));
-        setItem(52, new SkillItem(Skill.SCIENCE, "Science", skillItem));
-        setItem(53, new SkillItem(Skill.LOGICAL_THINKING, "Logical Thinking", skillItem));
 
         setItem(37, new SpecialItem(Trait.STRENGTH, new ItemStack(Material.IRON_SPADE)));
         setItem(38, new SpecialItem(Trait.PERCEPTION, new ItemStack(Material.STONE_AXE)));
@@ -280,7 +279,7 @@ public class ProfileMenu extends ItemMenu {
          * Adds information of a certain character's detail to the item stack lore.
          *
          * @param character The character
-         * @param lore The item stack
+         * @param lore      The item stack
          */
         public abstract void addInfo(Character character, List<String> lore);
 

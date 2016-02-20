@@ -61,40 +61,39 @@ public class PerksMenu extends ItemMenu {
         ItemStack unselected = new ItemStack(Material.WOOL, 1, DyeColor.GRAY.getWoolData());
 
         EnumOption<Perk> tierOne = new EnumOption<>();
-        setItem(0, new PerkOptionItem(tierOne, Perk.SIGHT_ADAPT, selected, unselected));
-        setItem(9, new PerkOptionItem(tierOne, Perk.ANTI_COLD, selected, unselected));
-        setItem(18, new PerkOptionItem(tierOne, Perk.INCREASED_JUMP, selected, unselected));
-        setItem(27, new PerkOptionItem(tierOne, Perk.INCREASED_STEALTH, selected, unselected));
-        setItem(36, new PerkOptionItem(tierOne, Perk.ENERGY_REPLENISH, selected, unselected));
+        setItem(0, new PerkOptionItem(tierOne, Perk.LOW_LIGHT_VISION, selected, unselected));
+        setItem(9, new PerkOptionItem(tierOne, Perk.FROST_SAVANT, selected, unselected));
+        setItem(18, new PerkOptionItem(tierOne, Perk.ACROBAT, selected, unselected));
+        setItem(27, new PerkOptionItem(tierOne, Perk.MUFFLED_MOVEMENT, selected, unselected));
+        setItem(36, new PerkOptionItem(tierOne, Perk.UNBREAKING_WALL, selected, unselected));
 
         EnumOption<Perk> tierTwo = new EnumOption<>();
-        setItem(2, new PerkOptionItem(tierTwo, Perk.SIGHT_DISTANCE, selected, unselected));
-        setItem(11, new PerkOptionItem(tierTwo, Perk.INCREASED_STRENGTH, selected, unselected));
-        setItem(20, new PerkOptionItem(tierTwo, Perk.INCREASED_SURVIVAL, selected, unselected));
-        setItem(29, new PerkOptionItem(tierTwo, Perk.INCREASED_ENDURANCE, selected, unselected));
-        setItem(38, new PerkOptionItem(tierTwo, Perk.INCREASED_AIM, selected, unselected));
+        setItem(2, new PerkOptionItem(tierTwo, Perk.EYE_ADJUSTMENT, selected, unselected));
+        setItem(11, new PerkOptionItem(tierTwo, Perk.FIRE_SAVANT, selected, unselected));
+        setItem(20, new PerkOptionItem(tierTwo, Perk.REFUELLED, selected, unselected));
+        setItem(29, new PerkOptionItem(tierTwo, Perk.LIGHT_STEPS, selected, unselected));
+        setItem(38, new PerkOptionItem(tierTwo, Perk.COUNTER_ATTACK, selected, unselected));
 
         EnumOption<Perk> tierThree = new EnumOption<>();
-        setItem(4, new PerkOptionItem(tierThree, Perk.DECREASED_BLEEDING, selected, unselected));
-        setItem(13, new PerkOptionItem(tierThree, Perk.ANTI_RADIATION, selected, unselected));
-        setItem(22, new PerkOptionItem(tierThree, Perk.INCREASED_SENSES, selected, unselected));
-        setItem(31, new PerkOptionItem(tierThree, Perk.PERFECT_MEMORY, selected, unselected));
-        setItem(40, new PerkOptionItem(tierThree, Perk.FEIGN_DEATH, selected, unselected));
+        setItem(4, new PerkOptionItem(tierThree, Perk.THIRD_EYE, selected, unselected));
+        setItem(13, new PerkOptionItem(tierThree, Perk.LIGHTNING_SAVANT, selected, unselected));
+        setItem(22, new PerkOptionItem(tierThree, Perk.FAR_GOALS, selected, unselected));
+        setItem(31, new PerkOptionItem(tierThree, Perk.ASSASSIN, selected, unselected));
+        setItem(40, new PerkOptionItem(tierThree, Perk.ARMORER, selected, unselected));
 
         EnumOption<Perk> tierFour = new EnumOption<>();
-        setItem(6, new PerkOptionItem(tierFour, Perk.INCREASED_LOGIC, selected, unselected));
-        setItem(15, new PerkOptionItem(tierFour, Perk.INCREASED_CUNNING, selected, unselected));
-        setItem(24, new PerkOptionItem(tierFour, Perk.INCREASED_HEAL, selected, unselected));
-        setItem(33, new PerkOptionItem(tierFour, Perk.INNOCENT_DEFENSE, selected, unselected));
-        setItem(42, new PerkOptionItem(tierFour, Perk.INCREASED_SNEAK, selected, unselected));
+        setItem(6, new PerkOptionItem(tierFour, Perk.DETECTIVE, selected, unselected));
+        setItem(15, new PerkOptionItem(tierFour, Perk.EARTH_SAVANT, selected, unselected));
+        setItem(24, new PerkOptionItem(tierFour, Perk.SPEEDY_FAST, selected, unselected));
+        setItem(33, new PerkOptionItem(tierFour, Perk.DEATH_FROM_ABOVE, selected, unselected));
+        setItem(42, new PerkOptionItem(tierFour, Perk.PENDING_MENDING, selected, unselected));
 
         EnumOption<Perk> tierFive = new EnumOption<>();
-        setItem(8, new PerkOptionItem(tierFive, Perk.BATTLEFIELD_TERROR, selected, unselected));
-        setItem(17, new PerkOptionItem(tierFive, Perk.GENERAL, selected, unselected));
-        setItem(26, new PerkOptionItem(tierFive, Perk.CREATURES, selected, unselected));
-        setItem(35, new PerkOptionItem(tierFive, Perk.TELEKINESIS, selected, unselected));
-        setItem(44, new PerkOptionItem(tierFive, Perk.TELEPATHY, selected, unselected));
-        setItem(53, new PerkOptionItem(tierFive, Perk.SPIRIT_FORM, selected, unselected));
+        setItem(8, new PerkOptionItem(tierFive, Perk.ALL_THINGS_LARGE_AND_SMALL, selected, unselected));
+        setItem(17, new PerkOptionItem(tierFive, Perk.THE_ELEMENTALIST, selected, unselected));
+        setItem(26, new PerkOptionItem(tierFive, Perk.TIME_PHASE, selected, unselected));
+        setItem(35, new PerkOptionItem(tierFive, Perk.SHADOW, selected, unselected));
+        setItem(44, new PerkOptionItem(tierFive, Perk.DEATH_INCARNATE, selected, unselected));
 
         tiers.put(1, tierOne);
         tiers.put(2, tierTwo);
@@ -193,9 +192,11 @@ public class PerksMenu extends ItemMenu {
             for (Perk perk : perks) {
                 if (!character.hasPerk(perk)) {
                     character.addPerk(perk);
+                    /*
                     if (perk == Perk.ANTI_RADIATION) {
                         character.updateRadiationResistance();
                     }
+                    */
                 }
             }
             fallout.getCharacterManager().saveCharacter(character);

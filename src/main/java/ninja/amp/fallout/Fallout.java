@@ -122,10 +122,10 @@ public class Fallout extends JavaPlugin implements FalloutCore {
                 .addChildCommand(resetPerks)
                 .addChildCommand(teach)
                 .addChildCommand(unteach);
-        character.setPermission(new Permission("fallout.character.all", PermissionDefault.OP));
+        character.setPermission(new Permission("breach.character.all", PermissionDefault.OP));
 
         // Main /fo command tree
-        CommandGroup fallout = new CommandGroup(this, "fallout")
+        CommandGroup fallout = new CommandGroup(this, "breach")
                 .addChildCommand(new AboutCommand(this))
                 .addChildCommand(new HelpCommand(this))
                 .addChildCommand(new ReloadCommand(this))
@@ -150,7 +150,7 @@ public class Fallout extends JavaPlugin implements FalloutCore {
                 .addChildCommand(teach)
                 .addChildCommand(unteach)
                 .addChildCommand(character);
-        fallout.setPermission(new Permission("fallout.all", PermissionDefault.OP));
+        fallout.setPermission(new Permission("breach.all", PermissionDefault.OP));
 
         // Add fallout command tree to command controller
         commandController.addCommand(fallout);

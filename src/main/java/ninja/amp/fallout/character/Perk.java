@@ -32,36 +32,35 @@ import java.util.Set;
  * @author Austin Payne
  */
 public enum Perk {
-    SIGHT_ADAPT(1, "Adaptive Eyes", "Eyes adapt to changes in light quickly"),
-    ANTI_COLD(1, "Advanced Homeostasis", "Feel the effects of cold less than others"),
-    INCREASED_JUMP(1, "Gymnast", "Jump higher and leap farther than others"),
-    INCREASED_STEALTH(1, "Light Steps", "Running does not affect your stealthiness"),
-    ENERGY_REPLENISH(1, "Metabolizer", "Regain energy faster than others"),
+    LOW_LIGHT_VISION(1, "Low-light Vision", "You gain better vision", "in areas of low light."),
+    FROST_SAVANT(1, "Frost Savant", "You are much more resistant", "to cold temperatures than most.", "+1 Defence from Frost"),
+    ACROBAT(1, "Acrobat", "You are much more flexible and agile,", "allowing you to climb walls that are", "4 blocks high or less."),
+    MUFFLED_MOVEMENT(1, "Muffled Movement", "Your sneaking is no longer", "affected by movement speed."),
+    UNBREAKING_WALL(1, "Unbreaking Wall", "Due to your strength, you are", "no longer able to be knocked down", "in combat by humanoid enemies."),
 
-    SIGHT_DISTANCE(2, "Eagle Eye", "+2 to Non-combat Perception rolls"),
-    INCREASED_STRENGTH(2, "Intense Training", "+2 to Non-combat Strength rolls"),
-    INCREASED_SURVIVAL(2, "Survivalist", "+1 to First Aid and", "+1 to Logical Thinking rolls"),
-    INCREASED_ENDURANCE(2, "Thick Skinned", "+1 to Endurance rolls"),
-    INCREASED_AIM(2, "Wasteland Cowboy", "+1 to Regular and Aimed", "Conventional Gun rolls"),
+    EYE_ADJUSTMENT(2, "Eye Adjustment", "You are able to switch between", "Darkvision and Low-light vision", "as you please."),
+    FIRE_SAVANT(2, "Fire Savant", "You are much more resistant", "to fire than most.", "+1 Defence from Fire"),
+    REFUELLED(2, "Refuelled", "You feel a rush of energy after", "climbing surfaces, climbing now only", "takes a half-move turn."),
+    LIGHT_STEPS(2, "Light Steps", "You no longer activate", "wire traps in areas of", "low-light or better vision."),
+    COUNTER_ATTACK(2, "Counter Attack", "If an attack is made", "after blocking an attack with a", "shield you now get +1 to hit."),
 
-    DECREASED_BLEEDING(3, "Hoover", "Stop bleeding very quickly"),
-    ANTI_RADIATION(3, "Radio-Inactive", "An environmental suit will", "protect against most radiation"),
-    INCREASED_SENSES(3, "Sensory Overload", "Hear through walls and", "detect poison. Others have a", "harder time sneaking past"),
-    PERFECT_MEMORY(3, "Snapshot", "All images and sounds can", "be remembered without fail"),
-    FEIGN_DEATH(3, "Survivor", "Slow your heart and feign", "death, stopping bleeding.", "Cannot wake for two hours"),
+    THIRD_EYE(3, "Third Eye", "You are able to detect", "auras of immense magical power."),
+    LIGHTNING_SAVANT(3, "Lightning Savant", "You are much more resistant", "to lightning than most.", "+1 Defence from Lightning"),
+    FAR_GOALS(3, "Far Goals", "You are able to jump over", "gaps of 5 blocks or less", "using a full move turn."),
+    ASSASSIN(3, "Assassin", "You are able to kill easier from stealth.", "+2 to Hit from Stealth"),
+    ARMORER(3, "Armorer", "You now feel well at home", "inside of heavy armor.", "While wearing full heavy armor you", "gain +1 Defence to all attacks."),
 
-    INCREASED_LOGIC(4, "Detective", "+3 to Logical Thinking rolls"),
-    INCREASED_CUNNING(4, "Gambler", "+2 to Lockpicking and", "+2 to Speech rolls"),
-    INCREASED_HEAL(4, "Healer", "+2 to First Aid and", "+2 to Surgery rolls"),
-    INNOCENT_DEFENSE(4, "Hero", "+2 to Combat rolls when defending", "the weak and innocent"),
-    INCREASED_SNEAK(4, "Shadow", "+3 to Daytime Sneak and", "+5 to Nighttime Sneak rolls"),
+    DETECTIVE(4, "Detective", "You now gain advantage", "on perception rolls."),
+    EARTH_SAVANT(4, "Earth Savant", "You are much more resistant", "to earth than most.", "+1 Defence from Earth"),
+    SPEEDY_FAST(4, "Speedy Fast", "You are much faster than anyone else.", "You gain an additional 2 movement."),
+    DEATH_FROM_ABOVE(4, "Death from Above", "While attacking from more than", "two meters above your target", "you gain an additional +2 to hit."),
+    PENDING_MENDING(4, "Pending Mending", "You now only take half the normal time", "to regenerate from any wounds."),
 
-    BATTLEFIELD_TERROR(5, "Death or Glory", "You are war-incarnate.", "See full guide"),
-    GENERAL(5, "Old-World General", "Your word is law, your orders absolute.", "See full guide"),
-    CREATURES(5, "One With the Wasteland", "You are one with the wasteland,", "its power defends you.", "See full guide"),
-    TELEKINESIS(5, "The Master's Legacy", "The work of the master lives on", "through you, gain telekinesis.", "See full guide"),
-    TELEPATHY(5, "The Master's Legacy", "The work of the master lives on", "through you, gain telepathy.", "See full guide"),
-    SPIRIT_FORM(5, "Undying Will", "You refuse the embrace of", "death and become a spirit.", "See full guide");
+    ALL_THINGS_LARGE_AND_SMALL(5, "All Things Large and Small", "You gain an additional advantage and", "can track down anything that leaves tracks."),
+    THE_ELEMENTALIST(5, "The Elementalist", "You've learned all things come with a price.", "+1 Magic Defence", "+1 against all four elements"),
+    TIME_PHASE(5, "Time Phase", "Your agility is unlike any other,", "allowing you to move with such grace", "that you are granted an additional", "action every turn."),
+    SHADOW(5, "Shadow", "While stalking someone,", "as if a shadow,", "you gain +5 to stealth rolls."),
+    DEATH_INCARNATE(5, "Death Incarnate", "If your health drops below zero,", "you are able to keep fighting until you reach", "half of your Endurance in the negative.", "Once your health hits negative", "it is impossible to heal your wounds.");
 
     private static final Map<Integer, Set<Perk>> tiers;
     private static final List<String> perkNames;

@@ -24,13 +24,13 @@ package ninja.amp.fallout.message;
  * @author Austin Payne
  */
 public enum FOMessage implements Message {
-    PREFIX("Prefix", "&8[&bFallout&8] &7"),
-    PREFIX_ERROR("ErrorPrefix", "&8[&bFallout&8] &4"),
+    PREFIX("Prefix", "&8[&bBreach&8] &7"),
+    PREFIX_ERROR("ErrorPrefix", "&8[&bBreach&8] &4"),
     RELOAD("Reload", "Reloaded %s."),
 
     COMMAND_NOTAPLAYER("Command.NotAPlayer", "You must be a player to use this command."),
     COMMAND_NOPERMISSION("Command.NoPermission", "You do not have permission to use this command."),
-    COMMAND_INVALID("Command.Invalid", "Unknown commad. Type &b/fo help&4 for help."),
+    COMMAND_INVALID("Command.Invalid", "Unknown commad. Type &b/bl help&4 for help."),
     COMMAND_USAGE("Command.Usage", "Usage: %s"),
 
     ERROR_NUMBERFORMAT("Error.NumberFormat", "Value must be a positive integer."),

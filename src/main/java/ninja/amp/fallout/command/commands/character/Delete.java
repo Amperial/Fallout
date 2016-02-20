@@ -36,9 +36,9 @@ public class Delete extends CharacterCommand {
 
     public Delete(FalloutCore fallout) {
         super(fallout, "delete");
-        setDescription("Deletes your fallout character.");
-        setCommandUsage("/fo character delete");
-        setPermission(new Permission("fallout.character.delete", PermissionDefault.TRUE));
+        setDescription("Deletes your breach character.");
+        setCommandUsage("/bl character delete");
+        setPermission(new Permission("breach.character.delete", PermissionDefault.TRUE));
     }
 
     @Override

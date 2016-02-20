@@ -96,7 +96,7 @@ public class RollManager {
             if (skill == null) {
                 if (rolling.equalsIgnoreCase("Sniper")) {
                     rolling = "Sniper";
-                    finalModifier = character.skillLevel(Skill.CONVENTIONAL_GUNS) + character.getSpecial().get(Trait.PERCEPTION) + modifier;
+                    finalModifier = character.skillLevel(Skill.GUNS) + character.getSpecial().get(Trait.PERCEPTION) + modifier;
                 } else {
                     messenger.sendErrorMessage(player, FOMessage.ROLL_CANTROLL, value);
                     return;
@@ -165,7 +165,7 @@ public class RollManager {
         // Perform the roll
         DamageType damageType = DamageType.fromName(rolling);
         if (damageType == null) {
-            messenger.sendErrorMessage(player, FOMessage.COMMAND_USAGE, "/fo roll armor <damage type>[+/-modifier]");
+            messenger.sendErrorMessage(player, FOMessage.COMMAND_USAGE, "/bl roll armor <damage type>[+/-modifier]");
             return;
         }
         boolean blocked;
@@ -222,7 +222,7 @@ public class RollManager {
                 }
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            messenger.sendErrorMessage(player, FOMessage.COMMAND_USAGE, "/fo roll dice <amount>d<sides>[+/-modifier]");
+            messenger.sendErrorMessage(player, FOMessage.COMMAND_USAGE, "/bl roll dice <amount>d<sides>[+/-modifier]");
             return;
         } catch (NumberFormatException e) {
             messenger.sendErrorMessage(player, FOMessage.ERROR_MODIFIERSYNTAX);

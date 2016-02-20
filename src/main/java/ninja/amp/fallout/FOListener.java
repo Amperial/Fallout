@@ -21,7 +21,6 @@ package ninja.amp.fallout;
 import ninja.amp.fallout.character.Character;
 import ninja.amp.fallout.character.CharacterManager;
 import ninja.amp.fallout.character.Information;
-import ninja.amp.fallout.character.Race;
 import ninja.amp.fallout.message.FOMessage;
 import ninja.amp.fallout.util.ArmorMaterial;
 import ninja.amp.fallout.util.ArmorType;
@@ -38,7 +37,6 @@ import org.bukkit.event.entity.EntityCombustByBlockEvent;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -137,14 +135,15 @@ public class FOListener implements Listener {
                     if (characterManager.isOwner(playerId)) {
                         Character character = characterManager.getCharacterByOwner(playerId);
                         ArmorMaterial armorMaterial = ArmorMaterial.getArmorMaterial(material);
-                        if (!ArmorMaterial.LEATHER.equals(armorMaterial) && character.getRace().equals(Race.SUPER_MUTANT)) { // Super Mutants can only wear leather armor
+                        /*if (!ArmorMaterial.LEATHER.equals(armorMaterial) && character.getRace().equals(Race.SUPER_MUTANT)) { // Super Mutants can only wear leather armor
                             event.setCancelled(true);
                             player.updateInventory();
                             plugin.getMessenger().sendErrorMessage(player, FOMessage.RACE_ONLYLEATHER);
-                        } else if (ArmorMaterial.DIAMOND.equals(armorMaterial) && !character.hasKnowledge(Information.POWER_ARMOR)) { // Wearing power armor requires permission
+                        } else */
+                        if (ArmorMaterial.DIAMOND.equals(armorMaterial) && !character.hasKnowledge(Information.BOUND_ARMOR)) { // Wearing bound armor requires permission
                             event.setCancelled(true);
                             player.updateInventory();
-                            plugin.getMessenger().sendErrorMessage(player, FOMessage.INFORMATION_MISSING, Information.POWER_ARMOR);
+                            plugin.getMessenger().sendErrorMessage(player, FOMessage.INFORMATION_MISSING, Information.BOUND_ARMOR);
                         }
                     }
                 }
@@ -177,12 +176,13 @@ public class FOListener implements Listener {
                         if (characterManager.isOwner(playerId)) {
                             Character character = characterManager.getCharacterByOwner(playerId);
                             ArmorMaterial armorMaterial = ArmorMaterial.getArmorMaterial(material);
-                            if (!ArmorMaterial.LEATHER.equals(armorMaterial) && character.getRace().equals(Race.SUPER_MUTANT)) { // Super Mutants can only wear leather armor
+                            /*if (!ArmorMaterial.LEATHER.equals(armorMaterial) && character.getRace().equals(Race.SUPER_MUTANT)) { // Super Mutants can only wear leather armor
                                 event.setCancelled(true);
                                 plugin.getMessenger().sendErrorMessage(player, FOMessage.RACE_ONLYLEATHER);
-                            } else if (ArmorMaterial.DIAMOND.equals(armorMaterial) && !character.hasKnowledge(Information.POWER_ARMOR)) { // Wearing power armor requires permission
+                            } else */
+                            if (ArmorMaterial.DIAMOND.equals(armorMaterial) && !character.hasKnowledge(Information.BOUND_ARMOR)) { // Wearing bound armor requires permission
                                 event.setCancelled(true);
-                                plugin.getMessenger().sendErrorMessage(player, FOMessage.INFORMATION_MISSING, Information.POWER_ARMOR);
+                                plugin.getMessenger().sendErrorMessage(player, FOMessage.INFORMATION_MISSING, Information.BOUND_ARMOR);
                             }
                         }
                     }
@@ -205,12 +205,13 @@ public class FOListener implements Listener {
                 if (characterManager.isOwner(playerId)) {
                     Character character = characterManager.getCharacterByOwner(playerId);
                     ArmorMaterial armorMaterial = ArmorMaterial.getArmorMaterial(material);
-                    if (!ArmorMaterial.LEATHER.equals(armorMaterial) && character.getRace().equals(Race.SUPER_MUTANT)) { // Super Mutants can only wear leather armor
+                    /*if (!ArmorMaterial.LEATHER.equals(armorMaterial) && character.getRace().equals(Race.SUPER_MUTANT)) { // Super Mutants can only wear leather armor
                         event.setCancelled(true);
                         plugin.getMessenger().sendErrorMessage(player, FOMessage.RACE_ONLYLEATHER);
-                    } else if (ArmorMaterial.DIAMOND.equals(armorMaterial) && !character.hasKnowledge(Information.POWER_ARMOR)) { // Wearing power armor requires permission
+                    } else */
+                    if (ArmorMaterial.DIAMOND.equals(armorMaterial) && !character.hasKnowledge(Information.BOUND_ARMOR)) { // Wearing bound armor requires permission
                         event.setCancelled(true);
-                        plugin.getMessenger().sendErrorMessage(player, FOMessage.INFORMATION_MISSING, Information.POWER_ARMOR);
+                        plugin.getMessenger().sendErrorMessage(player, FOMessage.INFORMATION_MISSING, Information.BOUND_ARMOR);
                     }
                 }
             }
@@ -253,6 +254,7 @@ public class FOListener implements Listener {
     /**
      * Stops zombies from targeting ghouls.
      */
+    /*
     @EventHandler
     public void onEntityTargetLiving(EntityTargetLivingEntityEvent event) {
         if (event.getEntityType() == EntityType.ZOMBIE && event.getTarget() instanceof Player) {
@@ -266,5 +268,6 @@ public class FOListener implements Listener {
             }
         }
     }
+    */
 
 }

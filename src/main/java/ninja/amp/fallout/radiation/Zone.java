@@ -40,8 +40,8 @@ public class Zone {
     /**
      * Creates a zone.
      *
-     * @param center The center of the zone
-     * @param radius The radius of the zone
+     * @param center   The center of the zone
+     * @param radius   The radius of the zone
      * @param strength The equation used to find the strength of the zone based on distance
      */
     public Zone(Location center, int radius, String strength) {

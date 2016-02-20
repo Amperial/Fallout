@@ -28,9 +28,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Information {
 
     /**
-     * A piece of information that enables the character to wear power armor.
+     * A piece of information that enables the character to wear bound armor.
      */
-    public static final String POWER_ARMOR = "PowerArmor";
+    public static final String BOUND_ARMOR = "BoundArmor";
 
     private static final ConcurrentHashMap<String, String> informationPieces = new ConcurrentHashMap<>();
 
@@ -76,7 +76,7 @@ public class Information {
     }
 
     static {
-        addInformation("PowerArmor");
+        addInformation(BOUND_ARMOR);
     }
 
 }

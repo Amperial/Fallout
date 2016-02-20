@@ -43,9 +43,9 @@ public class Profile extends Command {
 
     public Profile(FalloutCore fallout) {
         super(fallout, "profile");
-        setDescription("Views your or another fallout character's information.");
-        setCommandUsage("/fo character profile [character]");
-        setPermission(new Permission("fallout.character.profile", PermissionDefault.TRUE));
+        setDescription("Views your or another breach character's information.");
+        setCommandUsage("/bl character profile [character]");
+        setPermission(new Permission("breach.character.profile", PermissionDefault.TRUE));
         setArgumentRange(0, 1);
 
         this.menu = new ProfileMenu(fallout);

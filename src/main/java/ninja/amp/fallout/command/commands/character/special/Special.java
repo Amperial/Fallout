@@ -39,9 +39,9 @@ public class Special extends CharacterCommand {
 
     public Special(FalloutCore fallout, SpecialMenu menu) {
         super(fallout, "special");
-        setDescription("View and set your fallout character's traits.");
-        setCommandUsage("/fo character special");
-        setPermission(new Permission("fallout.character.special", PermissionDefault.TRUE));
+        setDescription("View and set your breach character's traits.");
+        setCommandUsage("/bl character special");
+        setPermission(new Permission("breach.character.special", PermissionDefault.TRUE));
 
         this.menu = menu;
     }

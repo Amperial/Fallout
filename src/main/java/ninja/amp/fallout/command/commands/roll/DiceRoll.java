@@ -34,7 +34,7 @@ public class DiceRoll extends Command {
     public DiceRoll(Fallout plugin) {
         super(plugin, "dice");
         setDescription("Manually rolls the dice with an optional modifier.");
-        setCommandUsage("/fo [global/private]roll dice <amount>d<sides>[+/-modifier]");
+        setCommandUsage("/bl [global/private]roll dice <amount>d<sides>[+/-modifier]");
     }
 
     @Override

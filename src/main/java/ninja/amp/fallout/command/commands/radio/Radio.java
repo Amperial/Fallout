@@ -39,9 +39,9 @@ public class Radio extends Command {
 
     public Radio(FalloutCore fallout) {
         super(fallout, "radio");
-        setDescription("Opens the fallout radio menu.");
-        setCommandUsage("/fo radio");
-        setPermission(new Permission("fallout.radio", PermissionDefault.TRUE));
+        setDescription("Opens the breach radio menu.");
+        setCommandUsage("/bl radio");
+        setPermission(new Permission("breach.radio", PermissionDefault.TRUE));
 
         this.menu = new RadioMenu(fallout);
     }

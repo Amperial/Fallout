@@ -42,9 +42,9 @@ public class ResetPerks extends Command {
 
     public ResetPerks(FalloutCore fallout) {
         super(fallout, "resetperks");
-        setDescription("Resets your or another fallout character's perks.");
-        setCommandUsage("/fo character resetperks [character]");
-        setPermission(new Permission("fallout.character.resetperks", PermissionDefault.OP));
+        setDescription("Resets your or another breach character's perks.");
+        setCommandUsage("/bl character resetperks [character]");
+        setPermission(new Permission("breach.character.resetperks", PermissionDefault.OP));
         setArgumentRange(0, 1);
     }
 
@@ -76,9 +76,11 @@ public class ResetPerks extends Command {
 
         for (Perk perk : character.getPerks()) {
             character.removePerk(perk);
+            /*
             if (perk == Perk.ANTI_RADIATION) {
                 character.updateRadiationResistance();
             }
+            */
         }
         characterManager.saveCharacter(character);
         messenger.sendMessage(player, FOMessage.PERKS_RESET, character.getCharacterName());

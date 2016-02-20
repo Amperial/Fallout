@@ -45,7 +45,7 @@ public class PrivateRoll extends CharacterCommand {
     public PrivateRoll(FalloutCore fallout) {
         super(fallout, "privateroll");
         setVisible(false);
-        setPermission(new Permission("fallout.privateroll", PermissionDefault.TRUE));
+        setPermission(new Permission("breach.privateroll", PermissionDefault.TRUE));
         setArgumentRange(1, 2);
 
         tabCompleteList.addAll(Trait.getTraitNames());
@@ -66,14 +66,14 @@ public class PrivateRoll extends CharacterCommand {
                 if (args.size() == 2) {
                     rollManager.rollDice(sender, character, args.get(1), RollManager.Distance.PRIVATE);
                 } else {
-                    messenger.sendErrorMessage(sender, FOMessage.COMMAND_USAGE, "/fo privateroll dice <amount>d<sides>[+/-modifier]");
+                    messenger.sendErrorMessage(sender, FOMessage.COMMAND_USAGE, "/bl privateroll dice <amount>d<sides>[+/-modifier]");
                 }
                 break;
             case "armor":
                 if (args.size() == 2) {
                     rollManager.rollArmor(sender, character, args.get(1), RollManager.Distance.PRIVATE);
                 } else {
-                    messenger.sendErrorMessage(sender, FOMessage.COMMAND_USAGE, "/fo privateroll armor <damage type>[+/-modifier]");
+                    messenger.sendErrorMessage(sender, FOMessage.COMMAND_USAGE, "/bl privateroll armor <damage type>[+/-modifier]");
                 }
                 break;
             default:

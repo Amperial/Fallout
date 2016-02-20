@@ -42,9 +42,9 @@ public class ResetSkills extends Command {
 
     public ResetSkills(FalloutCore fallout) {
         super(fallout, "resetskills");
-        setDescription("Resets your or another fallout character's skill levels.");
-        setCommandUsage("/fo character resetskills [character]");
-        setPermission(new Permission("fallout.character.resetskills", PermissionDefault.OP));
+        setDescription("Resets your or another breach character's skill levels.");
+        setCommandUsage("/bl character resetskills [character]");
+        setPermission(new Permission("breach.character.resetskills", PermissionDefault.OP));
         setArgumentRange(0, 1);
     }
 

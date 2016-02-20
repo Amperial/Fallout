@@ -37,9 +37,9 @@ public class HelpCommand extends Command {
 
     public HelpCommand(FalloutCore fallout) {
         super(fallout, "help");
-        setDescription("Lists all fallout commands.");
-        setCommandUsage("/fo help [page]");
-        setPermission(new Permission("fallout.help", PermissionDefault.TRUE));
+        setDescription("Lists all breach commands.");
+        setCommandUsage("/bl help [page]");
+        setPermission(new Permission("breach.help", PermissionDefault.TRUE));
         setArgumentRange(0, 1);
         setPlayerOnly(false);
     }

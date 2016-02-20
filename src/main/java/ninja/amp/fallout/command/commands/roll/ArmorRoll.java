@@ -35,7 +35,7 @@ public class ArmorRoll extends Command {
     public ArmorRoll(Fallout plugin) {
         super(plugin, "armor");
         setDescription("Rolls to see if your armor can absorb a hit.");
-        setCommandUsage("/fo [global/private]roll armor <damage type>[+/-modifier]");
+        setCommandUsage("/bl [global/private]roll armor <damage type>[+/-modifier]");
         setArgumentRange(1, 1);
     }
 

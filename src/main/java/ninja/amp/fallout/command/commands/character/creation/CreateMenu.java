@@ -68,19 +68,20 @@ public class CreateMenu extends ItemMenu {
         setItem(2, new EnumOptionItem<>(gender, Character.Gender.FEMALE, "Female", new ItemStack(Material.NETHER_BRICK_ITEM), unselected));
 
         race = new EnumOption<>();
-        setItem(4, new EnumOptionItem<>(race, Race.WASTELANDER, "Wastelander", new ItemStack(Material.SKULL_ITEM, 1, (short) 0), unselected));
-        setItem(5, new EnumOptionItem<>(race, Race.GHOUL, "Ghoul", new ItemStack(Material.SKULL_ITEM, 1, (short) 2), unselected));
-        setItem(6, new EnumOptionItem<>(race, Race.SUPER_MUTANT, "Super Mutant", new ItemStack(Material.RAW_FISH, 1, (short) 3), unselected));
-        setItem(7, new EnumOptionItem<>(race, Race.VAULT_DWELLER, "Vault Dweller", new ItemStack(Material.SKULL_ITEM, 1, (short) 0), unselected));
+        setItem(4, new EnumOptionItem<>(race, Race.TENGU, "Tengu", new ItemStack(Material.SKULL_ITEM, 1, (short) 0), unselected));
+        setItem(5, new EnumOptionItem<>(race, Race.HUMAN, "Human", new ItemStack(Material.SKULL_ITEM, 1, (short) 2), unselected));
+        setItem(6, new EnumOptionItem<>(race, Race.AUTOMATON, "Automaton", new ItemStack(Material.SKULL_ITEM, 1, (short) 0), unselected));
+        setItem(7, new EnumOptionItem<>(race, Race.HROTHGAR, "Hrothgar", new ItemStack(Material.SKULL_ITEM, 1, (short) 0), unselected));
+        setItem(8, new EnumOptionItem<>(race, Race.URUTGACH, "Urutgach", new ItemStack(Material.SKULL_ITEM, 1, (short) 0), unselected));
         setItem(8, new EnumOptionItem<Race>(race, Race.DEITY, "Deity", new ItemStack(Material.DIAMOND_HELMET), unselected) {
             @Override
             public ItemStack getFinalIcon(Player player) {
-                return player.hasPermission("fallout.race.deity") ? super.getFinalIcon(player) : null;
+                return player.hasPermission("breach.race.deity") ? super.getFinalIcon(player) : null;
             }
 
             @Override
             public void onItemClick(ItemClickEvent event) {
-                if (event.getPlayer().hasPermission("fallout.race.deity")) {
+                if (event.getPlayer().hasPermission("breach.race.deity")) {
                     super.onItemClick(event);
                 }
             }
@@ -183,14 +184,14 @@ public class CreateMenu extends ItemMenu {
             Character.Gender gender = getGender(player);
             Race race = getRace(player);
             Character.Alignment alignment = getAlignment(player);
-            if (gender == null || race == null || alignment == null) {
+            if (race == null || (race != Race.AUTOMATON && gender == null) || alignment == null) {
                 messenger.sendErrorMessage(player, FOMessage.ERROR_ALLOPTIONS);
                 return;
             }
             resetOptions(player);
 
             Character.CharacterBuilder builder = characterManager.getCharacterBuilder(player);
-            builder.gender(gender);
+            builder.gender(gender == null ? Character.Gender.NEUTRAL : gender);
             builder.race(race);
             builder.alignment(alignment);
             characterManager.createCharacter(player);

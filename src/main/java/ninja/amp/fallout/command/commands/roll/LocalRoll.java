@@ -45,8 +45,8 @@ public class LocalRoll extends CharacterCommand {
     public LocalRoll(FalloutCore fallout) {
         super(fallout, "roll");
         setDescription("Rolls the dice with one of your character's traits or skills.");
-        setCommandUsage("/fo [global/private]roll <trait/skill>[+/-modifier]");
-        setPermission(new Permission("fallout.roll", PermissionDefault.TRUE));
+        setCommandUsage("/bl [global/private]roll <trait/skill>[+/-modifier]");
+        setPermission(new Permission("breach.roll", PermissionDefault.TRUE));
         setArgumentRange(1, 2);
 
         tabCompleteList.addAll(Trait.getTraitNames());
@@ -67,14 +67,14 @@ public class LocalRoll extends CharacterCommand {
                 if (args.size() == 2) {
                     rollManager.rollDice(sender, character, args.get(1), RollManager.Distance.LOCAL);
                 } else {
-                    messenger.sendErrorMessage(sender, FOMessage.COMMAND_USAGE, "/fo roll dice <amount>d<sides>[+/-modifier]");
+                    messenger.sendErrorMessage(sender, FOMessage.COMMAND_USAGE, "/bl roll dice <amount>d<sides>[+/-modifier]");
                 }
                 break;
             case "armor":
                 if (args.size() == 2) {
                     rollManager.rollArmor(sender, character, args.get(1), RollManager.Distance.LOCAL);
                 } else {
-                    messenger.sendErrorMessage(sender, FOMessage.COMMAND_USAGE, "/fo roll armor <damage type>[+/-modifier]");
+                    messenger.sendErrorMessage(sender, FOMessage.COMMAND_USAGE, "/bl roll armor <damage type>[+/-modifier]");
                 }
                 break;
             default:

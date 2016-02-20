@@ -27,20 +27,18 @@ import java.util.List;
  * @author Austin Payne
  */
 public enum Skill {
-    BIG_GUNS("BigGuns", Trait.STRENGTH),
-    ENERGY_WEAPONS("EnergyWeapons", Trait.INTELLIGENCE, Trait.PERCEPTION),
-    CONVENTIONAL_GUNS("ConventionalGuns", Trait.AGILITY),
-    MELEE_WEAPONS("MeleeWeapons", Trait.STRENGTH, Trait.AGILITY),
+    HEAVY_WEAPONS("HeavyWeapons", Trait.STRENGTH),
+    MAGIC("Magic", Trait.INTELLIGENCE),
+    GUNS("Guns", Trait.PERCEPTION),
+    LIGHT_WEAPONS("LightWeapons", Trait.STRENGTH, Trait.AGILITY),
     EXPLOSIVES("Explosives", Trait.PERCEPTION),
     UNARMED("Unarmed", Trait.STRENGTH, Trait.AGILITY),
     FIRST_AID("FirstAid", Trait.INTELLIGENCE),
     SURGERY("Surgery", Trait.INTELLIGENCE),
     LOCKPICKING("Lockpicking", Trait.PERCEPTION),
     REPAIR("Repair", Trait.INTELLIGENCE),
-    SCIENCE("Science", Trait.INTELLIGENCE),
     SNEAK("Sneak", Trait.AGILITY),
-    SPEECH("Speech", Trait.CHARISMA),
-    LOGICAL_THINKING("LogicalThinking", Trait.INTELLIGENCE);
+    SPEECH("Speech", Trait.CHARISMA);
 
     private static final List<String> skillNames;
     private final String name;
