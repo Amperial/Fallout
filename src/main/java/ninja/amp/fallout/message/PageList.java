@@ -1,7 +1,7 @@
 /*
  * This file is part of Fallout.
  *
- * Copyright (c) 2013-2015 <http://github.com/ampayne2/Fallout//>
+ * Copyright (c) 2013-2017 <http://github.com/ampayne2/Fallout//>
  *
  * Fallout is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -46,7 +46,7 @@ public class PageList {
         this.pageSize = pageSize;
         this.pages = new ArrayList<>();
 
-        pages.add(new ArrayList<String>());
+        pages.add(new ArrayList<>());
         pages.get(0).add(getHeader(1));
         add(lines);
     }
@@ -101,7 +101,7 @@ public class PageList {
     public void add(String... lines) {
         for (String line : lines) {
             if (getLastPage().size() > pageSize) {
-                pages.add(new ArrayList<String>());
+                pages.add(new ArrayList<>());
                 getLastPage().add(getHeader(pages.size()));
                 for (int i = 1; i < pages.size(); i++) {
                     pages.get(i - 1).set(0, getHeader(i));

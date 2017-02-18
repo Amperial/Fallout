@@ -1,7 +1,7 @@
 /*
  * This file is part of Fallout.
  *
- * Copyright (c) 2013-2015 <http://github.com/ampayne2/Fallout//>
+ * Copyright (c) 2013-2017 <http://github.com/ampayne2/Fallout//>
  *
  * Fallout is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,7 +28,7 @@ public enum FOConfig implements Config {
     CHARACTER("characters.yml"),
     PLAYER("players.yml"),
     FACTION("factions.yml"),
-    ZONE("zones.yml");
+    RADIATION("radiation.yml");
 
     private final String fileName;
 

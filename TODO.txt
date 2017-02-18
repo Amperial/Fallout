@@ -1,0 +1,58 @@
+Configurations for:
+- Perks
+- Information
+- Races and their min/max SPECIALs
+- Skills and their affected traits
+- Damage types
+- Armor defense values by damage type
+- Armor restrictions by race
+- Radiation system
+- Whether mobs should die to sunlight
+- Item materials in SPECIAL menu
+- Item materials in skills menu
+- Item materials in profile menu
+- Item materials in perks menu
+- Item materials in character creation menu
+
+Maintenance:
+- Check over all code
+- ArmorMaterial and ArmorType
+- Fallout.getOnlinePlayers() list
+- Replace expression util with EvalEx library
+- Ensure all systems make sense for general use
+- Replace rolling system with an implementation suited for general use
+
+Finish:
+- Radiation
+    - Send configurable messages to player at configurable radiation thresholds
+    - Create radiation ticking noises as the player gains radiation
+    - Add radiation related commands
+
+Future ideas:
+- Finish factions
+- Add random or set configurable solar flare events with global radiation above ground
+
+======== RADIATION ========
+
+Radiation Amount:
+- Characters can have from 0 to 1000 rads
+- Vault Dwellers are aware of precise rad count
+- Wastelanders know about how much (200, 400, 600, 800..)
+
+Radiation Resistance:
+- Radiation Resistance capped at 85%
+- Initial % = Endurance x 2
+- ANTI_RADIATION perk = Flat 25%
+- Note: the medicine skill ranges from 10 to 100. Our first aid skill goes from 0 to 5.
+- Rad-x = 30% + ((medicine - 10) / 2). For our system, possibly 25% + (first aid * 10%)?
+- Rad-Away = -60 - (medicine - 10) radiation. For our system, possibly -50 - (first aid * 20)?
+- Power Armor: 10%
+- Environmental Armor: 30%
+
+Radiation Effects:
+- 800 Rads:
+    - Roll END
+        - Critical Failure: Death
+        - Failure: Add 50 Rads, roll again in 30s
+        - Success: No Effect
+        - Critical Success: Become a ghoul

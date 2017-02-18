@@ -1,7 +1,7 @@
 /*
  * This file is part of Fallout.
  *
- * Copyright (c) 2013-2015 <http://github.com/ampayne2/Fallout//>
+ * Copyright (c) 2013-2017 <http://github.com/ampayne2/Fallout//>
  *
  * Fallout is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -237,22 +237,18 @@ public class ItemMenu {
                 } else {
                     player.updateInventory();
                     if (itemClickEvent.willClose() || itemClickEvent.willGoBack()) {
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(fallout.getPlugin(), new Runnable() {
-                            public void run() {
-                                Player p = Bukkit.getPlayer(playerId);
-                                if (p != null) {
-                                    p.closeInventory();
-                                }
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(fallout.getPlugin(), () -> {
+                            Player p = Bukkit.getPlayer(playerId);
+                            if (p != null) {
+                                p.closeInventory();
                             }
                         }, 1);
                     }
                     if (itemClickEvent.willGoBack() && hasParent()) {
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(fallout.getPlugin(), new Runnable() {
-                            public void run() {
-                                Player p = Bukkit.getPlayer(playerId);
-                                if (p != null) {
-                                    parent.open(p);
-                                }
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(fallout.getPlugin(), () -> {
+                            Player p = Bukkit.getPlayer(playerId);
+                            if (p != null) {
+                                parent.open(p);
                             }
                         }, 3);
                     }

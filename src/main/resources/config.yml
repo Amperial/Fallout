@@ -1,7 +1,7 @@
 # Version of plugin when this config was generated -
 # Used for automatically updating all configs when updating
 # plugin version. DO NOT EDIT THIS VALUE
-configversion: '2.0'
+configversion: '3.0'
 # Enables debug messages to be shown in console
 Debug: false
 # How far away a normal roll is broadcasted

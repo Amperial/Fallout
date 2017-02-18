@@ -1,7 +1,7 @@
 /*
  * This file is part of Fallout.
  *
- * Copyright (c) 2013-2015 <http://github.com/ampayne2/Fallout//>
+ * Copyright (c) 2013-2017 <http://github.com/ampayne2/Fallout//>
  *
  * Fallout is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -164,7 +164,7 @@ public class SkillsMenu extends ItemMenu {
                     "for allocation");
 
             noPoints = new ItemStack(Material.STONE_BUTTON);
-            setNameAndLore(noPoints, "No Allocation Points", new ArrayList<String>());
+            setNameAndLore(noPoints, "No Allocation Points", new ArrayList<>());
         }
 
         @Override
