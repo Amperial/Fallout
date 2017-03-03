@@ -57,7 +57,7 @@ public class SkillsMenu extends ItemMenu {
         setItem(40, new SkillPointsItem());
         setItem(39, new SkillsCancelItem());
 
-        ItemStack icon = new ItemStack(Material.WOOL, 1, DyeColor.GREEN.getWoolData());
+        ItemStack icon = new ItemStack(Material.WOOL, 1, DyeColor.BLUE.getWoolData());
         setItem(0, new SkillItem(Skill.BIG_GUNS, "Big Guns", icon));
         setItem(1, new SkillItem(Skill.CONVENTIONAL_GUNS, "Conventional Guns", icon));
         setItem(2, new SkillItem(Skill.ENERGY_WEAPONS, "Energy Weapons", icon));
@@ -124,7 +124,12 @@ public class SkillsMenu extends ItemMenu {
             ItemStack finalIcon = super.getFinalIcon(player).clone();
 
             Map<Skill, Integer> skills = getPendingSkills(player.getUniqueId());
-            finalIcon.setAmount(skills.get(skill));
+            int amount = skills.get(skill);
+            if (amount > 0) {
+                finalIcon.setAmount(amount);
+            } else {
+                finalIcon.setType(Material.STONE_BUTTON);
+            }
 
             return finalIcon;
         }

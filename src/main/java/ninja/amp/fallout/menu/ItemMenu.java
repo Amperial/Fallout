@@ -51,7 +51,7 @@ public class ItemMenu {
      * The menu item that appears in empty slots if {@link ItemMenu#fillEmptySlots()} is called.
      */
     @SuppressWarnings("deprecation")
-    private static final MenuItem EMPTY_SLOT_ITEM = new StaticMenuItem(" ", new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.GRAY.getData()));
+    private static final MenuItem EMPTY_SLOT_ITEM = new StaticMenuItem(" ", new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.GRAY.getDyeData()));
 
     /**
      * Creates an item menu.

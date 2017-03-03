@@ -61,11 +61,11 @@ public class CreateMenu extends ItemMenu {
         setItem(41, new CreateConfirmItem(specialMenu));
         setItem(39, new CreateCancelItem());
 
-        ItemStack unselected = new ItemStack(Material.WOOL, 1, DyeColor.GRAY.getWoolData());
+        ItemStack unselected = new ItemStack(Material.STONE_BUTTON);
 
         gender = new EnumOption<>();
-        setItem(1, new EnumOptionItem<>(gender, Character.Gender.MALE, "Male", new ItemStack(Material.STRING), unselected));
-        setItem(2, new EnumOptionItem<>(gender, Character.Gender.FEMALE, "Female", new ItemStack(Material.NETHER_BRICK_ITEM), unselected));
+        setItem(1, new EnumOptionItem<>(gender, Character.Gender.MALE, "Male", new ItemStack(Material.RAW_FISH), unselected));
+        setItem(2, new EnumOptionItem<>(gender, Character.Gender.FEMALE, "Female", new ItemStack(Material.RAW_FISH, 1, (short) 1), unselected));
 
         race = new EnumOption<>();
         setItem(4, new EnumOptionItem<>(race, Race.WASTELANDER, "Wastelander", new ItemStack(Material.SKULL_ITEM, 1, (short) 0), unselected));
@@ -88,7 +88,7 @@ public class CreateMenu extends ItemMenu {
 
         ItemStack red = new ItemStack(Material.WOOL, 1, DyeColor.RED.getWoolData());
         ItemStack yellow = new ItemStack(Material.WOOL, 1, DyeColor.YELLOW.getWoolData());
-        ItemStack green = new ItemStack(Material.WOOL, 1, DyeColor.GREEN.getWoolData());
+        ItemStack green = new ItemStack(Material.WOOL, 1, DyeColor.LIME.getWoolData());
 
         conformity = new Option();
         setItem(19, new OptionItem(conformity, "Lawful", green, unselected));

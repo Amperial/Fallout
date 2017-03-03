@@ -55,11 +55,11 @@ public class SpecialMenu extends ItemMenu {
         setItem(41, new SpecialConfirmItem());
         setItem(39, new SpecialCancelItem());
 
-        setItem(10, new SpecialItem(Trait.STRENGTH, new ItemStack(Material.IRON_SPADE)));
+        setItem(10, new SpecialItem(Trait.STRENGTH, new ItemStack(Material.DIAMOND_SWORD)));
         setItem(1, new SpecialAddItem(Trait.STRENGTH));
         setItem(19, new SpecialRemoveItem(Trait.STRENGTH));
 
-        setItem(11, new SpecialItem(Trait.PERCEPTION, new ItemStack(Material.STONE_AXE)));
+        setItem(11, new SpecialItem(Trait.PERCEPTION, new ItemStack(Material.COMPASS)));
         setItem(2, new SpecialAddItem(Trait.PERCEPTION));
         setItem(20, new SpecialRemoveItem(Trait.PERCEPTION));
 
@@ -71,15 +71,15 @@ public class SpecialMenu extends ItemMenu {
         setItem(4, new SpecialAddItem(Trait.CHARISMA));
         setItem(22, new SpecialRemoveItem(Trait.CHARISMA));
 
-        setItem(14, new SpecialItem(Trait.INTELLIGENCE, new ItemStack(Material.NAME_TAG)));
+        setItem(14, new SpecialItem(Trait.INTELLIGENCE, new ItemStack(Material.BOOK)));
         setItem(5, new SpecialAddItem(Trait.INTELLIGENCE));
         setItem(23, new SpecialRemoveItem(Trait.INTELLIGENCE));
 
-        setItem(15, new SpecialItem(Trait.AGILITY, new ItemStack(Material.FEATHER)));
+        setItem(15, new SpecialItem(Trait.AGILITY, new ItemStack(Material.DIAMOND_BOOTS)));
         setItem(6, new SpecialAddItem(Trait.AGILITY));
         setItem(24, new SpecialRemoveItem(Trait.AGILITY));
 
-        setItem(16, new SpecialItem(Trait.LUCK, new ItemStack(Material.FISHING_ROD)));
+        setItem(16, new SpecialItem(Trait.LUCK, new ItemStack(Material.RABBIT_FOOT)));
         setItem(7, new SpecialAddItem(Trait.LUCK));
         setItem(25, new SpecialRemoveItem(Trait.LUCK));
     }
@@ -129,7 +129,8 @@ public class SpecialMenu extends ItemMenu {
             ItemStack finalIcon = getIcon().clone();
 
             Special special = getPendingSpecial(player.getUniqueId());
-            finalIcon.setAmount(special.get(trait));
+            int amount = special.get(trait);
+            finalIcon.setAmount(amount > 0 ? amount : 1);
 
             return finalIcon;
         }
@@ -147,13 +148,13 @@ public class SpecialMenu extends ItemMenu {
         @SuppressWarnings("deprecation")
         public SpecialAddItem(Trait trait) {
             super("Add Point",
-                    new ItemStack(Material.WOOL, 1, DyeColor.GREEN.getWoolData()),
+                    new ItemStack(Material.WOOL, 1, DyeColor.LIME.getWoolData()),
                     "Increases the below",
                     "trait by one point.");
 
             this.trait = trait;
 
-            disabledIcon = new ItemStack(Material.WOOL, 1, DyeColor.GRAY.getWoolData());
+            disabledIcon = new ItemStack(Material.STONE_BUTTON);
             setNameAndLore(disabledIcon, getDisplayName(), getLore());
         }
 
@@ -202,7 +203,7 @@ public class SpecialMenu extends ItemMenu {
 
             this.trait = trait;
 
-            disabledIcon = new ItemStack(Material.WOOL, 1, DyeColor.GRAY.getWoolData());
+            disabledIcon = new ItemStack(Material.STONE_BUTTON);
             setNameAndLore(disabledIcon, getDisplayName(), getLore());
         }
 

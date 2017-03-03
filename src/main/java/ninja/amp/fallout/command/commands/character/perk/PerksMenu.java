@@ -58,7 +58,7 @@ public class PerksMenu extends ItemMenu {
         setItem(48, new PerksCancelItem());
 
         ItemStack selected = new ItemStack(Material.WOOL, 1, DyeColor.GREEN.getWoolData());
-        ItemStack unselected = new ItemStack(Material.WOOL, 1, DyeColor.GRAY.getWoolData());
+        ItemStack unselected = new ItemStack(Material.STONE_BUTTON);
 
         EnumOption<Perk> tierOne = new EnumOption<>();
         setItem(0, new PerkOptionItem(tierOne, Perk.SIGHT_ADAPT, selected, unselected));

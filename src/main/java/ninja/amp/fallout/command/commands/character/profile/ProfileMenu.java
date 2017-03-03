@@ -35,6 +35,7 @@ import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,9 +57,9 @@ public class ProfileMenu extends ItemMenu {
             public ItemStack getIcon(Character character) {
                 switch (character.getGender()) {
                     case MALE:
-                        return new ItemStack(Material.STRING);
+                        return new ItemStack(Material.RAW_FISH);
                     case FEMALE:
-                        return new ItemStack(Material.NETHER_BRICK_ITEM);
+                        return new ItemStack(Material.RAW_FISH, 1, (short) 1);
                     default:
                         return super.getIcon(character);
                 }
@@ -99,23 +100,23 @@ public class ProfileMenu extends ItemMenu {
             public ItemStack getIcon(Character character) {
                 switch (character.getAlignment()) {
                     case LAWFUL_GOOD:
-                        return new ItemStack(Material.GLOWSTONE);
+                        return new ItemStack(Material.DIAMOND_BLOCK);
                     case LAWFUL_NEUTRAL:
-                        return new ItemStack(Material.REDSTONE_LAMP_OFF);
+                        return new ItemStack(Material.GOLD_BLOCK);
                     case LAWFUL_EVIL:
-                        return new ItemStack(Material.REDSTONE_ORE);
+                        return new ItemStack(Material.REDSTONE_BLOCK);
                     case GOOD:
-                        return new ItemStack(Material.WOOL, 1, DyeColor.GREEN.getWoolData());
+                        return new ItemStack(Material.DIAMOND_ORE);
                     case NEUTRAL:
-                        return new ItemStack(Material.ENDER_STONE);
+                        return new ItemStack(Material.GOLD_ORE);
                     case EVIL:
-                        return new ItemStack(Material.PISTON_STICKY_BASE);
+                        return new ItemStack(Material.REDSTONE_ORE);
                     case CHAOTIC_GOOD:
-                        return new ItemStack(Material.LEAVES);
+                        return new ItemStack(Material.PRISMARINE, (short) 1);
                     case CHAOTIC_NEUTRAL:
-                        return new ItemStack(Material.WOOD, 1, (short) 5);
+                        return new ItemStack(Material.GLOWSTONE);
                     case CHAOTIC_EVIL:
-                        return new ItemStack(Material.EMERALD_ORE);
+                        return new ItemStack(Material.NETHER_WART_BLOCK);
                     default:
                         return super.getIcon(character);
                 }
@@ -172,12 +173,17 @@ public class ProfileMenu extends ItemMenu {
             }
         });
 
-        setItem(5, new StaticMenuItem("Perks", new ItemStack(Material.STAINED_GLASS, 1, DyeColor.ORANGE.getWoolData())) {
+        setItem(5, new StaticMenuItem("Level", new ItemStack(Material.STAINED_GLASS, 1, DyeColor.ORANGE.getWoolData())) {
             @Override
             public ItemStack getFinalIcon(Owner owner) {
-                ItemStack itemStack = super.getFinalIcon(owner);
+                ItemStack itemStack = super.getFinalIcon(owner).clone();
+                ItemMeta meta = itemStack.getItemMeta();
 
-                itemStack.setAmount(owner.getCharacter().getLevel());
+                int level = owner.getCharacter().getLevel();
+                itemStack.setAmount(level > 0 ? level : 1);
+                meta.setDisplayName(meta.getDisplayName() + " " + level);
+
+                itemStack.setItemMeta(meta);
                 return itemStack;
             }
         });
@@ -229,13 +235,13 @@ public class ProfileMenu extends ItemMenu {
         setItem(52, new SkillItem(Skill.SCIENCE, "Science", skillItem));
         setItem(53, new SkillItem(Skill.LOGICAL_THINKING, "Logical Thinking", skillItem));
 
-        setItem(37, new SpecialItem(Trait.STRENGTH, new ItemStack(Material.IRON_SPADE)));
-        setItem(38, new SpecialItem(Trait.PERCEPTION, new ItemStack(Material.STONE_AXE)));
+        setItem(37, new SpecialItem(Trait.STRENGTH, new ItemStack(Material.DIAMOND_SWORD)));
+        setItem(38, new SpecialItem(Trait.PERCEPTION, new ItemStack(Material.COMPASS)));
         setItem(39, new SpecialItem(Trait.ENDURANCE, new ItemStack(Material.IRON_CHESTPLATE)));
         setItem(40, new SpecialItem(Trait.CHARISMA, new ItemStack(Material.WATCH)));
-        setItem(41, new SpecialItem(Trait.INTELLIGENCE, new ItemStack(Material.NAME_TAG)));
-        setItem(42, new SpecialItem(Trait.AGILITY, new ItemStack(Material.FEATHER)));
-        setItem(43, new SpecialItem(Trait.LUCK, new ItemStack(Material.FISHING_ROD)));
+        setItem(41, new SpecialItem(Trait.INTELLIGENCE, new ItemStack(Material.BOOK)));
+        setItem(42, new SpecialItem(Trait.AGILITY, new ItemStack(Material.DIAMOND_BOOTS)));
+        setItem(43, new SpecialItem(Trait.LUCK, new ItemStack(Material.RABBIT_FOOT)));
     }
 
     /**
@@ -335,7 +341,10 @@ public class ProfileMenu extends ItemMenu {
         @Override
         public ItemStack getFinalIcon(Owner owner) {
             ItemStack finalIcon = getIcon().clone();
-            finalIcon.setAmount(owner.getCharacter().getSpecial().get(trait));
+
+            int amount = owner.getCharacter().getSpecial().get(trait);
+            finalIcon.setAmount(amount > 0 ? amount : 1);
+
             return finalIcon;
         }
 
@@ -357,7 +366,14 @@ public class ProfileMenu extends ItemMenu {
         @Override
         public ItemStack getFinalIcon(Owner owner) {
             ItemStack finalIcon = getIcon().clone();
-            finalIcon.setAmount(owner.getCharacter().skillLevel(skill));
+
+            int amount = owner.getCharacter().skillLevel(skill);
+            if (amount > 0) {
+                finalIcon.setAmount(amount);
+            } else {
+                finalIcon.setType(Material.STONE_BUTTON);
+            }
+
             return finalIcon;
         }
 
