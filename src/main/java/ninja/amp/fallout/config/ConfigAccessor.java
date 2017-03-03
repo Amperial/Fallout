@@ -20,50 +20,59 @@ package ninja.amp.fallout.config;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.logging.Level;
 
 /**
- * Used to access a YamlConfiguration file.
+ * Used to access, reload, and save a YamlConfiguration file.
  *
  * @author Austin Payne
  */
 public class ConfigAccessor {
 
-    private JavaPlugin plugin;
-    private Config configType;
-    private File configFile;
+    private final Plugin plugin;
+    private final Config configType;
+    private final File configFile;
     private FileConfiguration fileConfiguration;
 
     /**
      * Creates a new config accessor.
      *
-     * @param plugin     The plugin instance
-     * @param configType The type of the configuration file
-     * @param parent     The parent file
+     * @param plugin     the plugin instance
+     * @param configType the type of the configuration file
+     * @param parent     the parent file
      */
-    public ConfigAccessor(JavaPlugin plugin, Config configType, File parent) {
+    public ConfigAccessor(Plugin plugin, Config configType, File parent) {
         this.plugin = plugin;
         this.configType = configType;
         this.configFile = new File(parent, configType.getFileName());
     }
 
     /**
+     * Checks if the configuration file exists.
+     *
+     * @return {@code true} if the config exists, else {@code false}
+     */
+    public boolean exists() {
+        return configFile.exists();
+    }
+
+    /**
      * Reloads the configuration file from disk.
      *
-     * @return The config accessor
+     * @return the config accessor
      */
-    @SuppressWarnings("deprecation")
     public ConfigAccessor reloadConfig() {
         fileConfiguration = YamlConfiguration.loadConfiguration(configFile);
 
         InputStream defConfigStream = plugin.getResource(configType.getFileName());
         if (defConfigStream != null) {
-            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream));
             fileConfiguration.setDefaults(defConfig);
         }
         return this;
@@ -72,7 +81,7 @@ public class ConfigAccessor {
     /**
      * Gets the config.
      *
-     * @return The configuration file
+     * @return the configuration file
      */
     public FileConfiguration getConfig() {
         if (fileConfiguration == null) {
@@ -84,7 +93,7 @@ public class ConfigAccessor {
     /**
      * Saves the config to disk.
      *
-     * @return The config accessor
+     * @return the config accessor
      */
     public ConfigAccessor saveConfig() {
         if (fileConfiguration != null) {
@@ -100,11 +109,23 @@ public class ConfigAccessor {
     /**
      * Generates the default config if it hasn't already been generated.
      *
-     * @return The config accessor
+     * @return the config accessor
      */
     public ConfigAccessor saveDefaultConfig() {
         if (!configFile.exists()) {
-            plugin.saveResource(configType.getFileName(), false);
+            try {
+                plugin.saveResource(configType.getFileName(), false);
+            } catch (Exception resource) {
+                plugin.getLogger().log(Level.INFO, "Default config for " + configFile + " not found");
+                try {
+                    configFile.getParentFile().mkdirs();
+                    if (configFile.createNewFile()) {
+                        plugin.getLogger().log(Level.INFO, "Generated empty config for " + configFile);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return this;
     }
@@ -112,7 +133,7 @@ public class ConfigAccessor {
     /**
      * Gets the config type.
      *
-     * @return The type of the configuration file
+     * @return the type of the configuration file
      */
     public Config getConfigType() {
         return configType;

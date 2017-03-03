@@ -20,9 +20,8 @@ package ninja.amp.fallout.config;
 
 import ninja.amp.fallout.Fallout;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
-import java.io.File;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,14 +33,17 @@ import java.util.Map;
  */
 public class ConfigManager {
 
-    private Map<Config, ConfigAccessor> configs = new HashMap<>();
+    private final Fallout plugin;
+    private final Map<Config, ConfigAccessor> configs = new HashMap<>();
 
     /**
      * Creates a new config manager.
      *
-     * @param plugin The fallout plugin instance
+     * @param plugin the fallout plugin instance
      */
     public ConfigManager(Fallout plugin) {
+        this.plugin = plugin;
+
         // Save main config
         plugin.saveDefaultConfig();
 
@@ -52,20 +54,27 @@ public class ConfigManager {
     /**
      * Adds a config accessor for each custom config.
      *
-     * @param customConfigs The custom configs to register
-     * @param plugin        The plugin that owns the configs
+     * @param configs the custom configs to register
+     * @param plugin  the plugin that owns the configs
      */
-    public void registerCustomConfigs(EnumSet<? extends Config> customConfigs, JavaPlugin plugin) {
-        File dataFolder = plugin.getDataFolder();
-        for (Config config : customConfigs) {
-            addConfigAccessor(new ConfigAccessor(plugin, config, dataFolder).saveDefaultConfig());
-        }
+    public void registerCustomConfigs(EnumSet<? extends Config> configs, Plugin plugin) {
+        configs.forEach(config -> registerCustomConfig(config, plugin));
+    }
+
+    /**
+     * Adds a config accessor for a custom config.
+     *
+     * @param config the custom config to register
+     * @param plugin the plugin containing the default resources for the config
+     */
+    public void registerCustomConfig(Config config, Plugin plugin) {
+        addConfigAccessor(new ConfigAccessor(plugin, config, this.plugin.getDataFolder()).saveDefaultConfig());
     }
 
     /**
      * Adds a config accessor to the config manager.
      *
-     * @param configAccessor The config accessor
+     * @param configAccessor the config accessor
      */
     private void addConfigAccessor(ConfigAccessor configAccessor) {
         configs.put(configAccessor.getConfigType(), configAccessor);
@@ -74,8 +83,8 @@ public class ConfigManager {
     /**
      * Gets a certain config accessor.
      *
-     * @param configType The type of the configuration file
-     * @return The config accessor
+     * @param configType the type of the configuration file
+     * @return the config accessor
      */
     public ConfigAccessor getConfigAccessor(Config configType) {
         return configs.get(configType).reloadConfig();
@@ -84,8 +93,8 @@ public class ConfigManager {
     /**
      * Gets a certain configuration file.
      *
-     * @param configType The type of the configuration file
-     * @return The configuration file
+     * @param configType the type of the configuration file
+     * @return the configuration file
      */
     public FileConfiguration getConfig(Config configType) {
         return configs.get(configType).reloadConfig().getConfig();

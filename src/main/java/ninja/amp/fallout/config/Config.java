@@ -19,7 +19,7 @@
 package ninja.amp.fallout.config;
 
 /**
- * An interface for an enum of the custom config files in a plugin.
+ * An interface for a custom config file in a plugin.
  *
  * @author Austin Payne
  */
@@ -28,7 +28,7 @@ public interface Config {
     /**
      * Gets the config's file name.
      *
-     * @return The file name of the config
+     * @return the file name of the config
      */
     String getFileName();
 
