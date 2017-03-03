@@ -27,6 +27,7 @@ import ninja.amp.fallout.util.ArmorMaterial;
 import ninja.amp.fallout.util.ArmorType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -63,6 +64,8 @@ public class FOListener implements Listener {
     private Fallout plugin;
     private boolean preventCraftingDiamondArmor;
     private boolean preventMobsDroppingExp;
+    private boolean preventSunlightCombust;
+    private boolean preventZombieTargetGhoul;
 
     protected static Map<UUID, String> onlinePlayers = null;
 
@@ -75,8 +78,11 @@ public class FOListener implements Listener {
         this.plugin = plugin;
 
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
-        preventCraftingDiamondArmor = plugin.getConfig().getBoolean("PreventCraftingDiamondArmor", false);
-        preventMobsDroppingExp = plugin.getConfig().getBoolean("PreventMobsDroppingExp", false);
+        FileConfiguration config = plugin.getConfig();
+        preventCraftingDiamondArmor = config.getBoolean("PreventCraftingDiamondArmor", false);
+        preventMobsDroppingExp = config.getBoolean("PreventMobsDroppingExp", false);
+        preventSunlightCombust = config.getBoolean("PreventSunlightCombust", false);
+        preventZombieTargetGhoul = config.getBoolean("PreventZombieTargetGhoul", false);
 
         onlinePlayers = new ConcurrentHashMap<>();
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -123,6 +129,7 @@ public class FOListener implements Listener {
     /**
      * Stops players with characters who don't have the armor perk from right clicking to equip diamond armor.
      */
+    /*
     @SuppressWarnings("deprecation")
     @EventHandler
     public void onPlayerClickArmor(PlayerInteractEvent event) {
@@ -151,10 +158,12 @@ public class FOListener implements Listener {
             }
         }
     }
+    */
 
     /**
      * Stops players with characters who don't have the armor perk from manually equipping diamond armor.
      */
+    /*
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getWhoClicked() instanceof Player) {
@@ -190,10 +199,12 @@ public class FOListener implements Listener {
             }
         }
     }
+    */
 
     /**
      * Stops players with characters who don't have the armor perk from manually equipping diamond armor.
      */
+    /*
     @EventHandler
     public void onInventoryDrag(InventoryDragEvent event) {
         if (event.getWhoClicked() instanceof Player && event.getOldCursor() != null) {
@@ -216,6 +227,7 @@ public class FOListener implements Listener {
             }
         }
     }
+    */
 
     /**
      * Stops mobs from dropping exp to prevent exp farming.
@@ -232,7 +244,10 @@ public class FOListener implements Listener {
      */
     @EventHandler
     public void onEntityCombust(EntityCombustEvent event) {
-        if (!(event instanceof EntityCombustByBlockEvent) && !(event instanceof EntityCombustByEntityEvent) && event.getEntityType() != EntityType.ARROW) {
+        if (event instanceof EntityCombustByBlockEvent || event instanceof EntityCombustByEntityEvent || event.getEntityType() == EntityType.ARROW) {
+            return;
+        }
+        if (preventSunlightCombust) {
             event.setCancelled(true);
         }
     }
@@ -255,7 +270,7 @@ public class FOListener implements Listener {
      */
     @EventHandler
     public void onEntityTargetLiving(EntityTargetLivingEntityEvent event) {
-        if (event.getEntityType() == EntityType.ZOMBIE && event.getTarget() instanceof Player) {
+        if (preventZombieTargetGhoul && event.getEntityType() == EntityType.ZOMBIE && event.getTarget() instanceof Player) {
             UUID playerId = event.getTarget().getUniqueId();
             CharacterManager characterManager = plugin.getCharacterManager();
             if (characterManager.isOwner(playerId)) {

@@ -18,6 +18,10 @@ DiceSidesLimit: 99
 PreventMobsDroppingExp: false
 # If players should be prevented from crafting diamond armor
 PreventCraftingDiamondArmor: false
+# If mobs should be prevented from combusting in the day
+PreventSunlightCombust:
+# If zombies should be prevented from targeting ghoul characters
+PreventZombieTargetGhoul: false
 colors:
   primary: AQUA
   secondary: GRAY
