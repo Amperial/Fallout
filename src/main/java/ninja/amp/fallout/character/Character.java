@@ -123,8 +123,11 @@ public class Character {
         }
         if (section.isString("name")) {
             this.characterName = section.getString("name");
-            if (characterName.length() < 3 || characterName.length() > 20 || !characterName.matches("([A-Z][a-z]+_)?[A-Z][a-z]+")) {
+            if (characterName.length() < 3 || characterName.length() > 20) {
                 throw new Exception("Character names must be comprised of between 3 and 20 letters");
+            }
+            if (!FOUtils.checkName(characterName)) {
+                throw new Exception("Character name is not of the correct format");
             }
         } else {
             throw new Exception("Missing or invalid character name");
@@ -180,11 +183,7 @@ public class Character {
         if (section.isConfigurationSection("skills")) {
             ConfigurationSection skillLevels = section.getConfigurationSection("skills");
             for (Skill skill : Skill.class.getEnumConstants()) {
-                if (skillLevels.isInt(skill.getName())) {
-                    skills.put(skill, FOUtils.clamp(skillLevels.getInt(skill.getName()), 0, 5));
-                } else {
-                    throw new Exception("Missing or invalid skill: " + skill.getName());
-                }
+                skills.put(skill, FOUtils.clamp(skillLevels.getInt(skill.getName(), 0), 0, 5));
             }
         } else {
             throw new Exception("Missing or invalid skills");

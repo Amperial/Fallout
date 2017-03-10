@@ -20,6 +20,7 @@ package ninja.amp.fallout.util;
 
 import java.lang.reflect.Field;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 /**
  * Fallout utility methods.
@@ -29,8 +30,17 @@ import java.util.Random;
 public final class FOUtils {
 
     private static final Random RANDOM = new Random();
+    private static Pattern NAME_REQUIREMENT = Pattern.compile("([A-Z][a-z]+_)?[A-Z][a-z]+");
 
     private FOUtils() {
+    }
+
+    public static boolean checkName(String name) {
+        return NAME_REQUIREMENT == null || NAME_REQUIREMENT.matcher(name).matches();
+    }
+
+    public static void setNamePattern(Pattern nameRequirement) {
+        NAME_REQUIREMENT = nameRequirement;
     }
 
     /**

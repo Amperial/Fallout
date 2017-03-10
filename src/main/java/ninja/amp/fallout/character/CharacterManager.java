@@ -24,6 +24,7 @@ import ninja.amp.fallout.config.ConfigManager;
 import ninja.amp.fallout.config.FOConfig;
 import ninja.amp.fallout.message.FOMessage;
 import ninja.amp.fallout.message.Messenger;
+import ninja.amp.fallout.util.FOUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -33,6 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 /**
  * Manages all of the fallout characters.
@@ -54,6 +56,11 @@ public class CharacterManager {
      */
     public CharacterManager(Fallout plugin) {
         this.plugin = plugin;
+
+        FileConfiguration config = plugin.getConfig();
+
+        // Load character name requirement REGEX
+        FOUtils.setNamePattern(config.isString("NameRequirement") ? Pattern.compile(config.getString("NameRequirement")) : null);
 
         // Players may already be online in case of reload
         for (Player player : plugin.getServer().getOnlinePlayers()) {

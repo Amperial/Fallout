@@ -26,6 +26,7 @@ import ninja.amp.fallout.command.commands.character.special.SpecialMenu;
 import ninja.amp.fallout.menu.ItemMenu;
 import ninja.amp.fallout.message.FOMessage;
 import ninja.amp.fallout.message.Messenger;
+import ninja.amp.fallout.util.FOUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
@@ -68,7 +69,7 @@ public class Create extends Command {
         } else {
             if (characterManager.isCharacter(name)) {
                 messenger.sendErrorMessage(player, FOMessage.CHARACTER_NAMETAKEN);
-            } else if (name.length() < 3 || name.length() > 20 || !name.matches("([A-Z][a-z]+_)?[A-Z][a-z]+")) {
+            } else if (name.length() < 3 || name.length() > 20 || !FOUtils.checkName(name)) {
                 messenger.sendErrorMessage(player, FOMessage.ERROR_NAMEFORMAT);
             } else {
                 Character.CharacterBuilder builder = new Character.CharacterBuilder(player);

@@ -6,6 +6,10 @@ configversion: '3.0'
 Debug: false
 # How far away a normal roll is broadcasted
 MessageRadius: 30
+# The REGEX string to match character names against.
+# Uncomment this line to restrict names to the format "John" or "John_Smith".
+# Or, set the REGEX to a format of your liking.
+# NameRequirement: "([A-Z][a-z]+_)?[A-Z][a-z]+"
 # If players should be nicknamed as their character
 NicknamePlayers: true
 # Maximum amount of dice rolled at once in a global or local roll
