@@ -1,0 +1,99 @@
+attachFull219126 
+Ultimate Fallout Roleplay!
+
+About
+Author: Austin Payne (ampayne2)
+Version: 3.0 (spigot 1.11+)
+This plugin was created by myself a couple years ago to help out a server I was heavily involved in. It has gone through major changes over time, allowing any issues to be ironed out. I am now bringing it to the spigot community in hopes that it can help more servers reach their dream of perfect fallout roleplay!
+
+Features
+
+    Create in depth characters with a completely custom system!
+    Set your character's name, race, age, height, weight, gender, dnd alignment, and SPECIAL traits
+    Allocate skill points and choose your character perks
+    Gain skill points and unlock perk tiers each level from 1 to 5
+    Roleplay with multiple characters over time by creating new ones and possessing different characters
+    Advanced menu system for character creation, SPECIAL modification, skills, perks, and profiles
+    Advanced rolling system with dice, SPECIAL, skill, and armor rolls, modifiers, easy to understand output
+    Completely configurable plugin messages and color scheme
+    Configurable message radius for local rolls
+    Optionally nickname players as their character automatically
+    Optionally prevent mobs from dropping exp, players from crafting diamond armor, sunlight from combusting mobs, and zombies from targeting ghouls
+
+Characters
+
+Creating a Character!
+Begin by using the command "/fo create <name> <age> <height> <weight>".
+This begins the process and opens up a menu where you can choose gender, race, and alignment.
+Characters can choose from the races Wastelander, Ghoul, Super Mutant, Vault Dweller, and Deity for players with permission! Your race determines your character's minimum and maximum SPECIAL, and can grant extra effects.
+Alignments allow you to choose between Lawful/Balanced/Chaotic and Good/Neutral/Evil.
+attachFull219138
+
+SPECIAL Modification!
+Increase or decrease your SPECIAL traits!
+Each race has its own limits.
+attachFull219144
+
+Skill Allocation!
+Allocate skill points! Start out with 5 and gain 5 per level, up to 30!
+attachFull219146
+
+Perk Selection!
+Select awesome perks! Unlock a tier each level from 1 to 5!
+attachFull219147
+
+Character Profiles!
+View your own or other character's profiles!
+attachFull219150
+
+Rolling
+
+Fallout characters can roll in a variety of different ways.
+These actions are based on chance and can be used to add a new dimension of fun!
+
+attachFull219182
+
+Rolling a trait or skill is as simple as typing "/fo roll <trait/skill>".
+You can also use privateroll to only roll for yourself or globalroll to bypass the configured message range.
+
+For example, a simple "/fo roll strength" is the first roll shown above.
+The roll is simply a random value from 1 to 20. The actual result of this roll depends on a few factors. These factors can be easily understood by loking at the roll bar. The solid boxes on either side represent critical rolls, and always exist regardless of what you're rolling or the modifiers. However, having a very low or high luck trait can give increase the amount of critical failure or success boxes. The blue box represents the value that was actually rolled, and the yellow box represents the "point of near success". This yellow box exists between the red boxes (failure) and green boxes (success) to allow for more variation in what happens if you just barely succeed at an action.
+
+The next example is "/fo roll strength+3". In this roll, the only thing that changed was adding a modifier of +3. As you can see, this modifier shifted the yellow box to the left 3 spaces, increasing the chance of success. Note that even if you have a huge positive or negative modifier, the critical boxes will always exist.
+
+Next is the roll "/fo roll surgery". In this roll, not only was a skill rolled instead of a SPECIAL trait, the character had a much higher luck trait set and gained additional critical success boxes.
+
+Armor rolls are used to attempt blocking damage of a certain type. They result in only success or failure and do not rely on the same math as other rolls. Finally, several examples of basic dice rolls are provided for those looking for a simple system that can be used exactly how you want.
+
+Commands
+
+attachFull219134
+
+Permissions:
+
+    All permission: fallout.all
+    All character commands: fallout.character.all
+    All other permissions are "fallout.command" where command is the path to the command, for example "fallout.character.possess" or "fallout.globalroll". In general, the permission defaults should be fine
+
+
+Future Features!
+
+    Plugin tutorial video
+    Finish radiation system with radiation zones, rad-x, rad-away, etc.
+    Allow configuring custom skills and perks
+    Allow configuring menu items for custom texture packs
+    Add more in depth roleplay combat system
+    Bring fallout gambling functionality (ingame blackjack and poker) to a state where it can be released
+    Recode and release webserver functionality (see image):
+
+attachFull219191
+
+Terms
+
+    You are not allowed to distribute this plugin in any form to anyone who has not obtained the right to use the plugin himself for example by purchasing it from this resource page.
+    You cannot refund your purchase after already acquiring the resource. It should work as described and if you have problems contact me and I will resolve them!
+    By downloading you accept the previous terms and that this resource is distributed without any (not even implied) warranty or liability by the author.
+
+Final Note
+
+Thanks to everyone who got this far down the page! I am reaching the end of my 3rd year in college and a large amount of my free time goes towards maintaining several different plugins. You can trust that I am dedicated to keeping this plugin working and fixing any bugs that pop up. Also, be excited for some awesome upcoming features!

@@ -116,7 +116,7 @@ public class ProfileMenu extends ItemMenu {
                     case CHAOTIC_NEUTRAL:
                         return new ItemStack(Material.GLOWSTONE);
                     case CHAOTIC_EVIL:
-                        return new ItemStack(Material.NETHER_WART_BLOCK);
+                        //return new ItemStack(Material.NETHER_WART_BLOCK);
                     default:
                         return super.getIcon(character);
                 }
